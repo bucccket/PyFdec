@@ -21,3 +21,6 @@ class ExtendedBitIO(BitIO):
     
     def read_bool(self) -> bool:
         return self.read(1)[0] == 1
+    
+    def padding(self, length: int) -> None:
+        self.read(length)

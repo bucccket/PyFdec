@@ -24,3 +24,9 @@ class TestSwfFile(TestCase):
         with open('tests/Gfx_Ahsoka_Sword.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
+            self.assertFalse(swf.fileAttributes.useDirectBlit)
+            self.assertFalse(swf.fileAttributes.useGPU)
+            self.assertFalse(swf.fileAttributes.hasMetadata)
+            self.assertTrue(swf.fileAttributes.actionScript3)
+            self.assertFalse(swf.fileAttributes.noCrossDomainCaching)
+            self.assertFalse(swf.fileAttributes.useNetwork)
