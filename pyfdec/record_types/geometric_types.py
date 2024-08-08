@@ -17,10 +17,10 @@ class Rect:
         with ExtendedBitIO(buffer) as bits:
             nbits = bits.read_unsigned(5)
             return cls(
-                bits.read_signed(nbits),
-                bits.read_signed(nbits),
-                bits.read_signed(nbits),
-                bits.read_signed(nbits)
+                xmin=bits.read_signed(nbits),
+                xmax=bits.read_signed(nbits),
+                ymin=bits.read_signed(nbits),
+                ymax=bits.read_signed(nbits)
             )
 
 
@@ -55,10 +55,10 @@ class Matrix:
             translate_x = bits.read_signed(nbits)
             translate_y = bits.read_signed(nbits)
             return cls(
-                translate_x,
-                translate_y,
-                scale_x,
-                scale_y,
-                rotate_skew0,
-                rotate_skew1
+                translate_x=translate_x,
+                translate_y=translate_y,
+                scale_x=scale_x,
+                scale_y=scale_y,
+                rotate_skew0=rotate_skew0,
+                rotate_skew1=rotate_skew1
             )
