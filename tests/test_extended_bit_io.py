@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from bitarray import bitarray
 
-from pyfdec.extended_bitio import ExtendedBitIO
+from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 
 class TestExtendedBitIO(TestCase):
