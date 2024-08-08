@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.encoded_integer import EncodedU32
+from pyfdec.record_types.color_types import ARGB, RGB, RGBA, CxForm, CxFormAlpha
 from pyfdec.record_types.geometric_types import Matrix, Rect
 
 
@@ -96,3 +96,60 @@ class TestReading(TestCase):
         self.assertEqual(matrix.rotate_skew0, 1.125)
         self.assertEqual(matrix.rotate_skew1, 1.0625)
 
+    def test_rgb(self):
+        data = b'\x00\xFF\x00'
+        buffer = ExtendedBuffer(data)
+        rgb = RGB.from_buffer(buffer)
+        self.assertEqual(rgb.red, 0)
+        self.assertEqual(rgb.green, 255)
+        self.assertEqual(rgb.blue, 0)
+    
+    def test_rgba(self):
+        data = b'\x00\xFF\x00\xFF'
+        buffer = ExtendedBuffer(data)
+        rgba = RGBA.from_buffer(buffer)
+        self.assertEqual(rgba.red, 0)
+        self.assertEqual(rgba.green, 255)
+        self.assertEqual(rgba.blue, 0)
+        self.assertEqual(rgba.alpha, 255)
+    
+    def test_argb(self):
+        data = b'\xFF\x00\xFF\x00'
+        buffer = ExtendedBuffer(data)
+        argb = ARGB.from_buffer(buffer)
+        self.assertEqual(argb.red, 0)
+        self.assertEqual(argb.green, 255)
+        self.assertEqual(argb.blue, 0)
+        self.assertEqual(argb.alpha, 255)
+    
+    def test_color_transform(self):
+        # 1 1 0100 1111 1111 1111 0001 0001 0001
+        # T T    4   -1   -1   -1    1    1    1
+        # 11010011 11111111 11000100 01000100
+        #     0xD3     0xFF     0xC4     0x44
+        data = b'\xD3\xFF\xC4\x44'
+        buffer = ExtendedBuffer(data)
+        color_transform = CxForm.from_buffer(buffer)
+        self.assertEqual(color_transform.RedMultTerm, -1)
+        self.assertEqual(color_transform.GreenMultTerm, -1)
+        self.assertEqual(color_transform.BlueMultTerm, -1)
+        self.assertEqual(color_transform.RedAddTerm, 1)
+        self.assertEqual(color_transform.GreenAddTerm, 1)
+        self.assertEqual(color_transform.BlueAddTerm, 1)
+    
+    def test_color_transform_alpha(self):
+        # 1 1 0100 1111 1111 1111 1111 0001 0001 0001 0001
+        # T T    4   -1   -1   -1   -1    1    1    1    1
+        # 11010011 11111111 11111100 01000100 01000100
+        #     0xD3     0xFF     0xFC     0x44     0x44
+        data = b'\xD3\xFF\xFC\x44\x44'
+        buffer = ExtendedBuffer(data)
+        color_transform = CxFormAlpha.from_buffer(buffer)
+        self.assertEqual(color_transform.RedMultTerm, -1)
+        self.assertEqual(color_transform.GreenMultTerm, -1)
+        self.assertEqual(color_transform.BlueMultTerm, -1)
+        self.assertEqual(color_transform.AlphaMultTerm, -1)
+        self.assertEqual(color_transform.RedAddTerm, 1)
+        self.assertEqual(color_transform.GreenAddTerm, 1)
+        self.assertEqual(color_transform.BlueAddTerm, 1)
+        self.assertEqual(color_transform.AlphaAddTerm, 1)

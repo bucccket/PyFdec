@@ -18,3 +18,6 @@ class ExtendedBitIO(BitIO):
     
     def read_fixed(self, length: int) -> float:
         return self.read_unsigned(length) / (1 << 16)
+    
+    def read_bool(self) -> bool:
+        return self.read(1)[0] == 1
