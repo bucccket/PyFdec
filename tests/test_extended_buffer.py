@@ -122,3 +122,48 @@ class TestEncodedU32(TestCase):
         with self.assertRaises(ValueError):
             buffer.read_encoded_u32()
     
+    def test_encodedu32_arbitrary_values(self):
+        data = b'\x40'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 64)
+
+        # 1 101 1001 0 001 1001
+        # D919
+        # 00001100 11011001
+        # 3289
+
+        data = b'\xD9\x19'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 3289)
+        
+        # 1 101 1001 1 101 1001 0 001 1001
+        # D9 D919
+        # 00000110 01101100 11011001
+        # 421081
+
+        data = b'\xD9\xD9\x19'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 421081)
+        
+        # 1 100 0011 1 101 1001 1 101 1001 0 001 1001
+        # C3D9 D919
+        # 000011 00110110 01101100 11000011
+        # 53898435
+
+        data = b'\xC3\xD9\xD9\x19'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 53898435)
+        
+        # 1 000 1111 1 100 0011 1 101 1001 1 101 1001 0 000 1001
+        # 8FC3D9D909      
+        # 000 1001 101 1001 101 1001 100 0011 000 1111
+        # 2604032399
+
+        data = b'\x8F\xC3\xD9\xD9\x09'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 2604032399)
