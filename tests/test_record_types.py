@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from pyfdec.extended_buffer import ExtendedBuffer
+from pyfdec.record_types.encoded_integer import EncodedU32
 from pyfdec.record_types.geometric_types import Matrix, Rect
 
 
@@ -94,3 +95,4 @@ class TestReading(TestCase):
         self.assertEqual(matrix.scale_y, 1.25)
         self.assertEqual(matrix.rotate_skew0, 1.125)
         self.assertEqual(matrix.rotate_skew1, 1.0625)
+

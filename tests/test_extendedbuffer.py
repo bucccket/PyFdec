@@ -57,3 +57,68 @@ class TestReading(TestCase):
         data = b'\x00\x00\x00\x00\x00\x00\xF8\xBF'
         buffer = ExtendedBuffer(data)
         self.assertEqual(buffer.read_f64(), -1.5)
+
+class TestEncodedU32(TestCase):
+    def test_encodedu32_max(self):
+        #
+        data = b'\x7F'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 127)
+    
+        
+        # 1 111 1111 0 111 1111
+        #   FF         7F
+        # 00111111 11111111
+        #     0x3F     0xFF
+        data = b'\xFF\x7F'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 16383)
+        
+        # 1 111 1111 1 111 1111 0 111 1111
+        #   FF         FF         7F
+        # 00011111 11111111 11111111
+        #     0x3F     0xFF     0xFF
+        data = b'\xFF\xFF\x7F'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 2097151)
+        
+        # 1 111 1111 1 111 1111 1 111 1111 0 111 1111
+        #   FF         FF         FF         7F
+        # 00001111 11111111 11111111 11111111
+        #     0x1F     0xFF     0xFF     0xFF
+        data = b'\xFF\xFF\xFF\x7F'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 268435455)
+        
+        # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 000 1111
+        #    FF         FF         FF         FF         0F
+        # 11111111 11111111 11111111 11111111
+        #     0xFF     0xFF     0xFF     0xFF
+        data = b'\xFF\xFF\xFF\xFF\x0F'
+        buffer = ExtendedBuffer(data)
+        value = buffer.read_encoded_u32()
+        self.assertEqual(value, 4294967295)
+    
+    def test_encodedu32_overflow(self):
+        # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 111 1111
+        #    FF         FF         FF         FF         7F
+        # 00000111 11111111 11111111 11111111 11111111
+        #     0x07     0xFF     0xFF     0xFF     0xFF
+        data = b'\xFF\xFF\xFF\xFF\x7F'
+        buffer = ExtendedBuffer(data)
+        with self.assertRaises(ValueError):
+            buffer.read_encoded_u32()
+            
+        # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 001 1111
+        #    FF         FF         FF         FF         1F
+        # 00000001 11111111 11111111 11111111 11111111
+        #     0x01     0xFF     0xFF     0xFF     0xFF
+        data = b'\xFF\xFF\xFF\xFF\x1F'
+        buffer = ExtendedBuffer(data)
+        with self.assertRaises(ValueError):
+            buffer.read_encoded_u32()
+    

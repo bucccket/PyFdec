@@ -53,3 +53,15 @@ class ExtendedBuffer(io.BytesIO):
             data += byte
         return data.decode('utf-8')
     
+    def read_encoded_u32(self) -> int:
+        value = 0
+        shift = 0
+        while (True):
+            byte = self.read_ui8()
+            value |= (byte & 0x7F) << shift
+            if byte & 0x80 == 0:
+                break
+            shift += 7
+        if value & 0x100000000:
+            raise ValueError('EncodedU32 value is too large')
+        return value
