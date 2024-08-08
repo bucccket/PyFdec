@@ -1,6 +1,11 @@
 from unittest import TestCase
 
+from pyfdec.extended_buffer import ExtendedBuffer
 
-class TestSomething(TestCase):
-    def test_something(self):
-        self.assertEqual(1, 1)
+
+class TestReading(TestCase):
+    def test_string(self):
+        data = b"Hello, World!\x00"
+        buffer = ExtendedBuffer(data)
+        string = buffer.read_string()
+        self.assertEqual(string, "Hello, World!")
