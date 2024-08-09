@@ -4,6 +4,8 @@ from enum import Enum
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
+from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -62,6 +64,10 @@ class SwfFile:
                     fileAttributes = FileAttriubtes.from_buffer(tag_buffer)
                 case Tag.TagTypes.SetBackgroundColor:
                     tags.append(SetBackgroundColor.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineSceneAndFrameLabelData:
+                    tags.append(DefineSceneAndFrameLabelData.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineShape:
+                    tags.append(DefineShape.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                 case _:
