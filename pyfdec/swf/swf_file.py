@@ -6,6 +6,7 @@ from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
+from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
 from pyfdec.tags.Tag import Tag
 
 
@@ -59,6 +60,8 @@ class SwfFile:
             match tag_type:
                 case Tag.TagTypes.FileAttributes:
                     fileAttributes = FileAttriubtes.from_buffer(tag_buffer)
+                case Tag.TagTypes.SetBackgroundColor:
+                    tags.append(SetBackgroundColor.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                 case _:
