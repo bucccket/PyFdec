@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 
 
@@ -9,6 +10,15 @@ class TestExtendedBuffer(TestCase):
         buffer.read(7)
         result: ExtendedBuffer = buffer.subbuffer(5)
         self.assertEqual(result.read(), b"World")
+        self.assertEqual(buffer.read(1), b"!")
+
+    def test_bitbuffer_position(self):
+        buffer: ExtendedBuffer = ExtendedBuffer(b"Hello, World!")
+        with ExtendedBitIO(buffer) as bits:
+            bits.read(8*7)  # "Hello, "
+        string = buffer.read(5)
+        self.assertEqual(buffer.tell(), 12)
+        self.assertEqual(string, b"World")
 
 
 class TestReading(TestCase):
@@ -58,6 +68,7 @@ class TestReading(TestCase):
         buffer = ExtendedBuffer(data)
         self.assertEqual(buffer.read_f64(), -1.5)
 
+
 class TestEncodedU32(TestCase):
     def test_encodedu32_max(self):
         #
@@ -65,8 +76,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 127)
-    
-        
+
         # 1 111 1111 0 111 1111
         #   FF         7F
         # 00111111 11111111
@@ -75,7 +85,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 16383)
-        
+
         # 1 111 1111 1 111 1111 0 111 1111
         #   FF         FF         7F
         # 00011111 11111111 11111111
@@ -84,7 +94,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 2097151)
-        
+
         # 1 111 1111 1 111 1111 1 111 1111 0 111 1111
         #   FF         FF         FF         7F
         # 00001111 11111111 11111111 11111111
@@ -93,7 +103,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 268435455)
-        
+
         # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 000 1111
         #    FF         FF         FF         FF         0F
         # 11111111 11111111 11111111 11111111
@@ -102,7 +112,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 4294967295)
-    
+
     def test_encodedu32_overflow(self):
         # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 111 1111
         #    FF         FF         FF         FF         7F
@@ -112,7 +122,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         with self.assertRaises(ValueError):
             buffer.read_encoded_u32()
-            
+
         # 1 111 1111 1 111 1111 1 111 1111 1 111 1111 0 001 1111
         #    FF         FF         FF         FF         1F
         # 00000001 11111111 11111111 11111111 11111111
@@ -121,7 +131,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         with self.assertRaises(ValueError):
             buffer.read_encoded_u32()
-    
+
     def test_encodedu32_arbitrary_values(self):
         data = b'\x40'
         buffer = ExtendedBuffer(data)
@@ -137,7 +147,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 3289)
-        
+
         # 1 101 1001 1 101 1001 0 001 1001
         # D9 D919
         # 00000110 01101100 11011001
@@ -147,7 +157,7 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 421081)
-        
+
         # 1 100 0011 1 101 1001 1 101 1001 0 001 1001
         # C3D9 D919
         # 000011 00110110 01101100 11000011
@@ -157,9 +167,9 @@ class TestEncodedU32(TestCase):
         buffer = ExtendedBuffer(data)
         value = buffer.read_encoded_u32()
         self.assertEqual(value, 53898435)
-        
+
         # 1 000 1111 1 100 0011 1 101 1001 1 101 1001 0 000 1001
-        # 8FC3D9D909      
+        # 8FC3D9D909
         # 000 1001 101 1001 101 1001 100 0011 000 1111
         # 2604032399
 
