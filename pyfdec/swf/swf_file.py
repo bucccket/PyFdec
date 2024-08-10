@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.End import End
@@ -49,9 +49,9 @@ class SwfFile:
     def from_buffer(cls, buffer: ExtendedBuffer):
 
         header = SwfHeader.from_buffer(buffer)
-        tags: list[Tag] = [None]
+        tags: list[Tag] = []
 
-        while not isinstance(tags[-1], End):
+        while True:
             tag_type_and_length = buffer.read_ui16()
             tag_type = Tag.TagTypes(tag_type_and_length >> 6)
             tag_length = tag_type_and_length & 0x3F
@@ -68,8 +68,11 @@ class SwfFile:
                     tags.append(DefineSceneAndFrameLabelData.from_buffer(tag_buffer))
                 case Tag.TagTypes.DefineShape:
                     tags.append(DefineShape.from_buffer(tag_buffer))
+                case Tag.TagTypes.ShowFrame:
+                    tags.append(ShowFrame.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
+                    break
                 case _:
                     raise NotImplementedError(f'Unimplemented tag type: {tag_type}')
 
