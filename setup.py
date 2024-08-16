@@ -13,9 +13,6 @@ setuptools.setup(
     description = 'A libary for reading and writing to SWF files',
     long_description = long_description,
     long_description_content_type = 'text/markdown',
-    install_requires = [
-        'bitio',
-    ],
     py_modules = [
         'pyfdec',
     ],
