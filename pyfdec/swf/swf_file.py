@@ -7,6 +7,8 @@ from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
+from pyfdec.tags.DefineShape3 import DefineShape3
+from pyfdec.tags.DefineShape4 import DefineShape4
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -71,13 +73,18 @@ class SwfFile:
                     tags.append(DefineShape.from_buffer(tag_buffer))
                 case Tag.TagTypes.DefineShape2:
                     tags.append(DefineShape2.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineShape3:
+                    tags.append(DefineShape3.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineShape4:
+                    tags.append(DefineShape4.from_buffer(tag_buffer))
                 case Tag.TagTypes.ShowFrame:
                     tags.append(ShowFrame.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break
                 case _:
-                    raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
+                    pass
+                    # raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)
