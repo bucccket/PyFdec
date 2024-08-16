@@ -18,9 +18,13 @@ class DefineShape3(DefineShape2):
             @dataclass
             class FillStyle(DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle):
                 @dataclass
-                class Gradient(DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.Gradient):
+                class Gradient(
+                    DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.Gradient
+                ):
                     @dataclass
-                    class GradientRecord(DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.Gradient.GradientRecord):
+                    class GradientRecord(
+                        DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.Gradient.GradientRecord
+                    ):
                         ratio: int
                         color: RGBA
 
@@ -30,7 +34,9 @@ class DefineShape3(DefineShape2):
                                 ratio=buffer.read_ui8(), color=RGBA.from_buffer(buffer)
                             )
 
-                fillStyleType: DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.FillStyleType
+                fillStyleType: (
+                    DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.FillStyleType
+                )
                 color: RGBA | None = None
                 gradientMatrix: tuple[Matrix, Gradient] | None = None
                 bitmapMatrix: tuple[int, Matrix] | None = None
@@ -56,8 +62,7 @@ class DefineShape3(DefineShape2):
                             ):
                                 gradient = cls.Gradient.from_buffer(buffer)
                             else:
-                                gradient = cls.FocalGradient.from_buffer(
-                                    buffer)
+                                gradient = cls.FocalGradient.from_buffer(buffer)
                             gradientMatrix = (matrix, gradient)
                             return cls(fillStyleType, None, gradientMatrix, None)
                         case fillStyleType if fillStyleType in [

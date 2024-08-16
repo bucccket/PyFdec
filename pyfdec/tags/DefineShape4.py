@@ -70,9 +70,23 @@ class DefineShape4(DefineShape3):
                     fillType = None
                     if hasFillFlag:
                         fillType = DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle.from_buffer(
-                            buffer)
+                            buffer
+                        )
 
-                    return cls(width=width, startCapStyle=startCapStyle, joinStyle=joinStyle, hasFillFlag=hasFillFlag, noHScaleFlag=noHScaleFlag, noVScaleFlag=noVScaleFlag, pixelHintingFlag=pixelHintingFlag, noClose=noClose, endCapStyle=endCapStyle, miterLimitFactor=miterLimitFactor, color=color, fillType=fillType)
+                    return cls(
+                        width=width,
+                        startCapStyle=startCapStyle,
+                        joinStyle=joinStyle,
+                        hasFillFlag=hasFillFlag,
+                        noHScaleFlag=noHScaleFlag,
+                        noVScaleFlag=noVScaleFlag,
+                        pixelHintingFlag=pixelHintingFlag,
+                        noClose=noClose,
+                        endCapStyle=endCapStyle,
+                        miterLimitFactor=miterLimitFactor,
+                        color=color,
+                        fillType=fillType,
+                    )
 
             lineStyles: list[LineStyle2]
 
@@ -112,7 +126,15 @@ class DefineShape4(DefineShape3):
             usesScalingStrokes = bits.read_bool()
 
         shapes = cls.ShapeWithStyle.from_buffer(buffer)
-        return cls(shapeID=shapeID, shapeBounds=shapeBounds, edgeBounds=edgeBounds, usesFillWinding=usesFillWinding, usesNonScalingStrokes=usesNonScalingStrokes, usesScalingStrokes=usesScalingStrokes, shapes=shapes)
+        return cls(
+            shapeID=shapeID,
+            shapeBounds=shapeBounds,
+            edgeBounds=edgeBounds,
+            usesFillWinding=usesFillWinding,
+            usesNonScalingStrokes=usesNonScalingStrokes,
+            usesScalingStrokes=usesScalingStrokes,
+            shapes=shapes,
+        )
 
 
 Tag.register(DefineShape4)

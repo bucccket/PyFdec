@@ -25,7 +25,7 @@ class DefineShape2(DefineShape):
                     cls.FillStyle.from_buffer(buffer) for _ in range(fillStyleCount)
                 ]
                 return cls(fillStyles)
-        
+
         @dataclass
         class LineStyleArray(DefineShape.ShapeWithStyle.LineStyleArray):
             @classmethod
@@ -40,5 +40,6 @@ class DefineShape2(DefineShape):
                     cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)
                 ]
                 return cls(lineStyles)
+
 
 Tag.register(DefineShape2)
