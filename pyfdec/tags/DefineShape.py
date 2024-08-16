@@ -133,8 +133,6 @@ class DefineShape(Tag):
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 fillStyleCount = buffer.read_ui8()
-                if fillStyleCount == 0xFF:
-                    fillStyleCount = buffer.read_ui16()
                 fillStyles = [
                     cls.FillStyle.from_buffer(buffer) for _ in range(fillStyleCount)
                 ]
@@ -156,8 +154,6 @@ class DefineShape(Tag):
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 lineStyleCount = buffer.read_ui8()
-                if lineStyleCount == 0xFF:
-                    lineStyleCount = buffer.read_ui16()
                 lineStyles = [
                     cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)
                 ]
@@ -244,7 +240,6 @@ class DefineShape(Tag):
                             if stateLineStyle:
                                 lineStyle = bits.read_unsigned(lineBits)
                             if stateNewStyles:
-                                # TODO: automatically align bits when reading from buffer
                                 bits.align()
                                 newFillStyleArray = cls.FillStyleArray.from_buffer(
                                     buffer
