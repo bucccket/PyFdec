@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar
+from typing import Any, ClassVar
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGB
@@ -131,12 +131,37 @@ class DefineShape(Tag):
 
         @dataclass
         class ShapeRecord:
-            # note pass nbits to from_buffer
-            @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer, nFillBits: int, nLineBits: int):
-                #TODO: continue from here
-                pass
-                
+            pass
+
+        @dataclass
+        class EndShapeRecord(ShapeRecord):
+            pass
+
+        # NOTE: Technically python allows to define class members very loosely
+        # It would be nice to make use of it and not blindly stick to dataclasses
+        # They overstay their welcome
+        @dataclass
+        class StyleChangeRecord(ShapeRecord):
+            moveDeltaX: int | None = None
+            moveDeltaY: int | None = None
+            fillStyle0: int | None = None
+            fillStyle1: int | None = None
+            lineStyle: int | None = None
+            fillStyles: list[Any] | None = None
+            lineStyles: list[Any] | None = None
+
+        @dataclass
+        class StraightEdgeRecord(ShapeRecord):
+            deltaX: int = 0
+            deltaY: int = 0
+
+        @dataclass
+        class CurvedEdgeRecord(ShapeRecord):
+            controlDeltaX: int = 0
+            controlDeltaY: int = 0
+            anchorDeltaX: int = 0
+            anchorDeltaY: int = 0
+
         fillStyles: list[FillStyle]
         lineStyles: list[LineStyle]
         shapeRecords: list[ShapeRecord]
@@ -154,10 +179,102 @@ class DefineShape(Tag):
             lineStyles = [cls.LineStyle.from_buffer(buffer)
                           for _ in range(lineStyleCount)]
             with ExtendedBitIO(buffer) as bits:
-                nFillBits = bits.read_unsigned(4)
-                nLineBits = bits.read_unsigned(4)
-            shapeRecords = cls.ShapeRecord.from_buffer(
-                buffer, nFillBits, nLineBits)
+                fillBits = bits.read_unsigned(4)
+                lineBits = bits.read_unsigned(4)
+
+                shapeRecords = []
+                while True:
+                    typeFlag = bits.read_bool()
+                    if not typeFlag:
+                        stateNewStyles = bits.read_bool()
+                        stateLineStyle = bits.read_bool()
+                        stateFillStyle1 = bits.read_bool()
+                        stateFillStyle0 = bits.read_bool()
+                        stateMoveTo = bits.read_bool()
+                        if (stateNewStyles or
+                            stateLineStyle or
+                            stateFillStyle1 or
+                            stateFillStyle0 or
+                                stateMoveTo):
+                            # StyleChangeRecord
+                            moveDeltaX = None
+                            moveDeltaY = None
+                            fillStyle0 = None
+                            fillStyle1 = None
+                            lineStyle = None
+                            newFillStyles = None
+                            newLineStyles = None
+                            if stateMoveTo:
+                                moveBits = bits.read_unsigned(5)
+                                moveDeltaX = bits.read_signed(moveBits)
+                                moveDeltaY = bits.read_signed(moveBits)
+                            if stateFillStyle0:
+                                fillStyle0 = bits.read_unsigned(fillBits)
+                            if stateFillStyle1:
+                                fillStyle1 = bits.read_unsigned(fillBits)
+                            if stateLineStyle:
+                                lineStyle = bits.read_unsigned(lineBits)
+                            if stateNewStyles:
+                                # TODO: automatically align bits when reading from buffer
+                                bits.align()
+                                fillStyleCount = buffer.read_ui8()
+                                if fillStyleCount == 0xFF:
+                                    fillStyleCount = buffer.read_ui16()
+                                newFillStyles = [cls.FillStyle.from_buffer(buffer)
+                                                 for _ in range(fillStyleCount)]
+                                lineStyleCount = buffer.read_ui8()
+                                if lineStyleCount == 0xFF:
+                                    lineStyleCount = buffer.read_ui16()
+                                newLineStyles = [cls.LineStyle.from_buffer(buffer)
+                                                 for _ in range(lineStyleCount)]
+                                fillBits = bits.read_unsigned(4)
+                                lineBits = bits.read_unsigned(4)
+                            shapeRecords.append(cls.StyleChangeRecord(
+                                moveDeltaX=moveDeltaX,
+                                moveDeltaY=moveDeltaY,
+                                fillStyle0=fillStyle0,
+                                fillStyle1=fillStyle1,
+                                lineStyle=lineStyle,
+                                fillStyles=newFillStyles,
+                                lineStyles=newLineStyles
+                            )
+                            )
+                        else:
+                            # EndShapeRecord
+                            shapeRecords.append(cls.EndShapeRecord())
+                            break
+                    else:
+                        # EdgeRecord
+                        straightFlag = bits.read_bool()
+                        if straightFlag:
+                            nBits = bits.read_unsigned(4)
+                            generalLine = bits.read_bool()
+                            verticalLine = True
+                            horizontalLine = True
+                            deltaX = 0
+                            deltaY = 0
+                            if not generalLine:
+                                verticalLine = bits.read_bool()
+                                horizontalLine = not verticalLine
+                            if horizontalLine:
+                                deltaX = bits.read_signed(nBits+2)
+                            if verticalLine:
+                                deltaY = bits.read_signed(nBits+2)
+                            shapeRecords.append(
+                                cls.StraightEdgeRecord(deltaX, deltaY))
+                        else:
+                            nBits = bits.read_unsigned(4)
+                            controlDeltaX = bits.read_signed(nBits)
+                            controlDeltaY = bits.read_signed(nBits)
+                            anchorDeltaX = bits.read_signed(nBits)
+                            anchorDeltaY = bits.read_signed(nBits)
+                            shapeRecords.append(cls.CurvedEdgeRecord(
+                                controlDeltaX,
+                                controlDeltaY,
+                                anchorDeltaX,
+                                anchorDeltaY)
+                            )
+
             return cls(fillStyles, lineStyles, shapeRecords)
 
     shapeID: int

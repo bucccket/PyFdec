@@ -24,3 +24,7 @@ class ExtendedBitIO(BitIO):
     
     def padding(self, length: int) -> None:
         self.read(length)
+
+    def align(self) -> None:
+        while len(self._buffer) % 8 != 0:
+            self.read(1)
