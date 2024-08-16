@@ -284,10 +284,10 @@ class DefineShape(Tag):
                             shapeRecords.append(cls.StraightEdgeRecord(deltaX, deltaY))
                         else:
                             nBits = bits.read_unsigned(4)
-                            controlDeltaX = bits.read_signed(nBits)
-                            controlDeltaY = bits.read_signed(nBits)
-                            anchorDeltaX = bits.read_signed(nBits)
-                            anchorDeltaY = bits.read_signed(nBits)
+                            controlDeltaX = bits.read_signed(nBits + 2)
+                            controlDeltaY = bits.read_signed(nBits + 2)
+                            anchorDeltaX = bits.read_signed(nBits + 2)
+                            anchorDeltaY = bits.read_signed(nBits + 2)
                             shapeRecords.append(
                                 cls.CurvedEdgeRecord(
                                     controlDeltaX,
