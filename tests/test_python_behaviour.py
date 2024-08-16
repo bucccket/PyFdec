@@ -7,19 +7,19 @@ from pyfdec.extended_buffer import ExtendedBuffer
 
 
 class DefineShape:
-    def __init__(self):
-        self.color = self.ReadColor()
-
     class ReadColor:
         def __init__(self):
-            self.isUsingRGBA = False
+            self.isUsingRGBA: bool = False
+
+    def __init__(self):
+        self.color: self.ReadColor = self.ReadColor()
 
 
 class DefineShape2(DefineShape):
 
     class ReadColor:
         def __init__(self):
-            self.isUsingRGBA = True
+            self.isUsingRGBA: bool = True
 
 
 class TestExtendedBitIO(TestCase):

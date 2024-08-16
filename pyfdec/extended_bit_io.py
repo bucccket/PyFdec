@@ -1,5 +1,5 @@
 import struct
-from bitio import BitIO
+from pyfdec.bitio import BitIO
 
 
 class ExtendedBitIO(BitIO):
