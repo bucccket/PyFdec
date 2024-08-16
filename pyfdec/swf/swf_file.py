@@ -6,6 +6,7 @@ from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
+from pyfdec.tags.DefineShape2 import DefineShape2
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -68,6 +69,8 @@ class SwfFile:
                     tags.append(DefineSceneAndFrameLabelData.from_buffer(tag_buffer))
                 case Tag.TagTypes.DefineShape:
                     tags.append(DefineShape.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineShape2:
+                    tags.append(DefineShape2.from_buffer(tag_buffer))
                 case Tag.TagTypes.ShowFrame:
                     tags.append(ShowFrame.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:

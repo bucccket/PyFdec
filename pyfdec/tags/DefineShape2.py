@@ -33,8 +33,8 @@ class DefineShape2(DefineShape):
                 lineStyleCount = buffer.read_ui8()
 
                 # Read extended count
-                if fillStyleCount == 0xFF:
-                    fillStyleCount = buffer.read_ui16()
+                if lineStyleCount == 0xFF:
+                    lineStyleCount = buffer.read_ui16()
 
                 lineStyles = [
                     cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)
