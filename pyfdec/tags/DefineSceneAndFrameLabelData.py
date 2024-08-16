@@ -38,11 +38,11 @@ class DefineSceneAndFrameLabelData(Tag):
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         sceneCount = buffer.read_encoded_u32()
-        scenes = [cls.SceneRecord.from_buffer(
-            buffer) for _ in range(sceneCount)]
+        scenes = [cls.SceneRecord.from_buffer(buffer) for _ in range(sceneCount)]
         frameLabelCount = buffer.read_encoded_u32()
-        frameLabels = [cls.FrameLabelRecord.from_buffer(
-            buffer) for _ in range(frameLabelCount)]
+        frameLabels = [
+            cls.FrameLabelRecord.from_buffer(buffer) for _ in range(frameLabelCount)
+        ]
         return cls(scenes, frameLabels)
 
 

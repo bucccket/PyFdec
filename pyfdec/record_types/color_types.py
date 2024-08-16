@@ -12,9 +12,7 @@ class RGB:
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         return cls(
-            red=buffer.read_ui8(),
-            green=buffer.read_ui8(),
-            blue=buffer.read_ui8()
+            red=buffer.read_ui8(), green=buffer.read_ui8(), blue=buffer.read_ui8()
         )
 
 
@@ -28,7 +26,7 @@ class RGBA(RGB):
             red=buffer.read_ui8(),
             green=buffer.read_ui8(),
             blue=buffer.read_ui8(),
-            alpha=buffer.read_ui8()
+            alpha=buffer.read_ui8(),
         )
 
 
@@ -45,7 +43,7 @@ class ARGB:
             alpha=buffer.read_ui8(),
             red=buffer.read_ui8(),
             green=buffer.read_ui8(),
-            blue=buffer.read_ui8()
+            blue=buffer.read_ui8(),
         )
 
 
@@ -84,7 +82,7 @@ class CxForm:
                 BlueMultTerm=blue_mult_term,
                 RedAddTerm=red_add_term,
                 GreenAddTerm=green_add_term,
-                BlueAddTerm=blue_add_term
+                BlueAddTerm=blue_add_term,
             )
 
 
@@ -131,5 +129,5 @@ class CxFormAlpha:
                 RedAddTerm=red_add_term,
                 GreenAddTerm=green_add_term,
                 BlueAddTerm=blue_add_term,
-                AlphaAddTerm=alpha_add_term
+                AlphaAddTerm=alpha_add_term,
             )

@@ -16,118 +16,152 @@ class DefineShape(Tag):
     class ShapeWithStyle:
 
         @dataclass
-        class FillStyle:
+        class FillStyleArray:
             @dataclass
-            class Gradient:
+            class FillStyle:
                 @dataclass
-                class GradientRecord:
-                    ratio: int
-                    color: RGB
+                class Gradient:
+                    @dataclass
+                    class GradientRecord:
+                        ratio: int
+                        color: RGB
+
+                        @classmethod
+                        def from_buffer(cls, buffer: ExtendedBuffer):
+                            return cls(
+                                ratio=buffer.read_ui8(), color=RGB.from_buffer(buffer)
+                            )
+
+                    class SpreadMode(Enum):
+                        Pad = 0
+                        Reflect = 1
+                        Repeat = 2
+
+                    class InterpolationMode(Enum):
+                        Normal = 0
+                        Linear = 1
+
+                    spreadMode: SpreadMode
+                    interpolationMode: InterpolationMode
+                    gradientRecords: list[GradientRecord]
 
                     @classmethod
                     def from_buffer(cls, buffer: ExtendedBuffer):
+                        with ExtendedBitIO(buffer) as bits:
+                            spreadMode = cls.SpreadMode(bits.read_unsigned(2))
+                            interpolationMode = cls.InterpolationMode(
+                                bits.read_unsigned(2)
+                            )
+                            gradientRecords = [
+                                cls.GradientRecord.from_buffer(buffer)
+                                for _ in range(bits.read_unsigned(4))
+                            ]
+                        return cls(spreadMode, interpolationMode, gradientRecords)
+
+                @dataclass
+                class FocalGradient(Gradient):
+                    focalPoint: float
+
+                    @classmethod
+                    def from_buffer(cls, buffer: ExtendedBuffer):
+                        with ExtendedBitIO(buffer) as bits:
+                            spreadMode = cls.SpreadMode(bits.read_unsigned(2))
+                            interpolationMode = cls.InterpolationMode(
+                                bits.read_unsigned(2)
+                            )
+                            gradientRecords = [
+                                cls.GradientRecord.from_buffer(buffer)
+                                for _ in range(bits.read_unsigned(4))
+                            ]
+                        focalPoint = buffer.read_fixed8()
                         return cls(
-                            ratio=buffer.read_ui8(),
-                            color=RGB.from_buffer(buffer)
+                            spreadMode, interpolationMode, gradientRecords, focalPoint
                         )
 
-                class SpreadMode(Enum):
-                    Pad = 0
-                    Reflect = 1
-                    Repeat = 2
+                class FillStyleType(Enum):
+                    SolidFill = 0x00
+                    LinearGradientFill = 0x10
+                    RadialGradientFill = 0x12
+                    FocalGradientFill = 0x13
+                    RepeatingBitmapFill = 0x40
+                    ClippedBitmapFill = 0x41
+                    NonSmoothedRepeatingBitmap = 0x42
+                    NonSmoothedClippedBitmap = 0x43
 
-                class InterpolationMode(Enum):
-                    Normal = 0
-                    Linear = 1
-
-                spreadMode: SpreadMode
-                interpolationMode: InterpolationMode
-                gradientRecords: list[GradientRecord]
-
-                @classmethod
-                def from_buffer(cls, buffer: ExtendedBuffer):
-                    with ExtendedBitIO(buffer) as bits:
-                        spreadMode = cls.SpreadMode(bits.read_unsigned(2))
-                        interpolationMode = cls.InterpolationMode(
-                            bits.read_unsigned(2))
-                        gradientRecords = [cls.GradientRecord.from_buffer(
-                            buffer) for _ in range(bits.read_unsigned(4))]
-                    return cls(spreadMode, interpolationMode, gradientRecords)
-
-            @dataclass
-            class FocalGradient(Gradient):
-                focalPoint: float
+                fillStyleType: FillStyleType
+                color: RGB | None = None
+                gradientMatrix: tuple[Matrix, Gradient] | None = None
+                bitmapMatrix: tuple[int, Matrix] | None = None
 
                 @classmethod
                 def from_buffer(cls, buffer: ExtendedBuffer):
-                    with ExtendedBitIO(buffer) as bits:
-                        spreadMode = cls.SpreadMode(bits.read_unsigned(2))
-                        interpolationMode = cls.InterpolationMode(
-                            bits.read_unsigned(2))
-                        gradientRecords = [cls.GradientRecord.from_buffer(
-                            buffer) for _ in range(bits.read_unsigned(4))]
-                    focalPoint = buffer.read_fixed8()
-                    return cls(spreadMode, interpolationMode, gradientRecords, focalPoint)
+                    fillStyleType = cls.FillStyleType(buffer.read_ui8())
+                    match (fillStyleType):
+                        case fillStyleType if fillStyleType in [
+                            cls.FillStyleType.SolidFill
+                        ]:
+                            color = RGB.from_buffer(buffer)
+                            return cls(fillStyleType, color, None, None)
+                        case fillStyleType if fillStyleType in [
+                            cls.FillStyleType.LinearGradientFill,
+                            cls.FillStyleType.RadialGradientFill,
+                            cls.FillStyleType.FocalGradientFill,
+                        ]:
+                            matrix = Matrix.from_buffer(buffer)
+                            if (
+                                fillStyleType == cls.FillStyleType.LinearGradientFill
+                                or fillStyleType == cls.FillStyleType.RadialGradientFill
+                            ):
+                                gradient = cls.Gradient.from_buffer(buffer)
+                            else:
+                                gradient = cls.FocalGradient.from_buffer(buffer)
+                            gradientMatrix = (matrix, gradient)
+                            return cls(fillStyleType, None, gradientMatrix, None)
+                        case fillStyleType if fillStyleType in [
+                            cls.FillStyleType.RepeatingBitmapFill,
+                            cls.FillStyleType.ClippedBitmapFill,
+                            cls.FillStyleType.NonSmoothedRepeatingBitmap,
+                            cls.FillStyleType.NonSmoothedClippedBitmap,
+                        ]:
+                            bitmapId = buffer.read_ui16()
+                            matrix = Matrix.from_buffer(buffer)
+                            bitmapMatrix = (bitmapId, matrix)
+                            return cls(fillStyleType, None, None, bitmapMatrix)
 
-            class FillStyleType(Enum):
-                SolidFill = 0x00
-                LinearGradientFill = 0x10
-                RadialGradientFill = 0x12
-                FocalGradientFill = 0x13
-                RepeatingBitmapFill = 0x40
-                ClippedBitmapFill = 0x41
-                NonSmoothedRepeatingBitmap = 0x42
-                NonSmoothedClippedBitmap = 0x43
-
-            fillStyleType: FillStyleType
-            color: RGB | None = None
-            gradientMatrix: tuple[Matrix, Gradient] | None = None
-            bitmapMatrix: tuple[int, Matrix] | None = None
+            fillStyles: list[FillStyle]
 
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
-                fillStyleType = cls.FillStyleType(buffer.read_ui8())
-                match(fillStyleType):
-                    case fillStyleType if fillStyleType in [
-                        cls.FillStyleType.SolidFill
-                    ]:
-                        color = RGB.from_buffer(buffer)
-                        return cls(fillStyleType, color, None, None)
-                    case fillStyleType if fillStyleType in [
-                        cls.FillStyleType.LinearGradientFill,
-                        cls.FillStyleType.RadialGradientFill,
-                        cls.FillStyleType.FocalGradientFill
-                    ]:
-                        matrix = Matrix.from_buffer(buffer)
-                        if (fillStyleType == cls.FillStyleType.LinearGradientFill
-                                or fillStyleType == cls.FillStyleType.RadialGradientFill):
-                            gradient = cls.Gradient.from_buffer(buffer)
-                        else:
-                            gradient = cls.FocalGradient.from_buffer(buffer)
-                        gradientMatrix = (matrix, gradient)
-                        return cls(fillStyleType, None, gradientMatrix, None)
-                    case fillStyleType if fillStyleType in [
-                        cls.FillStyleType.RepeatingBitmapFill,
-                        cls.FillStyleType.ClippedBitmapFill,
-                        cls.FillStyleType.NonSmoothedRepeatingBitmap,
-                        cls.FillStyleType.NonSmoothedClippedBitmap
-                    ]:
-                        bitmapId = buffer.read_ui16()
-                        matrix = Matrix.from_buffer(buffer)
-                        bitmapMatrix = (bitmapId, matrix)
-                        return cls(fillStyleType, None, None, bitmapMatrix)
+                fillStyleCount = buffer.read_ui8()
+                if fillStyleCount == 0xFF:
+                    fillStyleCount = buffer.read_ui16()
+                fillStyles = [
+                    cls.FillStyle.from_buffer(buffer) for _ in range(fillStyleCount)
+                ]
+                return cls(fillStyles)
 
         @dataclass
-        class LineStyle:
-            width: int
-            color: RGB
+        class LineStyleArray:
+            @dataclass
+            class LineStyle:
+                width: int
+                color: RGB
+
+                @classmethod
+                def from_buffer(cls, buffer: ExtendedBuffer):
+                    return cls(width=buffer.read_ui16(), color=RGB.from_buffer(buffer))
+
+            lineStyles: list[LineStyle]
 
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
-                return cls(
-                    width=buffer.read_ui16(),
-                    color=RGB.from_buffer(buffer)
-                )
+                lineStyleCount = buffer.read_ui8()
+                if lineStyleCount == 0xFF:
+                    lineStyleCount = buffer.read_ui16()
+                lineStyles = [
+                    cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)
+                ]
+                return cls(lineStyles)
 
         @dataclass
         class ShapeRecord:
@@ -147,8 +181,8 @@ class DefineShape(Tag):
             fillStyle0: int | None = None
             fillStyle1: int | None = None
             lineStyle: int | None = None
-            fillStyles: list[Any] | None = None
-            lineStyles: list[Any] | None = None
+            newFillStyleArray: Any | None = None
+            newLineStyleArray: Any | None = None
 
         @dataclass
         class StraightEdgeRecord(ShapeRecord):
@@ -162,22 +196,15 @@ class DefineShape(Tag):
             anchorDeltaX: int = 0
             anchorDeltaY: int = 0
 
-        fillStyles: list[FillStyle]
-        lineStyles: list[LineStyle]
+        fillStyleArray: FillStyleArray
+        lineStyleArray: LineStyleArray
         shapeRecords: list[ShapeRecord]
 
         @classmethod
         def from_buffer(cls, buffer: ExtendedBuffer):
-            fillStyleCount = buffer.read_ui8()
-            if fillStyleCount == 0xFF:
-                fillStyleCount = buffer.read_ui16()
-            fillStyles = [cls.FillStyle.from_buffer(buffer)
-                          for _ in range(fillStyleCount)]
-            lineStyleCount = buffer.read_ui8()
-            if lineStyleCount == 0xFF:
-                lineStyleCount = buffer.read_ui16()
-            lineStyles = [cls.LineStyle.from_buffer(buffer)
-                          for _ in range(lineStyleCount)]
+            fillStyleArray = cls.FillStyleArray.from_buffer(buffer)
+            lineStyleArray = cls.LineStyleArray.from_buffer(buffer)
+
             with ExtendedBitIO(buffer) as bits:
                 fillBits = bits.read_unsigned(4)
                 lineBits = bits.read_unsigned(4)
@@ -191,19 +218,21 @@ class DefineShape(Tag):
                         stateFillStyle1 = bits.read_bool()
                         stateFillStyle0 = bits.read_bool()
                         stateMoveTo = bits.read_bool()
-                        if (stateNewStyles or
-                            stateLineStyle or
-                            stateFillStyle1 or
-                            stateFillStyle0 or
-                                stateMoveTo):
+                        if (
+                            stateNewStyles
+                            or stateLineStyle
+                            or stateFillStyle1
+                            or stateFillStyle0
+                            or stateMoveTo
+                        ):
                             # StyleChangeRecord
                             moveDeltaX = None
                             moveDeltaY = None
                             fillStyle0 = None
                             fillStyle1 = None
                             lineStyle = None
-                            newFillStyles = None
-                            newLineStyles = None
+                            newFillStyleArray = None
+                            newLineStyleArray = None
                             if stateMoveTo:
                                 moveBits = bits.read_unsigned(5)
                                 moveDeltaX = bits.read_signed(moveBits)
@@ -217,27 +246,24 @@ class DefineShape(Tag):
                             if stateNewStyles:
                                 # TODO: automatically align bits when reading from buffer
                                 bits.align()
-                                fillStyleCount = buffer.read_ui8()
-                                if fillStyleCount == 0xFF:
-                                    fillStyleCount = buffer.read_ui16()
-                                newFillStyles = [cls.FillStyle.from_buffer(buffer)
-                                                 for _ in range(fillStyleCount)]
-                                lineStyleCount = buffer.read_ui8()
-                                if lineStyleCount == 0xFF:
-                                    lineStyleCount = buffer.read_ui16()
-                                newLineStyles = [cls.LineStyle.from_buffer(buffer)
-                                                 for _ in range(lineStyleCount)]
+                                newFillStyleArray = cls.FillStyleArray.from_buffer(
+                                    buffer
+                                )
+                                newLineStyleArray = cls.LineStyleArray.from_buffer(
+                                    buffer
+                                )
                                 fillBits = bits.read_unsigned(4)
                                 lineBits = bits.read_unsigned(4)
-                            shapeRecords.append(cls.StyleChangeRecord(
-                                moveDeltaX=moveDeltaX,
-                                moveDeltaY=moveDeltaY,
-                                fillStyle0=fillStyle0,
-                                fillStyle1=fillStyle1,
-                                lineStyle=lineStyle,
-                                fillStyles=newFillStyles,
-                                lineStyles=newLineStyles
-                            )
+                            shapeRecords.append(
+                                cls.StyleChangeRecord(
+                                    moveDeltaX=moveDeltaX,
+                                    moveDeltaY=moveDeltaY,
+                                    fillStyle0=fillStyle0,
+                                    fillStyle1=fillStyle1,
+                                    lineStyle=lineStyle,
+                                    newFillStyleArray=newFillStyleArray,
+                                    newLineStyleArray=newLineStyleArray,
+                                )
                             )
                         else:
                             # EndShapeRecord
@@ -257,25 +283,26 @@ class DefineShape(Tag):
                                 verticalLine = bits.read_bool()
                                 horizontalLine = not verticalLine
                             if horizontalLine:
-                                deltaX = bits.read_signed(nBits+2)
+                                deltaX = bits.read_signed(nBits + 2)
                             if verticalLine:
-                                deltaY = bits.read_signed(nBits+2)
-                            shapeRecords.append(
-                                cls.StraightEdgeRecord(deltaX, deltaY))
+                                deltaY = bits.read_signed(nBits + 2)
+                            shapeRecords.append(cls.StraightEdgeRecord(deltaX, deltaY))
                         else:
                             nBits = bits.read_unsigned(4)
                             controlDeltaX = bits.read_signed(nBits)
                             controlDeltaY = bits.read_signed(nBits)
                             anchorDeltaX = bits.read_signed(nBits)
                             anchorDeltaY = bits.read_signed(nBits)
-                            shapeRecords.append(cls.CurvedEdgeRecord(
-                                controlDeltaX,
-                                controlDeltaY,
-                                anchorDeltaX,
-                                anchorDeltaY)
+                            shapeRecords.append(
+                                cls.CurvedEdgeRecord(
+                                    controlDeltaX,
+                                    controlDeltaY,
+                                    anchorDeltaX,
+                                    anchorDeltaY,
+                                )
                             )
 
-            return cls(fillStyles, lineStyles, shapeRecords)
+            return cls(fillStyleArray, lineStyleArray, shapeRecords)
 
     shapeID: int
     shapeBounds: Rect

@@ -20,7 +20,7 @@ class Rect:
                 xmin=bits.read_signed(nbits),
                 xmax=bits.read_signed(nbits),
                 ymin=bits.read_signed(nbits),
-                ymax=bits.read_signed(nbits)
+                ymax=bits.read_signed(nbits),
             )
 
 
@@ -60,5 +60,5 @@ class Matrix:
                 scale_x=scale_x,
                 scale_y=scale_y,
                 rotate_skew0=rotate_skew0,
-                rotate_skew1=rotate_skew1
+                rotate_skew1=rotate_skew1,
             )

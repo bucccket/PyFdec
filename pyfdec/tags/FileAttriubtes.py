@@ -36,7 +36,7 @@ class FileAttriubtes(Tag):
             actionScript3,
             noCrossDomainCaching,
             swfRelativeUrls,
-            useNetwork
+            useNetwork,
         )
 
 

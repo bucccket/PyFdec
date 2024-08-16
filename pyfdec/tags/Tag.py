@@ -72,7 +72,7 @@ class Tag(ABC):
         DefineBitsJPEG4 = 90
         DefineFont4 = 91
 
-    #NOTE: This is a class variable, so it is shared between all instances of this class
+    # NOTE: This is a class variable, so it is shared between all instances of this class
     # this variable is ingored by the dataclass module
     tag_type: ClassVar[TagTypes]
 

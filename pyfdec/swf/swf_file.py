@@ -16,9 +16,9 @@ from pyfdec.tags.Tag import Tag
 class SwfHeader:
 
     class CompressionLevel(Enum):
-        Uncompressed = b'FWS'
-        Zlib = b'CWS'
-        LZMA = b'ZWS'
+        Uncompressed = b"FWS"
+        Zlib = b"CWS"
+        LZMA = b"ZWS"
 
     compression: CompressionLevel
     version: int
@@ -57,7 +57,7 @@ class SwfFile:
             tag_length = tag_type_and_length & 0x3F
             if tag_length == 0x3F:
                 tag_length = buffer.read_ui32()
-            
+
             tag_buffer = buffer.subbuffer(tag_length)
             match tag_type:
                 case Tag.TagTypes.FileAttributes:
@@ -74,7 +74,7 @@ class SwfFile:
                     tags.append(End.from_buffer(tag_buffer))
                     break
                 case _:
-                    raise NotImplementedError(f'Unimplemented tag type: {tag_type}')
+                    raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)
