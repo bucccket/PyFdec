@@ -7,6 +7,7 @@ from typing import Self
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
@@ -120,6 +121,8 @@ class SwfFile:
                     tags.append(StartSound2.from_buffer(tag_buffer))
                 case Tag.TagTypes.ShowFrame:
                     tags.append(ShowFrame.from_buffer(tag_buffer))
+                case Tag.TagTypes.FrameLabel:
+                    tags.append(FrameLabel.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break
