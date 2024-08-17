@@ -10,7 +10,7 @@ class End(Tag):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        pass
+        return cls()
 
 
 Tag.register(End)

@@ -12,6 +12,10 @@ from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
 from pyfdec.tags.DefineShape3 import DefineShape3
 from pyfdec.tags.DefineShape4 import DefineShape4
+from pyfdec.tags.RemoveObject import RemoveObject
+from pyfdec.tags.RemoveObject2 import RemoveObject2
+from pyfdec.tags.StartSound import StartSound
+from pyfdec.tags.StartSound2 import StartSound2
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -106,14 +110,21 @@ class SwfFile:
                     tags.append(DefineShape3.from_buffer(tag_buffer))
                 case Tag.TagTypes.DefineShape4:
                     tags.append(DefineShape4.from_buffer(tag_buffer))
+                case Tag.TagTypes.RemoveObject:
+                    tags.append(RemoveObject.from_buffer(tag_buffer))
+                case Tag.TagTypes.RemoveObject2:
+                    tags.append(RemoveObject2.from_buffer(tag_buffer))
+                case Tag.TagTypes.StartSound:
+                    tags.append(StartSound.from_buffer(tag_buffer))
+                case Tag.TagTypes.StartSound2:
+                    tags.append(StartSound2.from_buffer(tag_buffer))
                 case Tag.TagTypes.ShowFrame:
                     tags.append(ShowFrame.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break
                 case _:
-                    pass
-                    # raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
+                    raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)

@@ -52,8 +52,8 @@ class Matrix:
                 rotate_skew0 = bits.read_fixed(nbits)
                 rotate_skew1 = bits.read_fixed(nbits)
             nbits = bits.read_unsigned(5)
-            translate_x = bits.read_signed(nbits)
-            translate_y = bits.read_signed(nbits)
+            translate_x = bits.read_signed(nbits) if nbits != 0 else 0
+            translate_y = bits.read_signed(nbits) if nbits != 0 else 0
             return cls(
                 translate_x=translate_x,
                 translate_y=translate_y,
