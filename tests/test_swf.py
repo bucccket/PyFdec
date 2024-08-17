@@ -11,7 +11,7 @@ class TestSwfHeader(TestCase):
             buffer = ExtendedBuffer(file.read())
             swf_header = SwfHeader.from_buffer(buffer)
             self.assertEqual(
-                swf_header.compression, SwfHeader.CompressionLevel.Uncompressed
+                swf_header.compression, SwfHeader.CompressionLevel.NONE
             )
             self.assertEqual(swf_header.version, 15)
             self.assertEqual(swf_header.fileLength, 17980)

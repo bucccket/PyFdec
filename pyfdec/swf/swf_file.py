@@ -27,8 +27,8 @@ from pyfdec.tags.Tag import Tag
 class SwfHeader:
 
     class CompressionLevel(Enum):
-        Uncompressed = b"FWS"
-        Zlib = b"CWS"
+        NONE = b"FWS"
+        ZLIB = b"CWS"
         LZMA = b"ZWS"
 
     compression: CompressionLevel
@@ -45,7 +45,7 @@ class SwfHeader:
         fileLength = buffer.read_ui32()
 
         # Handle compression
-        if compression == cls.CompressionLevel.Zlib:
+        if compression == cls.CompressionLevel.ZLIB:
             file = buffer.read()
 
             # Decompress data
