@@ -5,12 +5,15 @@ from pyfdec.tags.Tag import Tag
 
 
 @dataclass
-class ShowFrame(Tag):
-    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.ShowFrame
+class RemoveObject2(Tag):
+    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.RemoveObject2
+
+    depth: int
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        return cls()
+        depth = buffer.read_ui16()
+        return cls(depth=depth)
 
 
-Tag.register(ShowFrame)
+Tag.register(RemoveObject2)
