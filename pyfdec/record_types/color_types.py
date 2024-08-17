@@ -87,7 +87,7 @@ class CxForm:
 
 
 @dataclass
-class CxFormAlpha:
+class CxFormWithAlpha:
     RedMultTerm: int = 1
     GreenMultTerm: int = 1
     BlueMultTerm: int = 1

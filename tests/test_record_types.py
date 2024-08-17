@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.color_types import ARGB, RGB, RGBA, CxForm, CxFormAlpha
+from pyfdec.record_types.color_types import ARGB, RGB, RGBA, CxForm, CxFormWithAlpha
 from pyfdec.record_types.geometric_types import Matrix, Rect
 
 
@@ -144,7 +144,7 @@ class TestReading(TestCase):
         #     0xD3     0xFF     0xFC     0x44     0x44
         data = b"\xD3\xFF\xFC\x44\x44"
         buffer = ExtendedBuffer(data)
-        color_transform = CxFormAlpha.from_buffer(buffer)
+        color_transform = CxFormWithAlpha.from_buffer(buffer)
         self.assertEqual(color_transform.RedMultTerm, -1)
         self.assertEqual(color_transform.GreenMultTerm, -1)
         self.assertEqual(color_transform.BlueMultTerm, -1)
