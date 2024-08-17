@@ -10,7 +10,7 @@ class ShowFrame(Tag):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        pass
+        return cls()
 
 
 Tag.register(ShowFrame)
