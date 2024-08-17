@@ -21,7 +21,7 @@ from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
 from pyfdec.tags.ShowFrame import ShowFrame
-from pyfdec.tags.Tag import Tag
+from pyfdec.tags.Tag import Tag, TagHeader
 
 
 @dataclass
@@ -51,7 +51,7 @@ class SwfHeader:
 
             # Decompress data
             decompressed = zlib.decompress(file)
-            
+
             # Construct new buffer
             buffer = ExtendedBuffer(decompressed)
         elif compression == cls.CompressionLevel.LZMA:
@@ -71,8 +71,11 @@ class SwfHeader:
         frameSize = Rect.from_buffer(buffer)
         frameRate = buffer.read_fixed8()
         frameCount = buffer.read_ui16()
-        
-        return cls(compression, version, fileLength, frameSize, frameRate, frameCount), buffer
+
+        return (
+            cls(compression, version, fileLength, frameSize, frameRate, frameCount),
+            buffer,
+        )
 
 
 @dataclass
@@ -89,14 +92,10 @@ class SwfFile:
         tags: list[Tag] = []
 
         while True:
-            tag_type_and_length = buffer.read_ui16()
-            tag_type = Tag.TagTypes(tag_type_and_length >> 6)
-            tag_length = tag_type_and_length & 0x3F
-            if tag_length == 0x3F:
-                tag_length = buffer.read_ui32()
+            tag_header = TagHeader.from_buffer(buffer)
 
-            tag_buffer = buffer.subbuffer(tag_length)
-            match tag_type:
+            tag_buffer = buffer.subbuffer(tag_header.tag_length)
+            match tag_header.tag_type:
                 case Tag.TagTypes.FileAttributes:
                     fileAttributes = FileAttriubtes.from_buffer(tag_buffer)
                 case Tag.TagTypes.SetBackgroundColor:

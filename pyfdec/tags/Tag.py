@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
 
@@ -80,3 +81,19 @@ class Tag(ABC):
     @abstractmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         pass
+
+
+@dataclass
+class TagHeader:
+    tag_type: Tag.TagTypes
+    tag_length: int
+    
+    @classmethod
+    def from_buffer(cls, buffer: ExtendedBuffer):
+        tag_type_and_length = buffer.read_ui16()
+        tag_type = Tag.TagTypes(tag_type_and_length >> 6)
+        tag_length = tag_type_and_length & 0x3F
+        if tag_length == 0x3F:
+            tag_length = buffer.read_ui32()
+        
+        return cls(tag_type, tag_length)
