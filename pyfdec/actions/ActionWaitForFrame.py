@@ -13,8 +13,8 @@ class ActionWaitForFrame(Action):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        frame = buffer.readUI16()
-        skipCount = buffer.readUI8()
+        frame = buffer.read_ui16()
+        skipCount = buffer.read_ui8()
         return cls(frame, skipCount)
 
 

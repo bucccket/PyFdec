@@ -19,8 +19,8 @@ class PlaceObject(Tag):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        characterID = buffer.readUI16()
-        depth = buffer.readUI16()
+        characterID = buffer.read_ui16()
+        depth = buffer.read_ui16()
         matrix = Matrix.from_buffer(buffer)
         if buffer.bytes_left() > 0:
             colorTransform = CxForm.from_buffer(buffer)

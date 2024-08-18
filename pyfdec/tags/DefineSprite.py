@@ -24,8 +24,8 @@ class DefineSprite(Tag):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        spriteID = buffer.readUI16()
-        frameCount = buffer.readUI16()
+        spriteID = buffer.read_ui16()
+        frameCount = buffer.read_ui16()
         tags = []
         while True:
             tag_header = TagHeader.from_buffer(buffer)

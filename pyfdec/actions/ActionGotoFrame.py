@@ -12,7 +12,7 @@ class ActionGotoFrame(Action):
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        frame = buffer.readUI16()
+        frame = buffer.read_ui16()
         return cls(frame)
 
 
