@@ -6,6 +6,9 @@ from typing import Self
 class ExtendedBuffer(io.BytesIO):
     def subbuffer(self, size: int) -> Self:
         return ExtendedBuffer(self.read(size))
+    
+    def bytes_left(self) -> int:
+        return len(self.getbuffer()) - self.tell()
 
     def read_si8(self) -> int:
         return int.from_bytes(self.read(1), byteorder="little", signed=True)
