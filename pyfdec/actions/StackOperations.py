@@ -52,3 +52,10 @@ class ActionPush(Action):
 
 
 Action.register(ActionPush)
+
+
+@dataclass
+class ActionPop(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPop
+
+Action.register(ActionPop)

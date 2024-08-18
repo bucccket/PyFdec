@@ -8,4 +8,13 @@ from pyfdec.extended_buffer import ExtendedBuffer
 class ActionEquals(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionEquals
 
+
 Action.register(ActionEquals)
+
+
+@dataclass
+class ActionLess(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionLess
+
+
+Action.register(ActionLess)

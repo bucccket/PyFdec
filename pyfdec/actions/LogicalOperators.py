@@ -5,6 +5,22 @@ from pyfdec.extended_buffer import ExtendedBuffer
 
 
 @dataclass
+class ActionAnd(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionAnd
+
+
+Action.register(ActionAnd)
+
+
+@dataclass
+class ActionOr(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionOr
+
+
+Action.register(ActionOr)
+
+
+@dataclass
 class ActionNot(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionNot
 
