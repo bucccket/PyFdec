@@ -66,3 +66,10 @@ class ActionTypeOf(Action):
 
 
 Action.register(ActionTypeOf)
+
+@dataclass
+class ActionInstanceOf(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionInstanceOf
+
+
+Action.register(ActionInstanceOf)
