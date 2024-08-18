@@ -15,17 +15,15 @@ class PlaceObject(Tag):
     characterID: int
     depth: int
     matrix: Matrix
-    colorTransform: CxForm | None = None
+    colorTransform: CxForm | None
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         characterID = buffer.read_ui16()
         depth = buffer.read_ui16()
         matrix = Matrix.from_buffer(buffer)
-        if buffer.bytes_left() > 0:
-            colorTransform = CxForm.from_buffer(buffer)
-            return cls(characterID, depth, matrix, colorTransform)
-        return cls(characterID, depth, matrix)
+        colorTransform = CxForm.from_buffer(buffer) if buffer.bytes_left() > 0 else None
+        return cls(characterID, depth, matrix, colorTransform)
 
 
 Tag.register(PlaceObject)

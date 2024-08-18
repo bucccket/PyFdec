@@ -6,6 +6,7 @@ from pyfdec.record_types.color_types import RGB
 from pyfdec.tags.End import End
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.PlaceObject import PlaceObject
+from pyfdec.tags.PlaceObject2 import PlaceObject2
 from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -38,7 +39,7 @@ class DefineSprite(Tag):
                 case Tag.TagTypes.PlaceObject:
                     tags.append(PlaceObject.from_buffer(tag_buffer))
                 case Tag.TagTypes.PlaceObject2:
-                    raise NotImplementedError("DefineSprite PlaceObject2")
+                    tags.append(PlaceObject2.from_buffer(tag_buffer))
                 case Tag.TagTypes.RemoveObject:
                     tags.append(RemoveObject.from_buffer(tag_buffer))
                 case Tag.TagTypes.RemoveObject2:
@@ -64,7 +65,10 @@ class DefineSprite(Tag):
                     tags.append(End.from_buffer(tag_buffer))
                     break
                 case _:
-                    raise ValueError(f"DefineSprite Unsupported Tag: {tag_header.tag_type}")
+                    raise ValueError(
+                        f"DefineSprite Unsupported Tag: {tag_header.tag_type}"
+                    )
+        return cls(spriteID, frameCount, tags)
 
 
 Tag.register(DefineSprite)

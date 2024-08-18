@@ -7,6 +7,7 @@ from typing import Self
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
@@ -122,11 +123,13 @@ class SwfFile:
                     tags.append(ShowFrame.from_buffer(tag_buffer))
                 case Tag.TagTypes.FrameLabel:
                     tags.append(FrameLabel.from_buffer(tag_buffer))
+                case Tag.TagTypes.DefineSprite:
+                    tags.append(DefineSprite.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break
                 case _:
-                    raise NotImplementedError(f"Unimplemented tag type: {tag_type}")
+                    raise NotImplementedError(f"Unimplemented tag type: {tag_header.tag_type}")
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)

@@ -20,7 +20,7 @@ class TestSwfHeader(TestCase):
 
 class TestSwfFile(TestCase):
     def test_reading_swf_file(self):
-        with open("tests/test_DefineShape.swf", "rb") as file:
+        with open("tests/test_DefineSprite.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertFalse(swf.fileAttributes.useDirectBlit)
