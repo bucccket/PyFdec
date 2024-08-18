@@ -18,3 +18,10 @@ class ActionLess(Action):
 
 
 Action.register(ActionLess)
+
+@dataclass
+class ActionLess2(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionLess2
+
+
+Action.register(ActionLess2)

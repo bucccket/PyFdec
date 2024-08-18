@@ -42,3 +42,27 @@ class ActionMBCharToAscii(Action):
 
 
 Action.register(ActionMBCharToAscii)
+
+
+@dataclass
+class ActionToNumber(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionToNumber
+
+
+Action.register(ActionToNumber)
+
+
+@dataclass
+class ActionToString(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionToString
+
+
+Action.register(ActionToString)
+
+
+@dataclass
+class ActionTypeOf(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionTypeOf
+
+
+Action.register(ActionTypeOf)

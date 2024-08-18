@@ -58,4 +58,44 @@ Action.register(ActionPush)
 class ActionPop(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPop
 
+
 Action.register(ActionPop)
+
+
+@dataclass
+class ActionPushDuplicate(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPushDuplicate
+
+
+Action.register(ActionPushDuplicate)
+
+
+@dataclass
+class ActionReturn(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionReturn
+
+
+Action.register(ActionReturn)
+
+
+@dataclass
+class ActionStackSwap(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionStackSwap
+
+
+Action.register(ActionStackSwap)
+
+
+@dataclass
+class ActionStoreRegister(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionStoreRegister
+
+    register_number: int
+
+    @classmethod
+    def from_buffer(cls, buffer: ExtendedBuffer):
+        register_number = buffer.read_ui8()
+        return cls(register_number)
+
+
+Action.register(ActionStoreRegister)
