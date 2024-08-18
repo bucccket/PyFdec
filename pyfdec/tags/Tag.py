@@ -73,8 +73,9 @@ class Tag(ABC):
         DefineBitsJPEG4 = 90
         DefineFont4 = 91
 
-    # NOTE: This is a class variable, so it is shared between all instances of this class
-    # this variable is ingored by the dataclass module
+    # NOTE: This is a class variable of the type ClassVar, so it is shared 
+    # between all instances of this class this variable is ingored by the 
+    # dataclass module
     tag_type: ClassVar[TagTypes]
 
     @classmethod
@@ -87,7 +88,7 @@ class Tag(ABC):
 class TagHeader:
     tag_type: Tag.TagTypes
     tag_length: int
-    
+
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         tag_type_and_length = buffer.read_ui16()
@@ -95,5 +96,5 @@ class TagHeader:
         tag_length = tag_type_and_length & 0x3F
         if tag_length == 0x3F:
             tag_length = buffer.read_ui32()
-        
+
         return cls(tag_type, tag_length)
