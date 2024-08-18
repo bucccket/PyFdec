@@ -10,6 +10,9 @@ class ExtendedBuffer(io.BytesIO):
     def bytes_left(self) -> int:
         return len(self.getbuffer()) - self.tell()
 
+    def read_bool(self) -> bool:
+        return self.read_ui8() == 1
+
     def read_si8(self) -> int:
         return int.from_bytes(self.read(1), byteorder="little", signed=True)
 
