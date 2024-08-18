@@ -9,10 +9,8 @@ class TestSwfHeader(TestCase):
     def test_reading_swf_header(self):
         with open("tests/Gfx_Ahsoka_Sword.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
-            swf_header = SwfHeader.from_buffer(buffer)
-            self.assertEqual(
-                swf_header.compression, SwfHeader.CompressionLevel.NONE
-            )
+            swf_header, buffer = SwfHeader.from_buffer(buffer)
+            self.assertEqual(swf_header.compression, SwfHeader.CompressionLevel.NONE)
             self.assertEqual(swf_header.version, 15)
             self.assertEqual(swf_header.fileLength, 17980)
             self.assertEqual(swf_header.frameCount, 1)
