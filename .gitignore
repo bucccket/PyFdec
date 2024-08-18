@@ -164,6 +164,7 @@ cython_debug/
 # Custom
 *.swf
 *.svg
+tests/JPEXS_tests/
 
 # MacOS
 .DS_Store
