@@ -37,6 +37,31 @@ class PlaceObject2(PlaceObject):
             clipEventKeyPress: bool
             clipEventDragOut: bool
 
+            def getEventCount(self):
+                return sum(
+                    [
+                        self.clipEventKeyUp,
+                        self.clipEventKeyDown,
+                        self.clipEventMouseUp,
+                        self.clipEventMouseDown,
+                        self.clipEventMouseMove,
+                        self.clipEventUnload,
+                        self.clipEventEnterFrame,
+                        self.clipEventLoad,
+                        self.clipEventDragOver,
+                        self.clipEventRollOut,
+                        self.clipEventRollOver,
+                        self.clipEventReleaseOutside,
+                        self.clipEventRelease,
+                        self.clipEventPress,
+                        self.clipEventInitialize,
+                        self.clipEventData,
+                        self.clipEventConstruct,
+                        self.clipEventKeyPress,
+                        self.clipEventDragOut,
+                    ]
+                )
+
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 with ExtendedBitIO(buffer) as bits:
@@ -87,16 +112,28 @@ class PlaceObject2(PlaceObject):
         class ClipActionRecord:
             eventFlags: Any
             keyCode: int | None
-            actions: list[bytes]
+            actions: ExtendedBuffer
 
         clipEventFlags: ClipEventFlags
         clipActionRecords: list[ClipActionRecord]
 
         @classmethod
         def from_buffer(cls, buffer: ExtendedBuffer):
-            raise NotImplementedError("PlaceObject2.ClipActions")
-
-        # TODO: Implement from_buffer
+            clipEventFlags = cls.ClipEventFlags.from_buffer(buffer)
+            clipActionRecords = []
+            for _ in range(clipEventFlags.getEventCount()):
+                eventFlags = cls.ClipEventFlags.from_buffer(buffer)
+                actionRecordSize = buffer.read_ui32()
+                keyCode = buffer.read_ui8() if eventFlags.clipEventKeyPress else None
+                actions = buffer.subbuffer(
+                    actionRecordSize - (1 if eventFlags.clipEventKeyPress else 0)
+                )
+                # TODO: Implement proper ActionRecord parsing
+                clipActionRecords.append(
+                    cls.ClipActionRecord(eventFlags, keyCode, actions)
+                )
+            assert buffer.read_ui32() == 0  # ClipActionEndFlag must be 0!
+            return cls(clipEventFlags, clipActionRecords)
 
     placeFlagMove: bool
     ratio: int | None
@@ -138,7 +175,7 @@ class PlaceObject2(PlaceObject):
             ratio=ratio,
             name=name,
             clipDepth=clipDepth,
-            clipActions=clipActions
+            clipActions=clipActions,
         )
 
 
