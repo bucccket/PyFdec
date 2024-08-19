@@ -18,6 +18,9 @@ from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
 from pyfdec.tags.StartSound import StartSound
 from pyfdec.tags.StartSound2 import StartSound2
+from pyfdec.tags.Metadata import Metadata
+from pyfdec.tags.ScriptLimits import ScriptLimits
+from pyfdec.tags.SymbolClass import SymbolClass 
 from pyfdec.tags.End import End
 from pyfdec.tags.FileAttriubtes import FileAttriubtes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -125,6 +128,12 @@ class SwfFile:
                     tags.append(FrameLabel.from_buffer(tag_buffer))
                 case Tag.TagTypes.DefineSprite:
                     tags.append(DefineSprite.from_buffer(tag_buffer))
+                case Tag.TagTypes.Metadata:
+                    tags.append(Metadata.from_buffer(tag_buffer))
+                case Tag.TagTypes.ScriptLimits:
+                    tags.append(ScriptLimits.from_buffer(tag_buffer))
+                case Tag.TagTypes.SymbolClass:
+                    tags.append(SymbolClass.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break
