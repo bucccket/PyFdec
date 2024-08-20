@@ -57,13 +57,14 @@ class Tag(ABC):
         FileAttributes = 69
         PlaceObject3 = 70
         ImportAssets2 = 71
+        DoABC = 72
         DefineFontAlignZones = 73
         CSMTextSettings = 74
         DefineFont3 = 75
         SymbolClass = 76
         Metadata = 77
         DefineScalingGrid = 78
-        DoABC = 82
+        DoABC2 = 82
         DefineShape4 = 83
         DefineMorphShape2 = 84
         DefineSceneAndFrameLabelData = 86
@@ -72,6 +73,7 @@ class Tag(ABC):
         StartSound2 = 89
         DefineBitsJPEG4 = 90
         DefineFont4 = 91
+        Unknown = 255
 
     # NOTE: This is a class variable of the type ClassVar, so it is shared 
     # between all instances of this class this variable is ingored by the 

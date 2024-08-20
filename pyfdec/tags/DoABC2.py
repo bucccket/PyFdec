@@ -5,15 +5,19 @@ from pyfdec.tags.Tag import Tag
 
 
 @dataclass
-class DoABC(Tag):
+class DoABC2(Tag):
     tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.DoABC
 
+    flags: int
+    name: str
     ABCData: ExtendedBuffer
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
+        flags = buffer.read_ui32()
+        name = buffer.read_string()
         ABCData = buffer.subbuffer(buffer.bytes_left())
-        return cls(ABCData)
+        return cls(flags, name, ABCData)
 
 
-Tag.register(DoABC)
+Tag.register(DoABC2)
