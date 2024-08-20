@@ -112,6 +112,7 @@ class PlaceObject2(PlaceObject):
         class ClipActionRecord:
             eventFlags: Any
             keyCode: int | None
+            # TODO: This should be an array of actions later on
             actions: ExtendedBuffer
 
         clipEventFlags: ClipEventFlags

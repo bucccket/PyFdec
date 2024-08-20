@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import ClassVar
+from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGBA
 from pyfdec.record_types.geometric_types import Matrix
@@ -33,6 +34,27 @@ class DefineShape3(DefineShape2):
                             return cls(
                                 ratio=buffer.read_ui8(), color=RGBA.from_buffer(buffer)
                             )
+
+                # TODO: find better solution than re-implementing the class to apply overrides from Gradient
+                @dataclass
+                class FocalGradient(Gradient):
+                    focalPoint: float
+
+                    @classmethod
+                    def from_buffer(cls, buffer: ExtendedBuffer):
+                        with ExtendedBitIO(buffer) as bits:
+                            spreadMode = cls.SpreadMode(bits.read_unsigned(2))
+                            interpolationMode = cls.InterpolationMode(
+                                bits.read_unsigned(2)
+                            )
+                            gradientRecords = [
+                                cls.GradientRecord.from_buffer(buffer)
+                                for _ in range(bits.read_unsigned(4))
+                            ]
+                        focalPoint = buffer.read_fixed8()
+                        return cls(
+                            spreadMode, interpolationMode, gradientRecords, focalPoint
+                        )
 
                 fillStyleType: (
                     DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.FillStyleType
