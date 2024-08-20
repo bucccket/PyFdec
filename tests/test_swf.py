@@ -3,6 +3,7 @@ from unittest import TestCase
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.swf.swf_file import SwfFile, SwfHeader
+from pyfdec.tags.DoABC import DoABC
 
 
 class TestSwfHeader(TestCase):
@@ -29,3 +30,23 @@ class TestSwfFile(TestCase):
             self.assertTrue(swf.fileAttributes.actionScript3)
             self.assertFalse(swf.fileAttributes.noCrossDomainCaching)
             self.assertFalse(swf.fileAttributes.useNetwork)
+    
+    def test_reading_bhair(self):
+        # brawlhalla air version: 8.12
+        with open("tests/BrawlhallaAir.swf", "rb") as file:
+            buffer = ExtendedBuffer(file.read())
+            swf = SwfFile.from_buffer(buffer)
+            self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
+            abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]
+            self.assertEqual(len(abc_tag.ABCData.cpool.ints), 863)
+            self.assertEqual(len(abc_tag.ABCData.cpool.uints), 213)
+            self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 643)
+            self.assertEqual(len(abc_tag.ABCData.cpool.strings), 33137)
+            self.assertEqual(len(abc_tag.ABCData.cpool.namespaces), 34)
+            self.assertEqual(len(abc_tag.ABCData.cpool.namespace_sets), 2)
+            self.assertEqual(len(abc_tag.ABCData.cpool.multinames), 23869)
+            self.assertEqual(len(abc_tag.ABCData.methods), 12095)
+            self.assertEqual(len(abc_tag.ABCData.metadata), 0)
+            self.assertEqual(len(abc_tag.ABCData.classes), 641)
+            self.assertEqual(len(abc_tag.ABCData.scripts), 641)
+            self.assertEqual(len(abc_tag.ABCData.method_bodies), 12046)
