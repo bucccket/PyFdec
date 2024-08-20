@@ -7,7 +7,6 @@ from enum import Enum, IntFlag
 
 @dataclass
 class ABCFile:
-
     @dataclass
     class CPoolInfo:
         @dataclass
@@ -29,6 +28,7 @@ class ABCFile:
                 kind = cls.NamespaceKind(buffer.read_ui8())
                 name = buffer.read_encoded_u30()
                 return cls(kind, name)
+
 
         ints: list[int]
         uints: list[int]
@@ -180,11 +180,34 @@ class ABCFile:
                 param_names
             )
 
+    @dataclass
+    class MetadataInfo:
+
+        @dataclass
+        class ItemInfo:
+            key: int            
+            value: int
+
+            @classmethod
+            def from_buffer(cls, buffer: ExtendedBuffer):
+                return cls(key=buffer.read_encoded_u30(), value=buffer.read_encoded_u30())
+
+        name: int
+        items: list[ItemInfo]
+
+        @classmethod
+        def from_buffer(cls, buffer: ExtendedBuffer):
+            name = buffer.read_encoded_u30()
+            item_count = buffer.read_encoded_u30()
+            items = [cls.ItemInfo.from_buffer(buffer) for _ in range(item_count)]
+            return cls(name, items)
+
 
     minor_version: int
     major_version: int
     cpool: CPoolInfo
-    method_info: list[MethodInfo]
+    methods: list[MethodInfo]
+    metadata: list[MetadataInfo]
     
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
@@ -192,11 +215,14 @@ class ABCFile:
         major_version = buffer.read_ui16()
         cpool = cls.CPoolInfo.from_buffer(buffer)
         method_count = buffer.read_encoded_u30()
-        method_info = [cls.MethodInfo.from_buffer(buffer) for _ in range(method_count)]
+        methods = [cls.MethodInfo.from_buffer(buffer) for _ in range(method_count)]
+        metadata_count = buffer.read_encoded_u30()
+        metadata = [cls.MetadataInfo.from_buffer(buffer) for _ in range(metadata_count)]
 
         return cls(
             minor_version,
             major_version,
             cpool,
-            method_info
+            methods,
+            metadata
         )
