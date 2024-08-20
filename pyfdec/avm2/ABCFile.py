@@ -1,12 +1,15 @@
 from collections import namedtuple
 from dataclasses import dataclass
-from pyfdec.extended_buffer import ExtendedBuffer
+from pyfdec.avm2.Traits import TraitInfo
+from pyfdec.avm2.ConstantKind import ConstantKind
 from pyfdec.avm2.Multinames import BaseMultiname, QName, RTQName, RTQNameL, Multiname, MultinameL, TypeName
+from pyfdec.extended_buffer import ExtendedBuffer
 from enum import Enum, IntFlag
 
 
 @dataclass
 class ABCFile:
+
     @dataclass
     class CPoolInfo:
         @dataclass
@@ -111,30 +114,13 @@ class ABCFile:
         class OptionInfo:
             @dataclass
             class OptionDetail:
-                class ConstandKind(Enum):
-                    Int = 0x03
-                    UInt = 0x04
-                    Double = 0x06
-                    Utf8 = 0x01
-                    Bool_True = 0x0B
-                    Bool_False = 0x0A
-                    Null = 0x0C
-                    Undefined = 0x00
-                    Namespace = 0x08
-                    PackageNamespace = 0x16
-                    PackageInternalNs = 0x17
-                    ProtectedNamespace = 0x18
-                    ExplicitNamespace = 0x19
-                    StaticProtectedNs = 0x1A
-                    PrivateNs = 0x05
-
                 value: int
-                kind: ConstandKind
+                kind: ConstantKind
 
                 @classmethod
                 def from_buffer(cls, buffer: ExtendedBuffer):
                     value = buffer.read_encoded_u30()
-                    kind = cls.ConstandKind(buffer.read_ui8())
+                    kind = ConstantKind(buffer.read_ui8())
                     return cls(value, kind)
 
 
@@ -202,12 +188,54 @@ class ABCFile:
             items = [cls.ItemInfo.from_buffer(buffer) for _ in range(item_count)]
             return cls(name, items)
 
+    @dataclass
+    class InstanceInfo:
+        class InstanceFlags(IntFlag):
+            Sealed = 0x01
+            Final = 0x02
+            Interface = 0x04
+            ProtectedNs = 0x08
+
+        name: int
+        super_name: int
+        flags: InstanceFlags
+        protected_ns: int | None
+        interfaces: list[int]
+        init: int
+        traits: list[TraitInfo]
+
+        @classmethod
+        def from_buffer(cls, buffer: ExtendedBuffer):
+            name = buffer.read_encoded_u30()
+            super_name = buffer.read_encoded_u30()
+            flags = cls.InstanceFlags(buffer.read_ui8())
+            protected_ns = None
+            if flags & cls.InstanceFlags.ProtectedNs:
+                protected_ns = buffer.read_ui8()
+
+            interface_count = buffer.read_encoded_u30()
+            interfaces = [buffer.read_encoded_u30() for _ in range(interface_count)]
+            init = buffer.read_encoded_u30()
+            trait_count = buffer.read_encoded_u30()
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
+
+            return cls(
+                name,
+                super_name,
+                flags,
+                protected_ns,
+                interfaces,
+                init,
+                traits
+            )
+
 
     minor_version: int
     major_version: int
     cpool: CPoolInfo
     methods: list[MethodInfo]
     metadata: list[MetadataInfo]
+    instances: list[InstanceInfo]
     
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
@@ -218,11 +246,14 @@ class ABCFile:
         methods = [cls.MethodInfo.from_buffer(buffer) for _ in range(method_count)]
         metadata_count = buffer.read_encoded_u30()
         metadata = [cls.MetadataInfo.from_buffer(buffer) for _ in range(metadata_count)]
+        instance_count = buffer.read_encoded_u30()
+        instances = [cls.InstanceInfo.from_buffer(buffer) for _ in range(instance_count)]
 
         return cls(
             minor_version,
             major_version,
             cpool,
             methods,
-            metadata
+            metadata,
+            instances
         )
