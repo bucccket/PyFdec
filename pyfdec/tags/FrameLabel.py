@@ -16,7 +16,6 @@ class FrameLabel(Tag):
     def from_buffer(cls, buffer: ExtendedBuffer):
         name = buffer.read_string()
         anchor = buffer.read_ui8()
-        assert anchor == 1
         return cls(name)
 
 

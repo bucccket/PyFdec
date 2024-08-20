@@ -156,7 +156,7 @@ class PlaceObject2(PlaceObject):
             characterID = buffer.read_ui16() if hasCharacter else None
             matrix = Matrix.from_buffer(buffer) if hasMatrix else None
             colorTransform = (
-                CxFormWithAlpha.with_alpha.from_buffer(buffer)
+                CxFormWithAlpha.from_buffer(buffer)
                 if hasColorTransform
                 else None
             )
