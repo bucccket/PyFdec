@@ -214,7 +214,7 @@ class ABCFile:
             flags = cls.InstanceFlags(buffer.read_ui8())
             protected_ns = None
             if flags & cls.InstanceFlags.ProtectedNs:
-                protected_ns = buffer.read_ui8()
+                protected_ns = buffer.read_encoded_u30()
 
             interface_count = buffer.read_encoded_u30()
             interfaces = [buffer.read_encoded_u30() for _ in range(interface_count)]
