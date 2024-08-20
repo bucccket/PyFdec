@@ -4,6 +4,9 @@ from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.swf.swf_file import SwfFile, SwfHeader
 from pyfdec.tags.DoABC import DoABC
+from pyfdec.avm2.ABCFile import ABCFile
+from pyfdec.avm2.Instructions import Instruction
+from pyfdec.avm2.Multinames import QName
 
 
 class TestSwfHeader(TestCase):
@@ -38,13 +41,13 @@ class TestSwfFile(TestCase):
             swf = SwfFile.from_buffer(buffer)
             self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
             abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]
-            self.assertEqual(len(abc_tag.ABCData.cpool.ints), 863)
-            self.assertEqual(len(abc_tag.ABCData.cpool.uints), 213)
-            self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 643)
-            self.assertEqual(len(abc_tag.ABCData.cpool.strings), 33137)
-            self.assertEqual(len(abc_tag.ABCData.cpool.namespaces), 34)
-            self.assertEqual(len(abc_tag.ABCData.cpool.namespace_sets), 2)
-            self.assertEqual(len(abc_tag.ABCData.cpool.multinames), 23869)
+            self.assertEqual(len(abc_tag.ABCData.cpool.ints), 864)
+            self.assertEqual(len(abc_tag.ABCData.cpool.uints), 214)
+            self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 644)
+            self.assertEqual(len(abc_tag.ABCData.cpool.strings), 33138)
+            self.assertEqual(len(abc_tag.ABCData.cpool.namespaces), 35)
+            self.assertEqual(len(abc_tag.ABCData.cpool.namespace_sets), 3)
+            self.assertEqual(len(abc_tag.ABCData.cpool.multinames), 23870)
             self.assertEqual(len(abc_tag.ABCData.methods), 12095)
             self.assertEqual(len(abc_tag.ABCData.metadata), 0)
             self.assertEqual(len(abc_tag.ABCData.classes), 641)
