@@ -7,7 +7,7 @@ from pyfdec.avm2.ABCFile import ABCFile
 
 @dataclass
 class DoABC2(Tag):
-    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.DoABC
+    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.DoABC2
 
     flags: int
     name: str
