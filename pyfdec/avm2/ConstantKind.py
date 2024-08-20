@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class ConstantKind(Enum):
     Int = 0x03
     UInt = 0x04

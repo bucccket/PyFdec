@@ -19,6 +19,9 @@ class ExtendedBuffer(io.BytesIO):
     def read_si16(self) -> int:
         return int.from_bytes(self.read(2), byteorder="little", signed=True)
 
+    def read_si24(self) -> int:
+        return int.from_bytes(self.read(3), byteorder="little", signed=True)
+
     def read_si32(self) -> int:
         return int.from_bytes(self.read(4), byteorder="little", signed=True)
 

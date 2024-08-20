@@ -111,7 +111,6 @@ BaseTrait.register(FunctionTrait)
 
 @dataclass
 class TraitInfo:
-    
     name: int
     attributes: TraitAttributes
     kind: TraitType

@@ -1,8 +1,9 @@
 from collections import namedtuple
 from dataclasses import dataclass
 from pyfdec.avm2.Traits import TraitInfo
-from pyfdec.avm2.ConstantKind import ConstantKind
 from pyfdec.avm2.Multinames import BaseMultiname, QName, RTQName, RTQNameL, Multiname, MultinameL, TypeName
+from pyfdec.avm2.Instructions import Instruction
+from pyfdec.avm2.ConstantKind import ConstantKind
 from pyfdec.extended_buffer import ExtendedBuffer
 from enum import Enum, IntFlag
 
@@ -254,6 +255,71 @@ class ABCFile:
             traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
             return cls(init, traits)
 
+    @dataclass
+    class MethodBodyInfo:
+        @dataclass
+        class ExceptionInfo:
+            from_pos: int
+            to_pos: int
+            target: int
+            exception_type: int
+            var_name: int
+
+            @classmethod
+            def from_buffer(cls, buffer: ExtendedBuffer):
+                from_pos = buffer.read_encoded_u30()
+                to_pos = buffer.read_encoded_u30()
+                target = buffer.read_encoded_u30()
+                exception_type = buffer.read_encoded_u30()
+                var_name = buffer.read_encoded_u30()
+                return cls(
+                    from_pos,
+                    to_pos,
+                    target,
+                    exception_type,
+                    var_name
+                )
+
+        method: int
+        max_stack: int
+        local_count: int
+        init_scope_depth: int
+        max_scope_depth: int
+
+        code: list[Instruction]
+        exceptions: list[ExceptionInfo]
+        traits: list[TraitInfo]
+
+        @classmethod
+        def from_buffer(cls, buffer: ExtendedBuffer):
+            method = buffer.read_encoded_u30()
+            max_stack = buffer.read_encoded_u30()
+            local_count = buffer.read_encoded_u30()
+            init_scope_depth = buffer.read_encoded_u30()
+            max_scope_depth = buffer.read_encoded_u30()
+
+            code_length = buffer.read_encoded_u30()
+            instruction_buffer = buffer.subbuffer(code_length)
+            code = []
+            while instruction_buffer.bytes_left():
+                code.append(Instruction.from_buffer(instruction_buffer))
+            
+            exception_count = buffer.read_encoded_u30()
+            exceptions = [cls.ExceptionInfo.from_buffer(buffer) for _ in range(exception_count)]
+            trait_count = buffer.read_encoded_u30()
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
+
+            return cls(
+                method,
+                max_stack,
+                local_count,
+                init_scope_depth,
+                max_scope_depth,
+                code,
+                exceptions,
+                traits,
+            )
+
     minor_version: int
     major_version: int
     cpool: CPoolInfo
@@ -262,6 +328,7 @@ class ABCFile:
     instances: list[InstanceInfo]
     classes: list[ClassInfo]
     scripts: list[ScriptInfo]
+    method_bodies: list[MethodBodyInfo]
     
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
@@ -277,6 +344,8 @@ class ABCFile:
         classes = [cls.ClassInfo.from_buffer(buffer) for _ in range(instance_count)]
         script_count = buffer.read_encoded_u30()
         scripts = [cls.ScriptInfo.from_buffer(buffer) for _ in range(script_count)]
+        method_body_count = buffer.read_encoded_u30()
+        method_bodies = [cls.MethodBodyInfo.from_buffer(buffer) for _ in range(method_body_count)]
 
         return cls(
             minor_version,
@@ -286,5 +355,6 @@ class ABCFile:
             metadata,
             instances,
             classes,
-            scripts
+            scripts,
+            method_bodies
         )
