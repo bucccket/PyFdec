@@ -8,6 +8,8 @@ from typing import Self
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.DoABC import DoABC
+from pyfdec.tags.DoABC2 import DoABC2
+from pyfdec.tags.Unknown import Unknown
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
@@ -146,6 +148,10 @@ class SwfFile:
                     tags.append(SymbolClass.from_buffer(tag_buffer))
                 case Tag.TagTypes.DoABC:
                     tags.append(DoABC.from_buffer(tag_buffer))
+                case Tag.TagTypes.DoABC2:
+                    tags.append(DoABC2.from_buffer(tag_buffer))
+                case Tag.TagTypes.Unknown:
+                    tags.append(Unknown.from_buffer(tag_buffer))
                 case Tag.TagTypes.End:
                     tags.append(End.from_buffer(tag_buffer))
                     break

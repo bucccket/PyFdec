@@ -6,15 +6,19 @@ from pyfdec.abc.ABCFile import ABCFile
 
 
 @dataclass
-class DoABC(Tag):
-    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.DoABC
+class DoABC2(Tag):
+    tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.DoABC2
 
+    flags: int
+    name: str
     ABCData: ABCFile
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
+        flags = buffer.read_ui32()
+        name = buffer.read_string()
         ABCData = ABCFile.from_buffer(buffer.subbuffer(buffer.bytes_left()))
-        return cls(ABCData)
+        return cls(flags, name, ABCData)
 
 
-Tag.register(DoABC)
+Tag.register(DoABC2)

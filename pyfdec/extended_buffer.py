@@ -19,6 +19,9 @@ class ExtendedBuffer(io.BytesIO):
     def read_si16(self) -> int:
         return int.from_bytes(self.read(2), byteorder="little", signed=True)
 
+    def read_si24(self) -> int:
+        return int.from_bytes(self.read(3), byteorder="little", signed=True)
+
     def read_si32(self) -> int:
         return int.from_bytes(self.read(4), byteorder="little", signed=True)
 
@@ -70,3 +73,9 @@ class ExtendedBuffer(io.BytesIO):
         if value & 0x100000000:
             raise ValueError("EncodedU32 value is too large")
         return value
+
+    def read_encoded_u30(self) -> int:
+        return self.read_encoded_u32() & 0x3FFFFFFF
+
+    def read_encoded_si32(self) -> int:
+        return val - 0x100000000 if (val := self.read_encoded_u32()) & 0x80000000 else val
