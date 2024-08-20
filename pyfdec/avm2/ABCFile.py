@@ -1,8 +1,7 @@
 from collections import namedtuple
 from dataclasses import dataclass
-
-from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
+from pyfdec.avm2.Multinames import * 
 
 
 @dataclass
@@ -13,7 +12,7 @@ class ABCFile:
     @dataclass
     class CPoolInfo:
         ints: list[int]
-        uints: list[int]  # int... this feels wrong
+        uints: list[int]
         doubles: list[float]
         strings: list[str]
 
@@ -21,7 +20,7 @@ class ABCFile:
         namespaces: list[NamespaceInfo]
 
         namespace_sets: list[list[int]]
-        multinames: list[int] # TODO
+        multinames: list[BaseMultiname]
 
         @classmethod
         def from_buffer(cls, buffer: ExtendedBuffer):
@@ -44,7 +43,8 @@ class ABCFile:
                 count = buffer.read_ui8()
                 namespace_sets.append([buffer.read_encoded_u30() for _ in range(count)]) 
             
-            # TODO: multinames
+            multiname_count = buffer.read_encoded_u30()
+            multinames = [cls.read_multiname(buffer) for _ in range(multiname_count - 1)]
 
             return cls(
                 ints,
@@ -53,7 +53,7 @@ class ABCFile:
                 strings,
                 namespaces,
                 namespace_sets,
-                multinames=[]
+                multinames
             )
         
         @staticmethod
@@ -61,6 +61,26 @@ class ABCFile:
             length = buffer.read_encoded_u30()
             data = buffer.read(length)
             return data.decode("utf-8")
+
+        @staticmethod
+        def read_multiname(buffer: ExtendedBuffer) -> BaseMultiname:
+            kind = BaseMultiname.MultinameKind(buffer.read_ui8())
+            match kind:
+                case BaseMultiname.MultinameKind.QName | BaseMultiname.MultinameKind.QNameA:
+                    return QName.from_buffer(buffer)
+                case BaseMultiname.MultinameKind.RTQName | BaseMultiname.MultinameKind.RTQNameA:
+                    return RTQName.from_buffer(buffer)
+                case BaseMultiname.MultinameKind.RTQNameL | BaseMultiname.MultinameKind.RTQNameLA:
+                    return RTQNameL.from_buffer(buffer)
+                case BaseMultiname.MultinameKind.Multiname | BaseMultiname.MultinameKind.MultinameA:
+                    return Multiname.from_buffer(buffer)
+                case BaseMultiname.MultinameKind.MultinameL | BaseMultiname.MultinameKind.MultinameLA:
+                    return MultinameL.from_buffer(buffer)
+                case BaseMultiname.MultinameKind.TypeName:
+                    return TypeName.from_buffer(buffer)
+                case _:
+                    raise NotImplementedError(f"Unimplemented multiname type: {kind}")
+
 
     cpool: CPoolInfo
     
