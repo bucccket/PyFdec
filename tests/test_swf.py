@@ -4,9 +4,6 @@ from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.swf.swf_file import SwfFile, SwfHeader
 from pyfdec.tags.DoABC import DoABC
-from pyfdec.avm2.ABCFile import ABCFile
-from pyfdec.avm2.Instructions import Instruction
-from pyfdec.avm2.Multinames import QName
 
 
 class TestSwfHeader(TestCase):

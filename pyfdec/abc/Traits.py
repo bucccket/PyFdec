@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from enum import Enum, IntFlag
 from typing import ClassVar
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.avm2.ConstantKind import ConstantKind
+from pyfdec.abc.ConstantKind import ConstantKind
 
 
 class TraitAttributes(IntFlag):

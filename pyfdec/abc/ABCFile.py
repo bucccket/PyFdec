@@ -1,9 +1,9 @@
 from collections import namedtuple
 from dataclasses import dataclass
-from pyfdec.avm2.Traits import TraitInfo
-from pyfdec.avm2.Multinames import BaseMultiname, QName, RTQName, RTQNameL, Multiname, MultinameL, TypeName
-from pyfdec.avm2.Instructions import Instruction
-from pyfdec.avm2.ConstantKind import ConstantKind
+from pyfdec.abc.Traits import TraitInfo
+from pyfdec.abc.Multinames import BaseMultiname, QName, RTQName, RTQNameL, Multiname, MultinameL, TypeName
+from pyfdec.abc.Instructions import Instruction
+from pyfdec.abc.ConstantKind import ConstantKind
 from pyfdec.extended_buffer import ExtendedBuffer
 from enum import Enum, IntFlag
 
