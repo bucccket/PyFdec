@@ -7,6 +7,7 @@ from pyfdec.tags.End import End
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.PlaceObject import PlaceObject
 from pyfdec.tags.PlaceObject2 import PlaceObject2
+from pyfdec.tags.PlaceObject3 import PlaceObject3
 from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
@@ -40,6 +41,8 @@ class DefineSprite(Tag):
                     tags.append(PlaceObject.from_buffer(tag_buffer))
                 case Tag.TagTypes.PlaceObject2:
                     tags.append(PlaceObject2.from_buffer(tag_buffer))
+                case Tag.TagTypes.PlaceObject3:
+                    tags.append(PlaceObject3.from_buffer(tag_buffer))
                 case Tag.TagTypes.RemoveObject:
                     tags.append(RemoveObject.from_buffer(tag_buffer))
                 case Tag.TagTypes.RemoveObject2:
