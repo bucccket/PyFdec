@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import ClassVar
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
+from pyfdec.avm2.ABCFile import ABCFile
 
 
 @dataclass
@@ -10,13 +11,13 @@ class DoABC2(Tag):
 
     flags: int
     name: str
-    ABCData: ExtendedBuffer
+    ABCData: ABCFile
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         flags = buffer.read_ui32()
         name = buffer.read_string()
-        ABCData = buffer.subbuffer(buffer.bytes_left())
+        ABCData = ABCFile.from_buffer(buffer.subbuffer(buffer.bytes_left()))
         return cls(flags, name, ABCData)
 
 
