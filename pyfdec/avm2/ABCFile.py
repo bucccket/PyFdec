@@ -229,6 +229,18 @@ class ABCFile:
                 traits
             )
 
+    @dataclass
+    class ClassInfo:
+        init: int
+        traits: list[TraitInfo]
+
+        @classmethod
+        def from_buffer(cls, buffer: ExtendedBuffer):
+            init = buffer.read_encoded_u30()
+            trait_count = buffer.read_encoded_u30()
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
+
+            return cls(init, traits)
 
     minor_version: int
     major_version: int
@@ -236,6 +248,7 @@ class ABCFile:
     methods: list[MethodInfo]
     metadata: list[MetadataInfo]
     instances: list[InstanceInfo]
+    classes: list[ClassInfo]
     
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
@@ -248,6 +261,7 @@ class ABCFile:
         metadata = [cls.MetadataInfo.from_buffer(buffer) for _ in range(metadata_count)]
         instance_count = buffer.read_encoded_u30()
         instances = [cls.InstanceInfo.from_buffer(buffer) for _ in range(instance_count)]
+        classes = [cls.ClassInfo.from_buffer(buffer) for _ in range(instance_count)]
 
         return cls(
             minor_version,
@@ -255,5 +269,6 @@ class ABCFile:
             cpool,
             methods,
             metadata,
-            instances
+            instances,
+            classes
         )
