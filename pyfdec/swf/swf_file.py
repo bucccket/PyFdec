@@ -26,9 +26,9 @@ from pyfdec.tags.StartSound import StartSound
 from pyfdec.tags.StartSound2 import StartSound2
 from pyfdec.tags.Metadata import Metadata
 from pyfdec.tags.ScriptLimits import ScriptLimits
-from pyfdec.tags.SymbolClass import SymbolClass 
+from pyfdec.tags.SymbolClass import SymbolClass
 from pyfdec.tags.End import End
-from pyfdec.tags.FileAttriubtes import FileAttriubtes
+from pyfdec.tags.FileAttributes import FileAttributes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
 from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.Tag import Tag, TagHeader
@@ -92,71 +92,80 @@ class SwfHeader:
 class SwfFile:
 
     header: SwfHeader
-    fileAttributes: FileAttriubtes
+    fileAttributes: FileAttributes
     tags: list[Tag]
 
-    @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-
-        header, buffer = SwfHeader.from_buffer(buffer)
-        tags: list[Tag] = []
-
+    @staticmethod
+    def get_tag_list(buffer: ExtendedBuffer):
         while True:
             tag_header = TagHeader.from_buffer(buffer)
 
             tag_buffer = buffer.subbuffer(tag_header.tag_length)
             match tag_header.tag_type:
                 case Tag.TagTypes.FileAttributes:
-                    fileAttributes = FileAttriubtes.from_buffer(tag_buffer)
+                    yield FileAttributes.from_buffer(tag_buffer)
                 case Tag.TagTypes.SetBackgroundColor:
-                    tags.append(SetBackgroundColor.from_buffer(tag_buffer))
+                    yield SetBackgroundColor.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineSceneAndFrameLabelData:
-                    tags.append(DefineSceneAndFrameLabelData.from_buffer(tag_buffer))
+                    yield DefineSceneAndFrameLabelData.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape:
-                    tags.append(DefineShape.from_buffer(tag_buffer))
+                    yield DefineShape.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape2:
-                    tags.append(DefineShape2.from_buffer(tag_buffer))
+                    yield DefineShape2.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape3:
-                    tags.append(DefineShape3.from_buffer(tag_buffer))
+                    yield DefineShape3.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape4:
-                    tags.append(DefineShape4.from_buffer(tag_buffer))
+                    yield DefineShape4.from_buffer(tag_buffer)
                 case Tag.TagTypes.RemoveObject:
-                    tags.append(RemoveObject.from_buffer(tag_buffer))
+                    yield RemoveObject.from_buffer(tag_buffer)
                 case Tag.TagTypes.RemoveObject2:
-                    tags.append(RemoveObject2.from_buffer(tag_buffer))
+                    yield RemoveObject2.from_buffer(tag_buffer)
                 case Tag.TagTypes.StartSound:
-                    tags.append(StartSound.from_buffer(tag_buffer))
+                    yield StartSound.from_buffer(tag_buffer)
                 case Tag.TagTypes.StartSound2:
-                    tags.append(StartSound2.from_buffer(tag_buffer))
+                    yield StartSound2.from_buffer(tag_buffer)
                 case Tag.TagTypes.ShowFrame:
-                    tags.append(ShowFrame.from_buffer(tag_buffer))
+                    yield ShowFrame.from_buffer(tag_buffer)
                 case Tag.TagTypes.FrameLabel:
-                    tags.append(FrameLabel.from_buffer(tag_buffer))
+                    yield FrameLabel.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineSprite:
-                    tags.append(DefineSprite.from_buffer(tag_buffer))
+                    yield DefineSprite.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject:
-                    tags.append(PlaceObject.from_buffer(tag_buffer))
+                    yield PlaceObject.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject2:
-                    tags.append(PlaceObject2.from_buffer(tag_buffer))
+                    yield PlaceObject2.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject3:
-                    tags.append(PlaceObject3.from_buffer(tag_buffer))
+                    yield PlaceObject3.from_buffer(tag_buffer)
                 case Tag.TagTypes.Metadata:
-                    tags.append(Metadata.from_buffer(tag_buffer))
+                    yield Metadata.from_buffer(tag_buffer)
                 case Tag.TagTypes.ScriptLimits:
-                    tags.append(ScriptLimits.from_buffer(tag_buffer))
+                    yield ScriptLimits.from_buffer(tag_buffer)
                 case Tag.TagTypes.SymbolClass:
-                    tags.append(SymbolClass.from_buffer(tag_buffer))
+                    yield SymbolClass.from_buffer(tag_buffer)
                 case Tag.TagTypes.DoABC:
-                    tags.append(DoABC.from_buffer(tag_buffer))
+                    yield DoABC.from_buffer(tag_buffer)
                 case Tag.TagTypes.DoABC2:
-                    tags.append(DoABC2.from_buffer(tag_buffer))
+                    yield DoABC2.from_buffer(tag_buffer)
                 case Tag.TagTypes.Unknown:
-                    tags.append(Unknown.from_buffer(tag_buffer))
+                    yield Unknown.from_buffer(tag_buffer)
                 case Tag.TagTypes.End:
-                    tags.append(End.from_buffer(tag_buffer))
+                    yield End.from_buffer(tag_buffer)
                     break
                 case _:
-                    raise NotImplementedError(f"Unimplemented tag type: {tag_header.tag_type}")
+                    raise NotImplementedError(
+                        f"Unimplemented tag: {tag_header.tag_type}"
+                    )
+
+    @classmethod
+    def from_buffer(cls, buffer: ExtendedBuffer):
+
+        header, buffer = SwfHeader.from_buffer(buffer)
+
+        tag_header = TagHeader.from_buffer(buffer)
+        tag_buffer = buffer.subbuffer(tag_header.tag_length)
+        fileAttributes: FileAttributes = FileAttributes.from_buffer(tag_buffer)
+        
+        tags: list[Tag] = SwfFile.get_tag_list(buffer)
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)

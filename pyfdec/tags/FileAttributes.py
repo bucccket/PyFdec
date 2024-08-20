@@ -6,7 +6,7 @@ from pyfdec.tags.Tag import Tag
 
 
 @dataclass
-class FileAttriubtes(Tag):
+class FileAttributes(Tag):
     tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.FileAttributes
 
     useDirectBlit: bool
@@ -40,4 +40,4 @@ class FileAttriubtes(Tag):
         )
 
 
-Tag.register(FileAttriubtes)
+Tag.register(FileAttributes)
