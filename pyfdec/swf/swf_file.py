@@ -9,6 +9,7 @@ from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.CSMTextSettings import CSMTextSettings
 from pyfdec.tags.DefineFontName import DefineFontName
+from pyfdec.tags.DefineFontAlignZones import DefineFontAlignZones
 from pyfdec.tags.DoABC import DoABC
 from pyfdec.tags.DoABC2 import DoABC2
 from pyfdec.tags.Unknown import Unknown
@@ -115,6 +116,8 @@ class SwfFile:
                     yield DefineEditText.from_buffer(tag_buffer)
                 case Tag.TagTypes.CSMTextSettings:
                     yield CSMTextSettings.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineFontAlignZones:
+                    yield DefineFontAlignZones.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineFontName:
                     yield DefineFontName.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape:
