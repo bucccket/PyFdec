@@ -13,6 +13,7 @@ from pyfdec.tags.Unknown import Unknown
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
+from pyfdec.tags.DefineEditText import DefineEditText
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
 from pyfdec.tags.DefineShape3 import DefineShape3
@@ -108,6 +109,8 @@ class SwfFile:
                     yield SetBackgroundColor.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineSceneAndFrameLabelData:
                     yield DefineSceneAndFrameLabelData.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineEditText:
+                    yield DefineEditText.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape:
                     yield DefineShape.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape2:
