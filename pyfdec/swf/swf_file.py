@@ -3,7 +3,7 @@ import struct
 import zlib
 from dataclasses import dataclass
 from enum import Enum
-from typing import Self
+from typing import Any, Generator, Self
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
@@ -93,7 +93,7 @@ class SwfFile:
 
     header: SwfHeader
     fileAttributes: FileAttributes
-    tags: list[Tag]
+    tags: Generator[Tag, Any, None]
 
     @staticmethod
     def get_tag_list(buffer: ExtendedBuffer):
@@ -165,7 +165,7 @@ class SwfFile:
         tag_buffer = buffer.subbuffer(tag_header.tag_length)
         fileAttributes: FileAttributes = FileAttributes.from_buffer(tag_buffer)
         
-        tags: list[Tag] = SwfFile.get_tag_list(buffer)
+        tags: Generator[Tag, Any, None] = cls.get_tag_list(buffer)
 
         # Implement check that fileAttributes is defined
         return cls(header, fileAttributes, tags)

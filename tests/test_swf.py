@@ -3,12 +3,14 @@ from unittest import TestCase
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.swf.swf_file import SwfFile, SwfHeader
+from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.DoABC import DoABC
+from pyfdec.tags.Tag import Tag
 
 
 class TestSwfHeader(TestCase):
     def test_reading_swf_header(self):
-        with open("tests/Gfx_Ahsoka_Sword.swf", "rb") as file:
+        with open("tests/swf/Gfx_Ahsoka_Sword.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf_header, buffer = SwfHeader.from_buffer(buffer)
             self.assertEqual(swf_header.compression, SwfHeader.CompressionLevel.NONE)
@@ -21,7 +23,7 @@ class TestSwfHeader(TestCase):
 
 class TestSwfFile(TestCase):
     def test_reading_swf_file(self):
-        with open("tests/Gfx_Skins_04.swf", "rb") as file:
+        with open("tests/swf/Gfx_Skins_04.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertFalse(swf.fileAttributes.useDirectBlit)
@@ -30,10 +32,17 @@ class TestSwfFile(TestCase):
             self.assertTrue(swf.fileAttributes.actionScript3)
             self.assertFalse(swf.fileAttributes.noCrossDomainCaching)
             self.assertFalse(swf.fileAttributes.useNetwork)
+            
+            for tag in swf.tags:
+                self.assertTrue(isinstance(tag, Tag))
+                if isinstance(tag, DefineSprite):
+                    for sprite_tag in tag.tags:
+                        self.assertTrue(isinstance(sprite_tag, Tag))
+                        
     
     def test_reading_bhair(self):
         # brawlhalla air version: 8.12
-        with open("tests/BrawlhallaAir.swf", "rb") as file:
+        with open("tests/swf/BrawlhallaAir.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
