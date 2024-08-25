@@ -7,8 +7,13 @@ from typing import Any, Generator, Self
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.DefineBits import DefineBits
+from pyfdec.tags.DefineBitsJPEG2 import DefineBitsJPEG2
+from pyfdec.tags.DefineBitsJPEG3 import DefineBitsJPEG3
+from pyfdec.tags.DefineBitsJPEG4 import DefineBitsJPEG4
 from pyfdec.tags.DoABC import DoABC
 from pyfdec.tags.DoABC2 import DoABC2
+from pyfdec.tags.JPEGTables import JPEGTables
 from pyfdec.tags.Unknown import Unknown
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.FrameLabel import FrameLabel
@@ -146,6 +151,16 @@ class SwfFile:
                     yield DoABC.from_buffer(tag_buffer)
                 case Tag.TagTypes.DoABC2:
                     yield DoABC2.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineBits:
+                    yield DefineBits.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineBitsJPEG2:
+                    yield DefineBitsJPEG2.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineBitsJPEG3:
+                    yield DefineBitsJPEG3.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineBitsJPEG4:
+                    yield DefineBitsJPEG4.from_buffer(tag_buffer)
+                case Tag.TagTypes.JPEGTables:
+                    yield JPEGTables.from_buffer(tag_buffer)
                 case Tag.TagTypes.Unknown:
                     yield Unknown.from_buffer(tag_buffer)
                 case Tag.TagTypes.End:
@@ -164,7 +179,7 @@ class SwfFile:
         tag_header = TagHeader.from_buffer(buffer)
         tag_buffer = buffer.subbuffer(tag_header.tag_length)
         fileAttributes: FileAttributes = FileAttributes.from_buffer(tag_buffer)
-        
+
         tags: Generator[Tag, Any, None] = cls.get_tag_list(buffer)
 
         # Implement check that fileAttributes is defined
