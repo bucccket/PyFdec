@@ -3,6 +3,7 @@ from unittest import TestCase
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.swf.swf_file import SwfFile, SwfHeader
+from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.DoABC import DoABC
 from pyfdec.tags.Tag import Tag
@@ -23,7 +24,7 @@ class TestSwfHeader(TestCase):
 
 class TestSwfFile(TestCase):
     def test_reading_swf_file(self):
-        with open("tests/swf/Gfx_Skins_04.swf", "rb") as file:
+        with open("tests/swf/test_DefineShape.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertFalse(swf.fileAttributes.useDirectBlit)
@@ -32,21 +33,29 @@ class TestSwfFile(TestCase):
             self.assertTrue(swf.fileAttributes.actionScript3)
             self.assertFalse(swf.fileAttributes.noCrossDomainCaching)
             self.assertFalse(swf.fileAttributes.useNetwork)
-            
+
             for tag in swf.tags:
                 self.assertTrue(isinstance(tag, Tag))
                 if isinstance(tag, DefineSprite):
                     for sprite_tag in tag.tags:
                         self.assertTrue(isinstance(sprite_tag, Tag))
-                        
-    
+                elif isinstance(tag, DefineShape):
+                    for shaperecord in tag.shapes.shapeRecords:
+                        self.assertTrue(
+                            isinstance(
+                                shaperecord, DefineShape.ShapeWithStyle.ShapeRecord
+                            )
+                        )
+
     def test_reading_bhair(self):
         # brawlhalla air version: 8.12
         with open("tests/swf/BrawlhallaAir.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
-            abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]
+            abc_tag: DoABC = [
+                tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC
+            ][0]
             self.assertEqual(len(abc_tag.ABCData.cpool.ints), 864)
             self.assertEqual(len(abc_tag.ABCData.cpool.uints), 214)
             self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 644)
