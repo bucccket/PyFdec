@@ -5,7 +5,7 @@ from pyfdec.bitio import BitIO
 class ExtendedBitIO(BitIO):
     def read_unsigned(self, length: int) -> int:
         if length == 0:
-            return
+            return 0
         data = self.read(length)
         val = 0
         for bit in data:
@@ -14,7 +14,7 @@ class ExtendedBitIO(BitIO):
 
     def read_signed(self, length: int) -> int:
         if length == 0:
-            return
+            return 0
         data = self.read(length)
         val = 0
         for bit in data[1:]:
@@ -23,7 +23,7 @@ class ExtendedBitIO(BitIO):
 
     def read_fixed(self, length: int) -> float:
         if length == 0:
-            return
+            return 0
         return self.read_unsigned(length) / (1 << 16)
 
     def read_bool(self) -> bool:
@@ -31,7 +31,7 @@ class ExtendedBitIO(BitIO):
 
     def padding(self, length: int) -> None:
         if length == 0:
-            return
+            return 0
         self.read(length)
 
     def align(self) -> None:
