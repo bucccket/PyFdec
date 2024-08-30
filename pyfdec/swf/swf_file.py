@@ -7,6 +7,9 @@ from typing import Any, Generator, Self
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
+from pyfdec.tags.CSMTextSettings import CSMTextSettings
+from pyfdec.tags.DefineFontName import DefineFontName
+from pyfdec.tags.DefineFontAlignZones import DefineFontAlignZones
 from pyfdec.tags.DefineBits import DefineBits
 from pyfdec.tags.DefineBitsJPEG2 import DefineBitsJPEG2
 from pyfdec.tags.DefineBitsJPEG3 import DefineBitsJPEG3
@@ -18,6 +21,7 @@ from pyfdec.tags.Unknown import Unknown
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
+from pyfdec.tags.DefineEditText import DefineEditText
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
 from pyfdec.tags.DefineShape3 import DefineShape3
@@ -113,6 +117,14 @@ class SwfFile:
                     yield SetBackgroundColor.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineSceneAndFrameLabelData:
                     yield DefineSceneAndFrameLabelData.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineEditText:
+                    yield DefineEditText.from_buffer(tag_buffer)
+                case Tag.TagTypes.CSMTextSettings:
+                    yield CSMTextSettings.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineFontAlignZones:
+                    yield DefineFontAlignZones.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineFontName:
+                    yield DefineFontName.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape:
                     yield DefineShape.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineShape2:
