@@ -10,13 +10,13 @@ class SvgExporter:
         x: float = 0
         y: float = 0
 
-        def move(self, dx: float, dy: float):
+        def moveTwips(self, dx: float, dy: float):
             self.x += dx / 20
             self.y += dy / 20
-        
-        def place(self, x:float, y:float):
-            self.x = x/20
-            self.y = y/20
+
+        def placeTwips(self, x: float, y: float):
+            self.x = x / 20
+            self.y = y / 20
 
     def populateSvgHeader(self):
         self.svg.attrib["version"] = "1.1"
@@ -25,15 +25,16 @@ class SvgExporter:
     def __init__(self, defineShapeTag: DefineShape):
         self.populateSvgHeader()
         viewport = defineShapeTag.shapeBounds
-        self.svg.attrib["width"] = f"{viewport.xmax/20}"
-        self.svg.attrib["height"] = f"{viewport.ymax/20}"
-        self.svg.attrib["viewBox"] = (
-            f"{viewport.xmin/20} {viewport.ymin/20} {viewport.xmax/20} {viewport.ymax/20}"
+        self.svg.attrib["width"] = f"{(viewport.xmax-viewport.xmin)/20}px"
+        self.svg.attrib["height"] = f"{(viewport.ymax-viewport.ymin)/20}px"
+
+        g = ET.SubElement(self.svg, "g")
+        g.attrib["transform"] = (
+            f"matrix(1.0, 0.0, 0.0, 1.0, {-viewport.xmin/20}, {-viewport.ymin/20})"
         )
 
-        path = ET.SubElement(self.svg, "path")
+        path = ET.SubElement(g, "path")
         path.attrib["d"] = ""
-        # NOTE: these arrays are 1 indexed for some fucking reason
         fillstyles: list[DefineShape.ShapeWithStyle.FillStyleArray.FillStyle] = (
             defineShapeTag.shapes.fillStyleArray.fillStyles
         )
@@ -42,42 +43,49 @@ class SvgExporter:
         )
 
         # TODO: track cursor position
-        cursor: self.Cursor = self.Cursor()
+        cursor: SvgExporter.Cursor = SvgExporter.Cursor()
 
         for shapeRecord in defineShapeTag.shapes.shapeRecords:
             match shapeRecord:
                 case DefineShape.ShapeWithStyle.StyleChangeRecord():
                     if shapeRecord.newFillStyleArray:
-                        fillstyles += shapeRecord.newFillStyleArray.fillStyles
+                        fillstyles = shapeRecord.newFillStyleArray.fillStyles
                     if shapeRecord.fillStyle1:
                         if path.attrib["d"] != "":
-                            path.attrib["d"] += "z"
-                            path = ET.SubElement(self.svg, "path")
+                            path.attrib["d"] += "Z"
+                            path = ET.SubElement(g, "path")
                             path.attrib["d"] = ""
                         fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
                         if fillstyle.color is not None:
                             path.attrib["fill"] = fillstyle.color.toHexString()
                     if shapeRecord.moveDeltaX is not None:
-                        cursor.place(shapeRecord.moveDeltaX, shapeRecord.moveDeltaY)
-                        path.attrib[
-                            "d"
-                        ] += f"m{cursor.x} {cursor.y}"
+                        cursor.placeTwips(
+                            shapeRecord.moveDeltaX, shapeRecord.moveDeltaY
+                        )
+                        path.attrib["d"] += f"M{cursor.x} {cursor.y}"
                     # TODO: implement all other cases
                     pass
                 case DefineShape.ShapeWithStyle.StraightEdgeRecord():
+                    cursor.moveTwips(shapeRecord.deltaX, shapeRecord.deltaY)
+                    dx = shapeRecord.deltaX / 20
+                    dy = shapeRecord.deltaY / 20
                     if shapeRecord.deltaX != 0 and shapeRecord.deltaY != 0:
-                        path.attrib[
-                            "d"
-                        ] += f"l{shapeRecord.deltaX/20} {shapeRecord.deltaY/20}"
+                        path.attrib["d"] += f"l{dx} {dy}"
                     elif shapeRecord.deltaX != 0:
-                        path.attrib["d"] += f"h{shapeRecord.deltaX/20}"
+                        path.attrib["d"] += f"h{dx}"
                     else:
-                        path.attrib["d"] += f"v{shapeRecord.deltaY/20}"
+                        path.attrib["d"] += f"v{dy}"
                 case DefineShape.ShapeWithStyle.CurvedEdgeRecord():
-                    # TODO: oh my fcking god
+                    controlX = cursor.x + shapeRecord.controlDeltaX / 20
+                    controlY = cursor.y + shapeRecord.controlDeltaY / 20
+                    cursor.moveTwips(
+                        shapeRecord.controlDeltaX, shapeRecord.controlDeltaY
+                    )
+                    cursor.moveTwips(shapeRecord.anchorDeltaX, shapeRecord.anchorDeltaY)
+                    path.attrib["d"] += f"Q{controlX} {controlY} {cursor.x} {cursor.y}"
                     pass
                 case DefineShape.ShapeWithStyle.EndShapeRecord():
-                    path.attrib["d"] += "z"
+                    path.attrib["d"] += "Z"
 
     def getSvgString(self) -> str:
         return ET.tostring(self.svg, encoding="UTF-8")

@@ -18,7 +18,7 @@ class TestExportDefineShape(TestCase):
 
             for tag in swf.tags:
                 if isinstance(tag, DefineShape):
-                    if tag.shapeID == 6:
+                    if tag.shapeID == 7:
                         exporter = SvgExporter(tag)
                         svg_string = exporter.getSvgString()
                         self.assertIsNotNone(svg_string)
