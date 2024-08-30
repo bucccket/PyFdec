@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Generator
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGB
@@ -194,18 +194,14 @@ class DefineShape(Tag):
 
         fillStyleArray: FillStyleArray
         lineStyleArray: LineStyleArray
-        shapeRecords: list[ShapeRecord]
+        shapeRecords: Generator[ShapeRecord, Any, None]
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
-            fillStyleArray = cls.FillStyleArray.from_buffer(buffer)
-            lineStyleArray = cls.LineStyleArray.from_buffer(buffer)
-
+        def _read_shape_records(cls, buffer: ExtendedBuffer):
             with ExtendedBitIO(buffer) as bits:
                 fillBits = bits.read_unsigned(4)
                 lineBits = bits.read_unsigned(4)
 
-                shapeRecords = []
                 while True:
                     typeFlag = bits.read_bool()
                     if not typeFlag:
@@ -249,20 +245,18 @@ class DefineShape(Tag):
                                 )
                                 fillBits = bits.read_unsigned(4)
                                 lineBits = bits.read_unsigned(4)
-                            shapeRecords.append(
-                                cls.StyleChangeRecord(
-                                    moveDeltaX=moveDeltaX,
-                                    moveDeltaY=moveDeltaY,
-                                    fillStyle0=fillStyle0,
-                                    fillStyle1=fillStyle1,
-                                    lineStyle=lineStyle,
-                                    newFillStyleArray=newFillStyleArray,
-                                    newLineStyleArray=newLineStyleArray,
-                                )
+                            yield cls.StyleChangeRecord(
+                                moveDeltaX=moveDeltaX,
+                                moveDeltaY=moveDeltaY,
+                                fillStyle0=fillStyle0,
+                                fillStyle1=fillStyle1,
+                                lineStyle=lineStyle,
+                                newFillStyleArray=newFillStyleArray,
+                                newLineStyleArray=newLineStyleArray,
                             )
                         else:
                             # EndShapeRecord
-                            shapeRecords.append(cls.EndShapeRecord())
+                            yield cls.EndShapeRecord()
                             break
                     else:
                         # EdgeRecord
@@ -281,22 +275,25 @@ class DefineShape(Tag):
                                 deltaX = bits.read_signed(nBits + 2)
                             if verticalLine:
                                 deltaY = bits.read_signed(nBits + 2)
-                            shapeRecords.append(cls.StraightEdgeRecord(deltaX, deltaY))
+                            yield cls.StraightEdgeRecord(deltaX, deltaY)
                         else:
                             nBits = bits.read_unsigned(4)
                             controlDeltaX = bits.read_signed(nBits + 2)
                             controlDeltaY = bits.read_signed(nBits + 2)
                             anchorDeltaX = bits.read_signed(nBits + 2)
                             anchorDeltaY = bits.read_signed(nBits + 2)
-                            shapeRecords.append(
-                                cls.CurvedEdgeRecord(
-                                    controlDeltaX,
-                                    controlDeltaY,
-                                    anchorDeltaX,
-                                    anchorDeltaY,
-                                )
+                            yield cls.CurvedEdgeRecord(
+                                controlDeltaX,
+                                controlDeltaY,
+                                anchorDeltaX,
+                                anchorDeltaY,
                             )
 
+        @classmethod
+        def from_buffer(cls, buffer: ExtendedBuffer):
+            fillStyleArray = cls.FillStyleArray.from_buffer(buffer)
+            lineStyleArray = cls.LineStyleArray.from_buffer(buffer)
+            shapeRecords = cls._read_shape_records(buffer)
             return cls(fillStyleArray, lineStyleArray, shapeRecords)
 
     shapeID: int

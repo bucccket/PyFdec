@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import Any, ClassVar, Generator
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGB
+from pyfdec.tags.DoABC import DoABC
+from pyfdec.tags.DoABC2 import DoABC2
 from pyfdec.tags.End import End
 from pyfdec.tags.FrameLabel import FrameLabel
 from pyfdec.tags.PlaceObject import PlaceObject
@@ -22,13 +24,10 @@ class DefineSprite(Tag):
 
     spriteID: int
     frameCount: int
-    tags: list[Tag]
+    tags: Generator[Tag, Any, None]
 
-    @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-        spriteID = buffer.read_ui16()
-        frameCount = buffer.read_ui16()
-        tags = []
+    @staticmethod
+    def get_tag_list(buffer: ExtendedBuffer):
         while True:
             tag_header = TagHeader.from_buffer(buffer)
 
@@ -36,21 +35,21 @@ class DefineSprite(Tag):
             match tag_header.tag_type:
                 # Supported Control Tags
                 case Tag.TagTypes.ShowFrame:
-                    tags.append(ShowFrame.from_buffer(tag_buffer))
+                    yield ShowFrame.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject:
-                    tags.append(PlaceObject.from_buffer(tag_buffer))
+                    yield PlaceObject.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject2:
-                    tags.append(PlaceObject2.from_buffer(tag_buffer))
+                    yield PlaceObject2.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject3:
-                    tags.append(PlaceObject3.from_buffer(tag_buffer))
+                    yield PlaceObject3.from_buffer(tag_buffer)
                 case Tag.TagTypes.RemoveObject:
-                    tags.append(RemoveObject.from_buffer(tag_buffer))
+                    yield RemoveObject.from_buffer(tag_buffer)
                 case Tag.TagTypes.RemoveObject2:
-                    tags.append(RemoveObject2.from_buffer(tag_buffer))
+                    yield RemoveObject2.from_buffer(tag_buffer)
                 case Tag.TagTypes.StartSound:
-                    tags.append(StartSound.from_buffer(tag_buffer))
+                    yield StartSound.from_buffer(tag_buffer)
                 case Tag.TagTypes.FrameLabel:
-                    tags.append(FrameLabel.from_buffer(tag_buffer))
+                    yield FrameLabel.from_buffer(tag_buffer)
                 case Tag.TagTypes.SoundStreamHead:
                     raise NotImplementedError("DefineSprite SoundStreamHead")
                 case Tag.TagTypes.SoundStreamHead2:
@@ -63,14 +62,23 @@ class DefineSprite(Tag):
                 case Tag.TagTypes.DoInitAction:
                     raise NotImplementedError("DefineSprite DoInitAction")
                 case Tag.TagTypes.DoABC:
-                    raise NotImplementedError("DefineSprite DoABC")
+                    yield DoABC.from_buffer(tag_buffer)
+                case Tag.TagTypes.DoABC2:
+                    yield DoABC2.from_buffer(tag_buffer)
                 case Tag.TagTypes.End:
-                    tags.append(End.from_buffer(tag_buffer))
+                    yield End.from_buffer(tag_buffer)
                     break
                 case _:
                     raise ValueError(
                         f"DefineSprite Unsupported Tag: {tag_header.tag_type}"
                     )
+
+    @classmethod
+    def from_buffer(cls, buffer: ExtendedBuffer):
+        spriteID = buffer.read_ui16()
+        frameCount = buffer.read_ui16()
+        tags: Generator[Tag, Any, None] = cls.get_tag_list(buffer)
+
         return cls(spriteID, frameCount, tags)
 
 

@@ -9,6 +9,9 @@ class RGB:
     green: int = 0
     blue: int = 0
 
+    def toHexString(self) -> str:
+        return '#%02x%02x%02x' % (self.red, self.green, self.blue)
+
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         return cls(
@@ -19,6 +22,9 @@ class RGB:
 @dataclass
 class RGBA(RGB):
     alpha: int = 0
+
+    def toHexString(self) -> str:
+        return '#%02x%02x%02x' % (self.red, self.green, self.blue)
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
@@ -36,6 +42,9 @@ class ARGB:
     red: int = 0
     green: int = 0
     blue: int = 0
+
+    def toHexString(self) -> str:
+        return '#%02x%02x%02x' % (self.red, self.green, self.blue)
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
