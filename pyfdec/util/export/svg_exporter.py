@@ -45,17 +45,22 @@ class SvgExporter:
         # TODO: track cursor position
         cursor: SvgExporter.Cursor = SvgExporter.Cursor()
 
+        # FIXME: paths MUST start with moveto
+        # FIXME: enforce grouping all nodes by color instead of generating new paths for each color change
         for shapeRecord in defineShapeTag.shapes.shapeRecords:
             match shapeRecord:
                 case DefineShape.ShapeWithStyle.StyleChangeRecord():
                     if shapeRecord.newFillStyleArray:
                         fillstyles = shapeRecord.newFillStyleArray.fillStyles
-                    if shapeRecord.fillStyle1:
+                    if shapeRecord.fillStyle0 or shapeRecord.fillStyle1:
                         if path.attrib["d"] != "":
                             path.attrib["d"] += "Z"
                             path = ET.SubElement(g, "path")
-                            path.attrib["d"] = ""
-                        fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
+                            path.attrib["d"] = f"M{cursor.x} {cursor.y}"
+                        if shapeRecord.fillStyle0:
+                            fillstyle = fillstyles[shapeRecord.fillStyle0 - 1]
+                        elif shapeRecord.fillStyle1:
+                            fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
                         if fillstyle.color is not None:
                             path.attrib["fill"] = fillstyle.color.toHexString()
                     if shapeRecord.moveDeltaX is not None:
