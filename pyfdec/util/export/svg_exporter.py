@@ -7,8 +7,24 @@ class SvgExporter:
     svg = ET.Element("svg")
 
     class Cursor:
-        x: float = 0
-        y: float = 0
+        _x: float = 0
+        _y: float = 0
+        
+        @property
+        def x(self) -> float:
+            return round(self._x,2)
+        
+        @x.setter
+        def x(self, value: float):
+            self._x = round(value,2)
+        
+        @property
+        def y(self) -> float:
+            return round(self._y,2)
+        
+        @y.setter
+        def y(self, value: float):
+            self._y = round(value,2)
 
         def moveTwips(self, dx: float, dy: float):
             self.x += dx / 20
@@ -33,8 +49,6 @@ class SvgExporter:
             f"matrix(1.0, 0.0, 0.0, 1.0, {-viewport.xmin/20}, {-viewport.ymin/20})"
         )
 
-        path = ET.SubElement(g, "path")
-        path.attrib["d"] = ""
         fillstyles: list[DefineShape.ShapeWithStyle.FillStyleArray.FillStyle] = (
             defineShapeTag.shapes.fillStyleArray.fillStyles
         )
@@ -53,14 +67,15 @@ class SvgExporter:
                     if shapeRecord.newFillStyleArray:
                         fillstyles = shapeRecord.newFillStyleArray.fillStyles
                     if shapeRecord.fillStyle0 or shapeRecord.fillStyle1:
-                        if path.attrib["d"] != "":
-                            path.attrib["d"] += "Z"
-                            path = ET.SubElement(g, "path")
-                            path.attrib["d"] = f"M{cursor.x} {cursor.y}"
+                        path = ET.SubElement(g, "path")
+                        path.attrib["d"] = f"M{cursor.x} {cursor.y}"
+                        path.attrib["fill-rule"] = "evenodd"
                         if shapeRecord.fillStyle0:
-                            fillstyle = fillstyles[shapeRecord.fillStyle0 - 1]
+                            if shapeRecord.fillStyle0 > 0:
+                                fillstyle = fillstyles[shapeRecord.fillStyle0 - 1]
                         elif shapeRecord.fillStyle1:
-                            fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
+                            if shapeRecord.fillStyle1 > 0:
+                                fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
                         if fillstyle.color is not None:
                             path.attrib["fill"] = fillstyle.color.toHexString()
                     if shapeRecord.moveDeltaX is not None:
@@ -81,8 +96,8 @@ class SvgExporter:
                     else:
                         path.attrib["d"] += f"v{dy}"
                 case DefineShape.ShapeWithStyle.CurvedEdgeRecord():
-                    controlX = cursor.x + shapeRecord.controlDeltaX / 20
-                    controlY = cursor.y + shapeRecord.controlDeltaY / 20
+                    controlX = round(cursor.x + shapeRecord.controlDeltaX / 20,2)
+                    controlY = round(cursor.y + shapeRecord.controlDeltaY / 20,2)
                     cursor.moveTwips(
                         shapeRecord.controlDeltaX, shapeRecord.controlDeltaY
                     )
