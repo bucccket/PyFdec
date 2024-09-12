@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "pyfdec"
+version = "0.1.0"
+description = "A libary for reading and writing to SWF files"
+authors = ["Bucccket"]
+readme = "README.md"
+license = "GPL-3.0"
+packages = [
+  { include = "pyfdec" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+bitarray = "^2.9.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
