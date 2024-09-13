@@ -12,7 +12,7 @@ from pyfdec.util.export.svg_exporter import SvgExporter
 
 class TestExportDefineShape(TestCase):
     def test_exporting_to_svg(self):
-        with open("tests/swf/test_DefineShape.swf", "rb") as file:
+        with open("tests/swf/test_Export.swf", "rb") as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
 

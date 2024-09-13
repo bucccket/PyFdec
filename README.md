@@ -2,6 +2,26 @@
 
 Python based flash decompilation module
 
+# Contributing
+
+## Setup poetry
+The nstallation guide [can be found here](https://python-poetry.org/docs/#installing-with-pipx)
+after installing poetry, to get started just run: 
+```bash
+poetry run python -m venv .venv
+poetry install
+```
+for testing run 
+```python
+poetry run pytest
+```
+
+## Working on NixOS or using Nix
+enter development env by typing 
+```bash
+nix develop
+```
+
 # Plans For The Future
 
 ## BitIO
