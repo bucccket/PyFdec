@@ -27,6 +27,8 @@
             packages = with pkgs.${system}; [
               (mkPoetryEnv { projectDir = self; })
               poetry
+              graphviz
+              jpexs
             ];
           };
         });
