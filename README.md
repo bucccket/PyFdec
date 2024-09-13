@@ -4,9 +4,9 @@ Python based flash decompilation module
 
 # Contributing
 
-## Setup poetry
-The nstallation guide [can be found here](https://python-poetry.org/docs/#installing-with-pipx)
-after installing poetry, to get started just run: 
+## Poetry setup
+The detailed installation guide for poetry [can be found here](https://python-poetry.org/docs/#installing-with-pipx).
+After installing poetry, to get started just run: 
 ```bash
 poetry run python -m venv .venv
 poetry install
