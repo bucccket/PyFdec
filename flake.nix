@@ -28,6 +28,7 @@
               (mkPoetryEnv { projectDir = self; })
               poetry
               graphviz
+              imagemagick
               jpexs
             ];
           };
