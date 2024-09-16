@@ -9,22 +9,22 @@ class SvgExporter:
     class Cursor:
         _x: float = 0
         _y: float = 0
-        
+
         @property
         def x(self) -> float:
-            return round(self._x,2)
-        
+            return round(self._x, 2)
+
         @x.setter
         def x(self, value: float):
-            self._x = round(value,2)
-        
+            self._x = round(value, 2)
+
         @property
         def y(self) -> float:
-            return round(self._y,2)
-        
+            return round(self._y, 2)
+
         @y.setter
         def y(self, value: float):
-            self._y = round(value,2)
+            self._y = round(value, 2)
 
         def moveTwips(self, dx: float, dy: float):
             self.x += dx / 20
@@ -59,13 +59,17 @@ class SvgExporter:
         # TODO: track cursor position
         cursor: SvgExporter.Cursor = SvgExporter.Cursor()
 
+        # TODO: track path0 and path1 separately and apply all modifications to both
+
         # FIXME: paths MUST start with moveto
         # FIXME: enforce grouping all nodes by color instead of generating new paths for each color change
+        # NOTE: absolute coords are used since the way paths are traversed is not guaranteed to be continuous
         for shapeRecord in defineShapeTag.shapes.shapeRecords:
             match shapeRecord:
                 case DefineShape.ShapeWithStyle.StyleChangeRecord():
                     if shapeRecord.newFillStyleArray:
                         fillstyles = shapeRecord.newFillStyleArray.fillStyles
+                    #TODO: split this to path0 and path1
                     if shapeRecord.fillStyle0 or shapeRecord.fillStyle1:
                         path = ET.SubElement(g, "path")
                         path.attrib["d"] = f"M{cursor.x} {cursor.y}"
@@ -86,15 +90,15 @@ class SvgExporter:
                     # TODO: implement all other cases
                     pass
                 case DefineShape.ShapeWithStyle.StraightEdgeRecord():
-                    cursor.moveTwips(shapeRecord.deltaX, shapeRecord.deltaY)
-                    dx = shapeRecord.deltaX / 20
-                    dy = shapeRecord.deltaY / 20
+                    dx = cursor.x + shapeRecord.deltaX / 20
+                    dy = cursor.y + shapeRecord.deltaY / 20
                     if shapeRecord.deltaX != 0 and shapeRecord.deltaY != 0:
-                        path.attrib["d"] += f"l{dx} {dy}"
+                        path.attrib["d"] += f"L{dx} {dy}"
                     elif shapeRecord.deltaX != 0:
-                        path.attrib["d"] += f"h{dx}"
+                        path.attrib["d"] += f"H{dx}"
                     else:
-                        path.attrib["d"] += f"v{dy}"
+                        path.attrib["d"] += f"V{dy}"
+                    cursor.moveTwips(shapeRecord.deltaX, shapeRecord.deltaY)
                 case DefineShape.ShapeWithStyle.CurvedEdgeRecord():
                     controlX = round(cursor.x + shapeRecord.controlDeltaX / 20,2)
                     controlY = round(cursor.y + shapeRecord.controlDeltaY / 20,2)
