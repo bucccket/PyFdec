@@ -38,6 +38,18 @@ class SvgExporter:
         self.svg.attrib["version"] = "1.1"
         self.svg.attrib["xmlns"] = "http://www.w3.org/2000/svg"
 
+    def _makePath(
+        self,
+        parent: ET.Element,
+        cursor: Cursor,
+        color: str,
+    ) -> ET.Element:
+        path = ET.SubElement(parent, "path")
+        path.attrib["d"] = f"M {cursor.x} {cursor.y}"
+        path.attrib["fill-rule"] = "evenodd"
+        path.attrib["fill"] = color
+        return path
+
     def __init__(self, defineShapeTag: DefineShape):
         self.populateSvgHeader()
         viewport = defineShapeTag.shapeBounds
@@ -60,7 +72,11 @@ class SvgExporter:
         cursor: SvgExporter.Cursor = SvgExporter.Cursor()
 
         # TODO: track path0 and path1 separately and apply all modifications to both
+        paths: dict[str, ET.Element] = {}
+        path0 = None
+        path1 = None
 
+        #TODO: make intermediary helper class that treats path sections seperately
         # FIXME: paths MUST start with moveto
         # FIXME: enforce grouping all nodes by color instead of generating new paths for each color change
         # NOTE: absolute coords are used since the way paths are traversed is not guaranteed to be continuous
@@ -69,47 +85,76 @@ class SvgExporter:
                 case DefineShape.ShapeWithStyle.StyleChangeRecord():
                     if shapeRecord.newFillStyleArray:
                         fillstyles = shapeRecord.newFillStyleArray.fillStyles
-                    #TODO: split this to path0 and path1
-                    if shapeRecord.fillStyle0 or shapeRecord.fillStyle1:
-                        path = ET.SubElement(g, "path")
-                        path.attrib["d"] = f"M{cursor.x} {cursor.y}"
-                        path.attrib["fill-rule"] = "evenodd"
-                        if shapeRecord.fillStyle0:
-                            if shapeRecord.fillStyle0 > 0:
-                                fillstyle = fillstyles[shapeRecord.fillStyle0 - 1]
-                        elif shapeRecord.fillStyle1:
-                            if shapeRecord.fillStyle1 > 0:
-                                fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
-                        if fillstyle.color is not None:
-                            path.attrib["fill"] = fillstyle.color.toHexString()
+                    # TODO: split this to path0 and path1
+                    if shapeRecord.fillStyle0 is not None:
+                        if shapeRecord.fillStyle0 > 0:
+                            fillstyle = fillstyles[shapeRecord.fillStyle0 - 1]
+                            color = fillstyle.color.toHexString()
+                            if color not in paths:
+                                path0 = self._makePath(g, cursor, color)
+                                paths[color] = path0
+                            else:
+                                path0 = paths[color]
+                        else:
+                            path0 = None
+                    if shapeRecord.fillStyle1 is not None:
+                        if shapeRecord.fillStyle1 > 0:
+                            fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
+                            color = fillstyle.color.toHexString()
+                            if color not in paths:
+                                path1 = self._makePath(g, cursor, color)
+                                paths[color] = path1
+                            else:
+                                path1 = paths[color]
+                        else:
+                            path1 = None
                     if shapeRecord.moveDeltaX is not None:
                         cursor.placeTwips(
                             shapeRecord.moveDeltaX, shapeRecord.moveDeltaY
                         )
-                        path.attrib["d"] += f"M{cursor.x} {cursor.y}"
+                        if path0 is not None:
+                            path0.attrib["d"] += f"M{cursor.x} {cursor.y}"
+                        if path1 is not None:
+                            path1.attrib["d"] += f"M{cursor.x} {cursor.y}"
                     # TODO: implement all other cases
                     pass
                 case DefineShape.ShapeWithStyle.StraightEdgeRecord():
-                    dx = cursor.x + shapeRecord.deltaX / 20
-                    dy = cursor.y + shapeRecord.deltaY / 20
+                    dx = round(cursor.x + shapeRecord.deltaX / 20, 2)
+                    dy = round(cursor.y + shapeRecord.deltaY / 20, 2)
                     if shapeRecord.deltaX != 0 and shapeRecord.deltaY != 0:
-                        path.attrib["d"] += f"L{dx} {dy}"
+                        if path0 is not None:
+                            path0.attrib["d"] += f"L{dx} {dy}"
+                        if path1 is not None:
+                            path1.attrib["d"] += f"L{dx} {dy}"
                     elif shapeRecord.deltaX != 0:
-                        path.attrib["d"] += f"H{dx}"
+                        if path0 is not None:
+                            path0.attrib["d"] += f"H{dx}"
+                        if path1 is not None:
+                            path1.attrib["d"] += f"H{dx}"
                     else:
-                        path.attrib["d"] += f"V{dy}"
+                        if path0 is not None:
+                            path0.attrib["d"] += f"V{dy}"
+                        if path1 is not None:
+                            path1.attrib["d"] += f"V{dy}"
                     cursor.moveTwips(shapeRecord.deltaX, shapeRecord.deltaY)
                 case DefineShape.ShapeWithStyle.CurvedEdgeRecord():
-                    controlX = round(cursor.x + shapeRecord.controlDeltaX / 20,2)
-                    controlY = round(cursor.y + shapeRecord.controlDeltaY / 20,2)
+                    controlX = round(cursor.x + shapeRecord.controlDeltaX / 20, 2)
+                    controlY = round(cursor.y + shapeRecord.controlDeltaY / 20, 2)
                     cursor.moveTwips(
                         shapeRecord.controlDeltaX, shapeRecord.controlDeltaY
                     )
                     cursor.moveTwips(shapeRecord.anchorDeltaX, shapeRecord.anchorDeltaY)
-                    path.attrib["d"] += f"Q{controlX} {controlY} {cursor.x} {cursor.y}"
-                    pass
+                    if path0 is not None:
+                        path0.attrib[
+                            "d"
+                        ] += f"Q{controlX} {controlY} {cursor.x} {cursor.y}"
+                    if path1 is not None:
+                        path1.attrib[
+                            "d"
+                        ] += f"Q{controlX} {controlY} {cursor.x} {cursor.y}"
                 case DefineShape.ShapeWithStyle.EndShapeRecord():
-                    path.attrib["d"] += "Z"
+                    for path in paths.values():
+                        path.attrib["d"] += "Z"
 
     def getSvgString(self) -> str:
         return ET.tostring(self.svg, encoding="UTF-8")
