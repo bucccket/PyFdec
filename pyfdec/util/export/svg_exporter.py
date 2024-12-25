@@ -44,10 +44,10 @@ class SvgExporter:
         cursor: Cursor,
         color: str,
     ) -> ET.Element:
-        path = ET.SubElement(parent, "path")
-        path.attrib["d"] = f"M {cursor.x} {cursor.y}"
-        path.attrib["fill-rule"] = "evenodd"
-        path.attrib["fill"] = color
+        path = ET.SubElement(parent, 'path')
+        path.attrib['d'] = f'M {cursor.x} {cursor.y}'
+        path.attrib['fill-rule'] = 'evenodd'
+        path.attrib['fill'] = color
         return path
 
     def __init__(self, defineShapeTag: DefineShape):
@@ -67,12 +67,7 @@ class SvgExporter:
         # TODO: track cursor position
         cursor: SvgExporter.Cursor = SvgExporter.Cursor()
 
-        # TODO: track path0 and path1 separately and apply all modifications to both
-        paths: dict[str, ET.Element] = {}
-        path0 = None
-        path1 = None
-
-        #TODO: make intermediary helper class that treats path sections seperately
+        # TODO: make intermediary helper class that treats path sections seperately
         # FIXME: paths MUST start with moveto
         # FIXME: enforce grouping all nodes by color instead of generating new paths for each color change
         # NOTE: absolute coords are used since the way paths are traversed is not guaranteed to be continuous
@@ -93,7 +88,7 @@ class SvgExporter:
                                 fillstyle = fillstyles[shapeRecord.fillStyle1 - 1]
                         if fillstyle.color is not None:
                             path.attrib['fill'] = fillstyle.color.toHexString()
-                    if shapeRecord.moveDeltaX is not None:
+                    if shapeRecord.moveDeltaX is not None and shapeRecord.moveDeltaY is not None:
                         cursor.placeTwips(shapeRecord.moveDeltaX, shapeRecord.moveDeltaY)
                         path.attrib['d'] += f'M{cursor.x} {cursor.y}'
                     # TODO: implement all other cases

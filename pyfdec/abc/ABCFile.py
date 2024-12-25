@@ -47,50 +47,30 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer):
             int_count = buffer.read_encoded_u30()
             ints = [0]
-            [
-                ints.append(buffer.read_encoded_si32())
-                for _ in range(int_count - 1)
-            ]
+            [ints.append(buffer.read_encoded_si32()) for _ in range(int_count - 1)]
             uint_count = buffer.read_encoded_u30()
             uints = [0]
-            [
-                uints.append(buffer.read_encoded_u32())
-                for _ in range(uint_count - 1)
-            ]
+            [uints.append(buffer.read_encoded_u32()) for _ in range(uint_count - 1)]
             double_count = buffer.read_encoded_u30()
             doubles = [0]
-            [
-                doubles.append(buffer.read_f64())
-                for _ in range(double_count - 1)
-            ]
+            [doubles.append(buffer.read_f64()) for _ in range(double_count - 1)]
             string_count = buffer.read_encoded_u30()
             strings = [None]
-            [
-                strings.append(cls.read_abc_string(buffer))
-                for _ in range(string_count - 1)
-            ]
+            [strings.append(cls.read_abc_string(buffer)) for _ in range(string_count - 1)]
             namespace_count = buffer.read_encoded_u30()
             namespaces = [None]
-            [
-                namespaces.append(cls.NamespaceInfo.from_buffer(buffer))
-                for _ in range(namespace_count - 1)
-            ]
+            [namespaces.append(cls.NamespaceInfo.from_buffer(buffer)) for _ in range(namespace_count - 1)]
             namespace_set_count = buffer.read_encoded_u30()
             namespace_sets = [None]
             for _ in range(namespace_set_count - 1):
                 count = buffer.read_ui8()
-                namespace_sets.append(
-                    [buffer.read_encoded_u30() for _ in range(count)])
+                namespace_sets.append([buffer.read_encoded_u30() for _ in range(count)])
 
             multiname_count = buffer.read_encoded_u30()
             multinames = [None]
-            [
-                multinames.append(cls.read_multiname(buffer))
-                for _ in range(multiname_count - 1)
-            ]
+            [multinames.append(cls.read_multiname(buffer)) for _ in range(multiname_count - 1)]
 
-            return cls(ints, uints, doubles, strings, namespaces,
-                       namespace_sets, multinames)
+            return cls(ints, uints, doubles, strings, namespaces, namespace_sets, multinames)
 
         @staticmethod
         def read_abc_string(buffer: ExtendedBuffer) -> str:
@@ -115,8 +95,7 @@ class ABCFile:
                 case BaseMultiname.MultinameKind.TypeName:
                     return TypeName.from_buffer(buffer)
                 case _:
-                    raise NotImplementedError(
-                        f'Unimplemented multiname type: {kind}')
+                    raise NotImplementedError(f'Unimplemented multiname type: {kind}')
 
     @dataclass
     class MethodInfo:
@@ -148,10 +127,7 @@ class ABCFile:
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 detail_count = buffer.read_encoded_u30()
-                details = [
-                    cls.OptionDetail.from_buffer(buffer)
-                    for _ in range(detail_count)
-                ]
+                details = [cls.OptionDetail.from_buffer(buffer) for _ in range(detail_count)]
                 return cls(details)
 
         return_type: int
@@ -165,9 +141,7 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer):
             param_count = buffer.read_encoded_u30()
             return_type = buffer.read_encoded_u30()
-            param_types = [
-                buffer.read_encoded_u30() for _ in range(param_count)
-            ]
+            param_types = [buffer.read_encoded_u30() for _ in range(param_count)]
 
             name = buffer.read_encoded_u30()
             flags = cls.MethodFlags(buffer.read_ui8())
@@ -178,12 +152,9 @@ class ABCFile:
 
             param_names = None
             if flags & cls.MethodFlags.HasParamNames:
-                param_names = [
-                    buffer.read_encoded_u30() for _ in range(param_count)
-                ]
+                param_names = [buffer.read_encoded_u30() for _ in range(param_count)]
 
-            return cls(return_type, param_types, name, flags, options,
-                       param_names)
+            return cls(return_type, param_types, name, flags, options, param_names)
 
     @dataclass
     class MetadataInfo:
@@ -195,8 +166,7 @@ class ABCFile:
 
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
-                return cls(key=buffer.read_encoded_u30(),
-                           value=buffer.read_encoded_u30())
+                return cls(key=buffer.read_encoded_u30(), value=buffer.read_encoded_u30())
 
         name: int
         items: list[ItemInfo]
@@ -205,9 +175,7 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer):
             name = buffer.read_encoded_u30()
             item_count = buffer.read_encoded_u30()
-            items = [
-                cls.ItemInfo.from_buffer(buffer) for _ in range(item_count)
-            ]
+            items = [cls.ItemInfo.from_buffer(buffer) for _ in range(item_count)]
             return cls(name, items)
 
     @dataclass
@@ -237,17 +205,12 @@ class ABCFile:
                 protected_ns = buffer.read_encoded_u30()
 
             interface_count = buffer.read_encoded_u30()
-            interfaces = [
-                buffer.read_encoded_u30() for _ in range(interface_count)
-            ]
+            interfaces = [buffer.read_encoded_u30() for _ in range(interface_count)]
             init = buffer.read_encoded_u30()
             trait_count = buffer.read_encoded_u30()
-            traits = [
-                TraitInfo.from_buffer(buffer) for _ in range(trait_count)
-            ]
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
 
-            return cls(name, super_name, flags, protected_ns, interfaces, init,
-                       traits)
+            return cls(name, super_name, flags, protected_ns, interfaces, init, traits)
 
     @dataclass
     class ClassInfo:
@@ -258,9 +221,7 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer):
             init = buffer.read_encoded_u30()
             trait_count = buffer.read_encoded_u30()
-            traits = [
-                TraitInfo.from_buffer(buffer) for _ in range(trait_count)
-            ]
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
 
             return cls(init, traits)
 
@@ -273,9 +234,7 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer):
             init = buffer.read_encoded_u30()
             trait_count = buffer.read_encoded_u30()
-            traits = [
-                TraitInfo.from_buffer(buffer) for _ in range(trait_count)
-            ]
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
             return cls(init, traits)
 
     @dataclass
@@ -323,14 +282,9 @@ class ABCFile:
                 code.append(Instruction.from_buffer(instruction_buffer))
 
             exception_count = buffer.read_encoded_u30()
-            exceptions = [
-                cls.ExceptionInfo.from_buffer(buffer)
-                for _ in range(exception_count)
-            ]
+            exceptions = [cls.ExceptionInfo.from_buffer(buffer) for _ in range(exception_count)]
             trait_count = buffer.read_encoded_u30()
-            traits = [
-                TraitInfo.from_buffer(buffer) for _ in range(trait_count)
-            ]
+            traits = [TraitInfo.from_buffer(buffer) for _ in range(trait_count)]
 
             return cls(
                 method,
@@ -359,29 +313,15 @@ class ABCFile:
         major_version = buffer.read_ui16()
         cpool = cls.CPoolInfo.from_buffer(buffer)
         method_count = buffer.read_encoded_u30()
-        methods = [
-            cls.MethodInfo.from_buffer(buffer) for _ in range(method_count)
-        ]
+        methods = [cls.MethodInfo.from_buffer(buffer) for _ in range(method_count)]
         metadata_count = buffer.read_encoded_u30()
-        metadata = [
-            cls.MetadataInfo.from_buffer(buffer) for _ in range(metadata_count)
-        ]
+        metadata = [cls.MetadataInfo.from_buffer(buffer) for _ in range(metadata_count)]
         instance_count = buffer.read_encoded_u30()
-        instances = [
-            cls.InstanceInfo.from_buffer(buffer) for _ in range(instance_count)
-        ]
-        classes = [
-            cls.ClassInfo.from_buffer(buffer) for _ in range(instance_count)
-        ]
+        instances = [cls.InstanceInfo.from_buffer(buffer) for _ in range(instance_count)]
+        classes = [cls.ClassInfo.from_buffer(buffer) for _ in range(instance_count)]
         script_count = buffer.read_encoded_u30()
-        scripts = [
-            cls.ScriptInfo.from_buffer(buffer) for _ in range(script_count)
-        ]
+        scripts = [cls.ScriptInfo.from_buffer(buffer) for _ in range(script_count)]
         method_body_count = buffer.read_encoded_u30()
-        method_bodies = [
-            cls.MethodBodyInfo.from_buffer(buffer)
-            for _ in range(method_body_count)
-        ]
+        method_bodies = [cls.MethodBodyInfo.from_buffer(buffer) for _ in range(method_body_count)]
 
-        return cls(minor_version, major_version, cpool, methods, metadata,
-                   instances, classes, scripts, method_bodies)
+        return cls(minor_version, major_version, cpool, methods, metadata, instances, classes, scripts, method_bodies)

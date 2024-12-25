@@ -28,11 +28,7 @@ class DefineFontAlignZones(Tag):
         while record_buffer.bytes_left() > 0:
             ZoneTable.append(ZoneRecord.from_buffer(record_buffer))
 
-        return cls(
-            FontID,
-            CSMTableHint,
-            ZoneTable
-        )
+        return cls(FontID, CSMTableHint, ZoneTable)
 
 
 Tag.register(DefineFontAlignZones)

@@ -18,10 +18,13 @@ class DefineShape(Tag):
 
         @dataclass
         class FillStyleArray:
+
             @dataclass
             class FillStyle:
+
                 @dataclass
                 class Gradient:
+
                     @dataclass
                     class GradientRecord:
                         ratio: int
@@ -29,9 +32,7 @@ class DefineShape(Tag):
 
                         @classmethod
                         def from_buffer(cls, buffer: ExtendedBuffer):
-                            return cls(
-                                ratio=buffer.read_ui8(), color=RGB.from_buffer(buffer)
-                            )
+                            return cls(ratio=buffer.read_ui8(), color=RGB.from_buffer(buffer))
 
                     class SpreadMode(Enum):
                         Pad = 0
@@ -50,12 +51,9 @@ class DefineShape(Tag):
                     def from_buffer(cls, buffer: ExtendedBuffer):
                         with ExtendedBitIO(buffer) as bits:
                             spreadMode = cls.SpreadMode(bits.read_unsigned(2))
-                            interpolationMode = cls.InterpolationMode(
-                                bits.read_unsigned(2)
-                            )
+                            interpolationMode = cls.InterpolationMode(bits.read_unsigned(2))
                             gradientRecords = [
-                                cls.GradientRecord.from_buffer(buffer)
-                                for _ in range(bits.read_unsigned(4))
+                                cls.GradientRecord.from_buffer(buffer) for _ in range(bits.read_unsigned(4))
                             ]
                         return cls(spreadMode, interpolationMode, gradientRecords)
 
@@ -67,17 +65,12 @@ class DefineShape(Tag):
                     def from_buffer(cls, buffer: ExtendedBuffer):
                         with ExtendedBitIO(buffer) as bits:
                             spreadMode = cls.SpreadMode(bits.read_unsigned(2))
-                            interpolationMode = cls.InterpolationMode(
-                                bits.read_unsigned(2)
-                            )
+                            interpolationMode = cls.InterpolationMode(bits.read_unsigned(2))
                             gradientRecords = [
-                                cls.GradientRecord.from_buffer(buffer)
-                                for _ in range(bits.read_unsigned(4))
+                                cls.GradientRecord.from_buffer(buffer) for _ in range(bits.read_unsigned(4))
                             ]
                         focalPoint = buffer.read_fixed8()
-                        return cls(
-                            spreadMode, interpolationMode, gradientRecords, focalPoint
-                        )
+                        return cls(spreadMode, interpolationMode, gradientRecords, focalPoint)
 
                 class FillStyleType(Enum):
                     SolidFill = 0x00
@@ -98,9 +91,7 @@ class DefineShape(Tag):
                 def from_buffer(cls, buffer: ExtendedBuffer):
                     fillStyleType = cls.FillStyleType(buffer.read_ui8())
                     match (fillStyleType):
-                        case fillStyleType if fillStyleType in [
-                            cls.FillStyleType.SolidFill
-                        ]:
+                        case fillStyleType if fillStyleType in [cls.FillStyleType.SolidFill]:
                             color = RGB.from_buffer(buffer)
                             return cls(fillStyleType, color, None, None)
                         case fillStyleType if fillStyleType in [
@@ -110,8 +101,8 @@ class DefineShape(Tag):
                         ]:
                             matrix = Matrix.from_buffer(buffer)
                             if (
-                                fillStyleType == cls.FillStyleType.LinearGradientFill
-                                or fillStyleType == cls.FillStyleType.RadialGradientFill
+                                fillStyleType == cls.FillStyleType.LinearGradientFill or
+                                fillStyleType == cls.FillStyleType.RadialGradientFill
                             ):
                                 gradient = cls.Gradient.from_buffer(buffer)
                             else:
@@ -134,13 +125,12 @@ class DefineShape(Tag):
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 fillStyleCount = buffer.read_ui8()
-                fillStyles = [
-                    cls.FillStyle.from_buffer(buffer) for _ in range(fillStyleCount)
-                ]
+                fillStyles = [cls.FillStyle.from_buffer(buffer) for _ in range(fillStyleCount)]
                 return cls(fillStyles)
 
         @dataclass
         class LineStyleArray:
+
             @dataclass
             class LineStyle:
                 width: int
@@ -155,9 +145,7 @@ class DefineShape(Tag):
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
                 lineStyleCount = buffer.read_ui8()
-                lineStyles = [
-                    cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)
-                ]
+                lineStyles = [cls.LineStyle.from_buffer(buffer) for _ in range(lineStyleCount)]
                 return cls(lineStyles)
 
         @dataclass
@@ -211,13 +199,7 @@ class DefineShape(Tag):
                         stateFillStyle1 = bits.read_bool()
                         stateFillStyle0 = bits.read_bool()
                         stateMoveTo = bits.read_bool()
-                        if (
-                            stateNewStyles
-                            or stateLineStyle
-                            or stateFillStyle1
-                            or stateFillStyle0
-                            or stateMoveTo
-                        ):
+                        if (stateNewStyles or stateLineStyle or stateFillStyle1 or stateFillStyle0 or stateMoveTo):
                             # StyleChangeRecord
                             moveDeltaX = None
                             moveDeltaY = None
@@ -238,12 +220,8 @@ class DefineShape(Tag):
                                 lineStyle = bits.read_unsigned(lineBits)
                             if stateNewStyles:
                                 bits.align()
-                                newFillStyleArray = cls.FillStyleArray.from_buffer(
-                                    buffer
-                                )
-                                newLineStyleArray = cls.LineStyleArray.from_buffer(
-                                    buffer
-                                )
+                                newFillStyleArray = cls.FillStyleArray.from_buffer(buffer)
+                                newLineStyleArray = cls.LineStyleArray.from_buffer(buffer)
                                 fillBits = bits.read_unsigned(4)
                                 lineBits = bits.read_unsigned(4)
                             yield cls.StyleChangeRecord(

@@ -15,6 +15,7 @@ class PlaceObject2(PlaceObject):
 
     @dataclass
     class ClipActions:
+
         @dataclass
         class ClipEventFlags:
             clipEventKeyUp: bool
@@ -38,29 +39,27 @@ class PlaceObject2(PlaceObject):
             clipEventDragOut: bool
 
             def getEventCount(self):
-                return sum(
-                    [
-                        self.clipEventKeyUp,
-                        self.clipEventKeyDown,
-                        self.clipEventMouseUp,
-                        self.clipEventMouseDown,
-                        self.clipEventMouseMove,
-                        self.clipEventUnload,
-                        self.clipEventEnterFrame,
-                        self.clipEventLoad,
-                        self.clipEventDragOver,
-                        self.clipEventRollOut,
-                        self.clipEventRollOver,
-                        self.clipEventReleaseOutside,
-                        self.clipEventRelease,
-                        self.clipEventPress,
-                        self.clipEventInitialize,
-                        self.clipEventData,
-                        self.clipEventConstruct,
-                        self.clipEventKeyPress,
-                        self.clipEventDragOut,
-                    ]
-                )
+                return sum([
+                    self.clipEventKeyUp,
+                    self.clipEventKeyDown,
+                    self.clipEventMouseUp,
+                    self.clipEventMouseDown,
+                    self.clipEventMouseMove,
+                    self.clipEventUnload,
+                    self.clipEventEnterFrame,
+                    self.clipEventLoad,
+                    self.clipEventDragOver,
+                    self.clipEventRollOut,
+                    self.clipEventRollOver,
+                    self.clipEventReleaseOutside,
+                    self.clipEventRelease,
+                    self.clipEventPress,
+                    self.clipEventInitialize,
+                    self.clipEventData,
+                    self.clipEventConstruct,
+                    self.clipEventKeyPress,
+                    self.clipEventDragOut,
+                ])
 
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer):
@@ -126,13 +125,9 @@ class PlaceObject2(PlaceObject):
                 eventFlags = cls.ClipEventFlags.from_buffer(buffer)
                 actionRecordSize = buffer.read_ui32()
                 keyCode = buffer.read_ui8() if eventFlags.clipEventKeyPress else None
-                actions = buffer.subbuffer(
-                    actionRecordSize - (1 if eventFlags.clipEventKeyPress else 0)
-                )
+                actions = buffer.subbuffer(actionRecordSize - (1 if eventFlags.clipEventKeyPress else 0))
                 # TODO: Implement proper ActionRecord parsing
-                clipActionRecords.append(
-                    cls.ClipActionRecord(eventFlags, keyCode, actions)
-                )
+                clipActionRecords.append(cls.ClipActionRecord(eventFlags, keyCode, actions))
             assert buffer.read_ui32() == 0  # ClipActionEndFlag must be 0!
             return cls(clipEventFlags, clipActionRecords)
 
@@ -156,17 +151,11 @@ class PlaceObject2(PlaceObject):
             depth = buffer.read_ui16()
             characterID = buffer.read_ui16() if hasCharacter else None
             matrix = Matrix.from_buffer(buffer) if hasMatrix else None
-            colorTransform = (
-                CxFormWithAlpha.from_buffer(buffer)
-                if hasColorTransform
-                else None
-            )
+            colorTransform = (CxFormWithAlpha.from_buffer(buffer) if hasColorTransform else None)
             ratio = buffer.read_ui16() if hasRatio else None
             name = buffer.read_string() if hasName else None
             clipDepth = buffer.read_ui16() if hasClipDepth else None
-            clipActions = (
-                cls.ClipActions.from_buffer(buffer) if hasClipActions else None
-            )
+            clipActions = (cls.ClipActions.from_buffer(buffer) if hasClipActions else None)
         return cls(
             characterID=characterID,
             depth=depth,

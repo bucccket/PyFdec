@@ -298,9 +298,7 @@ class ActionTry(Action):
             trySize = buffer.read_ui16()
             catchSize = buffer.read_ui16()
             finallySize = buffer.read_ui16()
-            catchNameOrRegister = (
-                buffer.read_string() if catchInRegister else buffer.read_ui8()
-            )
+            catchNameOrRegister = (buffer.read_string() if catchInRegister else buffer.read_ui8())
             tryBody = buffer.subbuffer(trySize)
             catchBody = buffer.subbuffer(catchSize) if hasCatchBlock else None
             finallyBody = buffer.subbuffer(finallySize) if hasFinallyBlock else None

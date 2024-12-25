@@ -6,6 +6,7 @@ from pyfdec.extended_buffer import ExtendedBuffer
 
 @dataclass
 class ZoneRecord:
+
     @dataclass
     class ZoneData:
         AlignmentCoordinate: float
@@ -34,8 +35,4 @@ class ZoneRecord:
             ZoneMaskY = bits.read_unsigned(1)  # yes, Y gets read first
             ZoneMaskX = bits.read_unsigned(1)
 
-        return cls(
-            ZoneDataList,
-            ZoneMaskY,
-            ZoneMaskX
-        )
+        return cls(ZoneDataList, ZoneMaskY, ZoneMaskX)

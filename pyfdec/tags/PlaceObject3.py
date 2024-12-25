@@ -16,6 +16,7 @@ class PlaceObject3(PlaceObject2):
 
     @dataclass
     class Filter:
+
         class FilterTypes(Enum):
             DropShadowFilter = 0
             BlurFilter = 1
@@ -250,13 +251,8 @@ class PlaceObject3(PlaceObject2):
 
         filterType: FilterTypes
         filters: (
-            ColorMatrixFilter
-            | ConvolutionFilter
-            | BlurFilter
-            | DropShadowFilter
-            | GlowFilter
-            | BevelFilter
-            | GradientGlowFilter
+            ColorMatrixFilter | ConvolutionFilter | BlurFilter | DropShadowFilter | GlowFilter | BevelFilter |
+            GradientGlowFilter
         )
 
         @classmethod
@@ -323,32 +319,21 @@ class PlaceObject3(PlaceObject2):
             hasBlendMode = bits.read_bool()
             hasFilterList = bits.read_bool()
             depth = buffer.read_ui16()
-            className = (
-                buffer.read_string()
-                if hasClassName or (hasImage and hasCharacter)
-                else None
-            )
+            className = (buffer.read_string() if hasClassName or (hasImage and hasCharacter) else None)
             characterID = buffer.read_ui16() if hasCharacter else None
             matrix = Matrix.from_buffer(buffer) if hasMatrix else None
-            colorTransform = (
-                CxFormWithAlpha.from_buffer(buffer) if hasColorTransform else None
-            )
+            colorTransform = (CxFormWithAlpha.from_buffer(buffer) if hasColorTransform else None)
             ratio = buffer.read_ui16() if hasRatio else None
             name = buffer.read_string() if hasName else None
             clipDepth = buffer.read_ui16() if hasClipDepth else None
 
-            surfaceFilterList = (
-                [cls.Filter.from_buffer(buffer) for _ in range(buffer.read_ui8())]
-                if hasFilterList
-                else None
-            )
+            surfaceFilterList = ([cls.Filter.from_buffer(buffer) for _ in range(buffer.read_ui8())]
+                                 if hasFilterList else None)
             blendMode = cls.BlendModes(buffer.read_ui8()) if hasBlendMode else None
             bitmapCache = buffer.read_unsigned(8) > 0 if hasCacheAsBitmap else None
             visible = bits.read_unsigned(8) > 0 if hasVisible else None
             backgroundColor = RGBA.from_buffer(buffer) if hasOpaqueBackground else None
-            clipActions = (
-                cls.ClipActions.from_buffer(buffer) if hasClipActions else None
-            )
+            clipActions = (cls.ClipActions.from_buffer(buffer) if hasClipActions else None)
 
         return cls(
             characterID=characterID,

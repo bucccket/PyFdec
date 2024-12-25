@@ -31,7 +31,7 @@ class DefineSprite(Tag):
 
             tag_buffer = buffer.subbuffer(tag_header.tag_length)
             match tag_header.tag_type:
-                # Supported Control Tags
+            # Supported Control Tags
                 case Tag.TagTypes.ShowFrame:
                     yield ShowFrame.from_buffer(tag_buffer)
                 case Tag.TagTypes.PlaceObject:

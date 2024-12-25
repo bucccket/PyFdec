@@ -1,10 +1,10 @@
 import io
 import struct
-from typing import Self
 
 
 class ExtendedBuffer(io.BytesIO):
-    def subbuffer(self, size: int) -> Self:
+
+    def subbuffer(self, size: int):
         return ExtendedBuffer(self.read(size))
 
     def bytes_left(self) -> int:
