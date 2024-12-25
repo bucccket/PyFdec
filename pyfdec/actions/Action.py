@@ -7,6 +7,7 @@ from pyfdec.extended_buffer import ExtendedBuffer
 
 
 class Action(ABC):
+
     class ActionCodes(Enum):
         ActionGotoFrame = 0x81
         ActionGetURL = 0x83
@@ -118,12 +119,12 @@ class Action(ABC):
 @dataclass
 class ActionRecord:
     action_code: Action.ActionCodes
-    action_length: int|None = None
+    action_length: int | None = None
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         action_code = Action.ActionCodes(buffer.read_ui8())
-        if action_code >= 0x80:
+        if action_code.value >= 0x80:
             action_length = buffer.read_ui16()
             return cls(action_code, action_length)
         return cls(action_code)

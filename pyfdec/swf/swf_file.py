@@ -8,48 +8,48 @@ from typing import Any, Generator, Self
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.CSMTextSettings import CSMTextSettings
-from pyfdec.tags.DefineFontName import DefineFontName
-from pyfdec.tags.DefineFontAlignZones import DefineFontAlignZones
 from pyfdec.tags.DefineBits import DefineBits
 from pyfdec.tags.DefineBitsJPEG2 import DefineBitsJPEG2
 from pyfdec.tags.DefineBitsJPEG3 import DefineBitsJPEG3
 from pyfdec.tags.DefineBitsJPEG4 import DefineBitsJPEG4
-from pyfdec.tags.DoABC import DoABC
-from pyfdec.tags.DoABC2 import DoABC2
-from pyfdec.tags.JPEGTables import JPEGTables
-from pyfdec.tags.Unknown import Unknown
-from pyfdec.tags.DefineSprite import DefineSprite
-from pyfdec.tags.FrameLabel import FrameLabel
-from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineEditText import DefineEditText
+from pyfdec.tags.DefineFontAlignZones import DefineFontAlignZones
+from pyfdec.tags.DefineFontName import DefineFontName
+from pyfdec.tags.DefineSceneAndFrameLabelData import DefineSceneAndFrameLabelData
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineShape2 import DefineShape2
 from pyfdec.tags.DefineShape3 import DefineShape3
 from pyfdec.tags.DefineShape4 import DefineShape4
+from pyfdec.tags.DefineSprite import DefineSprite
+from pyfdec.tags.DoABC import DoABC
+from pyfdec.tags.DoABC2 import DoABC2
+from pyfdec.tags.End import End
+from pyfdec.tags.FileAttributes import FileAttributes
+from pyfdec.tags.FrameLabel import FrameLabel
+from pyfdec.tags.JPEGTables import JPEGTables
+from pyfdec.tags.Metadata import Metadata
 from pyfdec.tags.PlaceObject import PlaceObject
 from pyfdec.tags.PlaceObject2 import PlaceObject2
 from pyfdec.tags.PlaceObject3 import PlaceObject3
 from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
-from pyfdec.tags.StartSound import StartSound
-from pyfdec.tags.StartSound2 import StartSound2
-from pyfdec.tags.Metadata import Metadata
 from pyfdec.tags.ScriptLimits import ScriptLimits
-from pyfdec.tags.SymbolClass import SymbolClass
-from pyfdec.tags.End import End
-from pyfdec.tags.FileAttributes import FileAttributes
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
 from pyfdec.tags.ShowFrame import ShowFrame
+from pyfdec.tags.StartSound import StartSound
+from pyfdec.tags.StartSound2 import StartSound2
+from pyfdec.tags.SymbolClass import SymbolClass
 from pyfdec.tags.Tag import Tag, TagHeader
+from pyfdec.tags.Unknown import Unknown
 
 
 @dataclass
 class SwfHeader:
 
     class CompressionLevel(Enum):
-        NONE = b"FWS"
-        ZLIB = b"CWS"
-        LZMA = b"ZWS"
+        NONE = b'FWS'
+        ZLIB = b'CWS'
+        LZMA = b'ZWS'
 
     compression: CompressionLevel
     version: int
@@ -75,10 +75,10 @@ class SwfHeader:
             buffer = ExtendedBuffer(decompressed)
         elif compression == cls.CompressionLevel.LZMA:
             # Compressed size is never used
-            _compressed_size = buffer.read_ui32()
+            _compressed_size = buffer.read_ui32()  # noqa: F841
 
             # Reconstruct LZMA header to work with the Python module
-            size = struct.pack("<Q", fileLength - 8)
+            size = struct.pack('<Q', fileLength - 8)
             lzmaFile = buffer.read(5) + size + buffer.read()
 
             # Decompress with lzma
@@ -179,9 +179,7 @@ class SwfFile:
                     yield End.from_buffer(tag_buffer)
                     break
                 case _:
-                    raise NotImplementedError(
-                        f"Unimplemented tag: {tag_header.tag_type}"
-                    )
+                    raise NotImplementedError(f'Unimplemented tag: {tag_header.tag_type}')
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):

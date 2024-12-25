@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, ClassVar, Generator
+
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGB

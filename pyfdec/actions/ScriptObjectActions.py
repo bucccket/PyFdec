@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
 from pyfdec.actions.Action import Action
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer

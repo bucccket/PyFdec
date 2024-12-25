@@ -1,9 +1,10 @@
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum, IntFlag
 from typing import ClassVar
-from pyfdec.extended_buffer import ExtendedBuffer
+
 from pyfdec.abc.ConstantKind import ConstantKind
+from pyfdec.extended_buffer import ExtendedBuffer
 
 
 class TraitAttributes(IntFlag):
@@ -36,23 +37,18 @@ class BaseTrait(ABC):
 class SlotTrait(BaseTrait):
     trait_type: ClassVar[TraitType] = TraitType.Slot
 
-    id: int
+    slot_id: int
     typename: int
     v_index: int
     v_kind: ConstantKind | None
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        id = buffer.read_encoded_u30()
+        slot_id = buffer.read_encoded_u30()
         typename = buffer.read_encoded_u30()
         v_index = buffer.read_encoded_u30()
         v_kind = buffer.read_ui8() if v_index > 0 else None
-        return cls(
-            id,
-            typename,
-            v_index,
-            v_kind
-        )
+        return cls(slot_id, typename, v_index, v_kind)
 
 
 BaseTrait.register(SlotTrait)
@@ -62,14 +58,14 @@ BaseTrait.register(SlotTrait)
 class ClassTrait(BaseTrait):
     trait_type: ClassVar[TraitType] = TraitType.Class
 
-    id: int
+    class_id: int
     class_index: int
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        id = buffer.read_encoded_u30()
+        class_id = buffer.read_encoded_u30()
         class_index = buffer.read_encoded_u30()
-        return cls(id, class_index)
+        return cls(class_id, class_index)
 
 
 BaseTrait.register(ClassTrait)
@@ -79,14 +75,14 @@ BaseTrait.register(ClassTrait)
 class MethodTrait(BaseTrait):
     trait_type: ClassVar[TraitType] = TraitType.Method
 
-    id: int
+    method_id: int
     method_index: int
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        id = buffer.read_encoded_u30()
+        method_id = buffer.read_encoded_u30()
         method_index = buffer.read_encoded_u30()
-        return cls(id, method_index)
+        return cls(method_id, method_index)
 
 
 BaseTrait.register(MethodTrait)
@@ -96,14 +92,14 @@ BaseTrait.register(MethodTrait)
 class FunctionTrait(BaseTrait):
     trait_type: ClassVar[TraitType] = TraitType.Function
 
-    id: int
+    function_id: int
     function_index: int
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        id = buffer.read_encoded_u30()
+        function_id = buffer.read_encoded_u30()
         function_index = buffer.read_encoded_u30()
-        return cls(id, function_index)
+        return cls(function_id, function_index)
 
 
 BaseTrait.register(FunctionTrait)
@@ -134,17 +130,11 @@ class TraitInfo:
             case TraitType.Method | TraitType.Getter | TraitType.Setter:
                 trait = MethodTrait.from_buffer(buffer)
             case _:
-                raise NotImplementedError(f"Unimplemented trait type: {kind}")
-            
+                raise NotImplementedError(f'Unimplemented trait type: {kind}')
+
         metadata = None
         if attributes & TraitAttributes.Metadata:
             metadata_count = buffer.read_encoded_u30()
             metadata = [buffer.read_encoded_u30() for _ in range(metadata_count)]
 
-        return cls(
-            name,
-            attributes,
-            kind,
-            trait,
-            metadata
-        )
+        return cls(name, attributes, kind, trait, metadata)

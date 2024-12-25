@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
+
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGBA
 from pyfdec.record_types.geometric_types import Rect
-from pyfdec.tags.Tag import Tag
 from pyfdec.tags.DefineShape3 import DefineShape3
+from pyfdec.tags.Tag import Tag
 
 
 @dataclass
@@ -15,10 +16,13 @@ class DefineShape4(DefineShape3):
 
     @dataclass
     class ShapeWithStyle(DefineShape3.ShapeWithStyle):
+
         @dataclass
         class LineStyleArray(DefineShape3.ShapeWithStyle.LineStyleArray):
+
             @dataclass
             class LineStyle2:
+
                 class CapStyle(Enum):
                     RoundCap = 0
                     NoCap = 1
@@ -69,9 +73,7 @@ class DefineShape4(DefineShape3):
 
                     fillType = None
                     if hasFillFlag:
-                        fillType = DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle.from_buffer(
-                            buffer
-                        )
+                        fillType = DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle.from_buffer(buffer)
 
                     return cls(
                         width=width,
@@ -98,9 +100,7 @@ class DefineShape4(DefineShape3):
                 if lineStyleCount == 0xFF:
                     lineStyleCount = buffer.read_ui16()
 
-                lineStyles = [
-                    cls.LineStyle2.from_buffer(buffer) for _ in range(lineStyleCount)
-                ]
+                lineStyles = [cls.LineStyle2.from_buffer(buffer) for _ in range(lineStyleCount)]
                 return cls(lineStyles)
 
     shapeID: int

@@ -1,4 +1,4 @@
-# PyFdec
+ PyFdec
 
 Python based flash decompilation module
 
@@ -6,18 +6,18 @@ Python based flash decompilation module
 
 ## Poetry setup
 The detailed installation guide for poetry [can be found here](https://python-poetry.org/docs/#installing-with-pipx).
-After installing poetry, to get started just run: 
+After installing poetry, to get started just run:
 ```bash
 poetry run python -m venv .venv
 poetry install
 ```
-for testing run 
+for testing run
 ```python
 poetry run pytest
 ```
 
 ## Working on NixOS or using Nix
-enter development env by typing 
+enter development env by typing
 ```bash
 nix develop
 ```

@@ -1,7 +1,7 @@
+from dataclasses import dataclass
+
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
-
-from dataclasses import dataclass
 
 
 @dataclass
@@ -14,7 +14,6 @@ class ZoneRecord:
         @classmethod
         def from_buffer(cls, buffer: ExtendedBuffer):
             return cls(AlignmentCoordinate=buffer.read_f16(), Range=buffer.read_f16())
-
 
     ZoneDataList: list[ZoneData]
     ZoneMaskY: bool

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
+
 from pyfdec.actions.Action import Action
 from pyfdec.extended_buffer import ExtendedBuffer
 

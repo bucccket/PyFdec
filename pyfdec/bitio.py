@@ -25,10 +25,8 @@ r"""Exports a BitIO class to read and write bits on streams.
     bitarray('111111')
 """
 
-
 __author__ = 'Gaming32'
 __version__ = '1.1.0'
-
 
 import io
 from typing import Sequence
@@ -42,7 +40,7 @@ However, it can only read or write. A new one must be created to do the
 other function."""
     __slots__ = ['_readable', '_writable', '_stream', '_buffer']
 
-    def __init__(self, stream:io.RawIOBase):
+    def __init__(self, stream: io.RawIOBase):
         self._stream = stream
         self._buffer = bitarray()
         self._readable = None
@@ -83,7 +81,7 @@ If flush_wrapped_stream is True, this also calls self._stream.flush()"""
         if flush_wrapped_stream:
             self._stream.flush()
 
-    def write(self, bits:Sequence[bool]) -> int:
+    def write(self, bits: Sequence[bool]) -> int:
         """Returns the number of BYTES written"""
         if not self.writable():
             raise io.UnsupportedOperation('write')
@@ -136,21 +134,4 @@ If c is ommitted or negative, reads all bits from the wrapped stream"""
 
 io.IOBase.register(BitIO)
 
-
 del Sequence
-
-
-if __name__ == '__main__':
-    from io import BytesIO
-    stream = BytesIO()
-    wrapped = BitIO(stream)
-    wrapped.write('00')
-    wrapped.write('10000')
-    wrapped.write([True] * 9)
-    wrapped.close()
-    stream.getvalue()
-    stream.seek(0)
-    wrapped = BitIO(stream)
-    wrapped.read(4)
-    wrapped.read(6)
-    wrapped.read()

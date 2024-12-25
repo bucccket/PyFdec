@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import ClassVar
-from pyfdec.extended_buffer import ExtendedBuffer
+
 from pyfdec.extended_bit_io import ExtendedBitIO
-from pyfdec.tags.Tag import Tag
+from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.zone import ZoneRecord
+from pyfdec.tags.Tag import Tag
 
 
 @dataclass

@@ -14,7 +14,34 @@ python = "^3.11"
 bitarray = "^2.9.2"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
+pre-commit = "^4.0.1"
+pytest = "^8.3.4"
+
+[tool.isort]
+multi_line_output = 5
+line_length = 120
+
+[tool.pyright]
+# General configuration
+include = ["pyfdec"]
+exclude = ["tests"]
+
+typeCheckingMode = "basic"  # Options: "off", "basic", "strict"
+enablePrimitiveUnion = false  # Whether to check for primitive unions (e.g., `int | str`)
+reportGeneralTypeIssues = true
+reportUnknownVariableType = true
+reportMissingTypeStubs = true
+
+# Specific configurations for files
+[tool.pyright.files]
+useLibraryCodeForTypes = true  # Use stub files or code from libraries
+
+[tool.yapf]
+based_on_style = "google"
+align_closing_bracket_with_visual_indent = true
+coalesce_brackets = true
+column_limit = 120
+dedent_closing_brackets = true
 
 [build-system]
 requires = ["poetry-core"]

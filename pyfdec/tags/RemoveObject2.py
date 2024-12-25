@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
 

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, ClassVar
+from typing import ClassVar
 
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.color_types import RGB, RGBA, CxForm, CxFormWithAlpha
+from pyfdec.record_types.color_types import RGBA, CxFormWithAlpha
 from pyfdec.record_types.geometric_types import Matrix
 from pyfdec.tags.PlaceObject2 import PlaceObject2
 from pyfdec.tags.Tag import Tag

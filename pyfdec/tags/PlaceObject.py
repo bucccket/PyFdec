@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.color_types import RGB, CxForm
+from pyfdec.record_types.color_types import CxForm
 from pyfdec.record_types.geometric_types import Matrix
 from pyfdec.tags.Tag import Tag
 

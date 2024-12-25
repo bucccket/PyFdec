@@ -1,11 +1,13 @@
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
+
 from pyfdec.extended_buffer import ExtendedBuffer
 
 
 class BaseMultiname(ABC):
+
     class MultinameKind(Enum):
         QName = 0x07
         QNameA = 0x0D
@@ -25,6 +27,7 @@ class BaseMultiname(ABC):
     @abstractmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
         pass
+
 
 @dataclass
 class QName(BaseMultiname):

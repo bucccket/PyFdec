@@ -10,8 +10,9 @@ from pyfdec.tags.Tag import Tag
 
 
 class TestSwfHeader(TestCase):
+
     def test_reading_swf_header(self):
-        with open("tests/swf/Gfx_Ahsoka_Sword.swf", "rb") as file:
+        with open('tests/swf/Gfx_Ahsoka_Sword.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
             swf_header, buffer = SwfHeader.from_buffer(buffer)
             self.assertEqual(swf_header.compression, SwfHeader.CompressionLevel.ZLIB)
@@ -23,8 +24,9 @@ class TestSwfHeader(TestCase):
 
 
 class TestSwfFile(TestCase):
+
     def test_reading_swf_file(self):
-        with open("tests/swf/Gfx_Ahsoka_Sword.swf", "rb") as file:
+        with open('tests/swf/Gfx_Ahsoka_Sword.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertFalse(swf.fileAttributes.useDirectBlit)
@@ -41,21 +43,15 @@ class TestSwfFile(TestCase):
                         self.assertTrue(isinstance(sprite_tag, Tag))
                 elif isinstance(tag, DefineShape):
                     for shaperecord in tag.shapes.shapeRecords:
-                        self.assertTrue(
-                            isinstance(
-                                shaperecord, DefineShape.ShapeWithStyle.ShapeRecord
-                            )
-                        )
+                        self.assertTrue(isinstance(shaperecord, DefineShape.ShapeWithStyle.ShapeRecord))
 
     def test_reading_bhair(self):
         # brawlhalla air version: 8.12
-        with open("tests/swf/BrawlhallaAir.swf", "rb") as file:
+        with open('tests/swf/BrawlhallaAir.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
             swf = SwfFile.from_buffer(buffer)
             self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
-            abc_tag: DoABC = [
-                tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC
-            ][0]
+            abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]
             # FIXME: due to new updates, this test will break if the wrong version of BhAir is used
             self.assertEqual(len(abc_tag.ABCData.cpool.ints), 865)
             self.assertEqual(len(abc_tag.ABCData.cpool.uints), 219)

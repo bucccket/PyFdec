@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
@@ -11,6 +12,7 @@ class StartSound(Tag):
 
     @dataclass
     class SoundInfo:
+
         @dataclass
         class SoundEnvelope:
             pos44: int
@@ -65,10 +67,20 @@ class StartSound(Tag):
             if hasEnvelope:
                 envPoints = buffer.read_ui8()
                 for _ in range(envPoints):
-                    envelopeRecords.append(
-                        cls.SoundEnvelope.from_buffer(buffer))
+                    envelopeRecords.append(cls.SoundEnvelope.from_buffer(buffer))
 
-            return cls(syncStop=syncStop, syncNoMultiple=syncNoMultiple, hasEnvelope=hasEnvelope, hasLoops=hasLoops, hasOutPoint=hasOutPoint, hasInPoint=hasInPoint, inPoint=inPoint, outPoint=outPoint, loopCount=loopCount, envelopeRecords=envelopeRecords)
+            return cls(
+                syncStop=syncStop,
+                syncNoMultiple=syncNoMultiple,
+                hasEnvelope=hasEnvelope,
+                hasLoops=hasLoops,
+                hasOutPoint=hasOutPoint,
+                hasInPoint=hasInPoint,
+                inPoint=inPoint,
+                outPoint=outPoint,
+                loopCount=loopCount,
+                envelopeRecords=envelopeRecords
+            )
 
     soundId: int
     soundInfo: SoundInfo

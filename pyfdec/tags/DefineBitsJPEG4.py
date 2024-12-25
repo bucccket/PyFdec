@@ -1,6 +1,7 @@
+import zlib
 from dataclasses import dataclass
 from typing import ClassVar
-import zlib
+
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
 
@@ -11,7 +12,7 @@ class DefineBitsJPEG4(Tag):
 
     characterID: int
     deblockParam: float
-    imageData: ExtendedBuffer #TODO: replace buffer with JPEG/PNG/GIF89a object
+    imageData: ExtendedBuffer  # TODO: replace buffer with JPEG/PNG/GIF89a object
     bitmapAlphaData: ExtendedBuffer | None
 
     @classmethod
@@ -22,11 +23,7 @@ class DefineBitsJPEG4(Tag):
         imageData = buffer.subbuffer(alphaDataOffset)
         jpegHeaderBytes = imageData.read(2)
         imageData.seek(0, 0)
-        bitmapAlphaData = (
-            ExtendedBuffer(zlib.decompress(buffer.read()))
-            if jpegHeaderBytes == b"\xFF\xD8"
-            else None
-        )
+        bitmapAlphaData = (ExtendedBuffer(zlib.decompress(buffer.read())) if jpegHeaderBytes == b'\xFF\xD8' else None)
 
         return cls(characterID, deblockParam, imageData, bitmapAlphaData)
 

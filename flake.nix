@@ -1,6 +1,11 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  description = "Nix Development flake for PyFdec";
+
+  inputs = {
+    # https://github.com/nix-community/poetry2nix?tab=readme-ov-file#mkpoetryenv
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    poetry2nix.url = "github:nix-community/poetry2nix";
+  };
 
   outputs = { self, nixpkgs, poetry2nix }:
     let
@@ -8,21 +13,18 @@
         [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
+    in {
       packages = forAllSystems (system:
         let
           inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; })
             mkPoetryApplication;
-        in
-        { default = mkPoetryApplication { projectDir = self; }; });
+        in { default = mkPoetryApplication { projectDir = self; }; });
 
       devShells = forAllSystems (system:
         let
           inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; })
             mkPoetryEnv;
-        in
-        {
+        in {
           default = pkgs.${system}.mkShellNoCC {
             packages = with pkgs.${system}; [
               (mkPoetryEnv { projectDir = self; })

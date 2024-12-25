@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, ClassVar, Generator
-from pyfdec.extended_bit_io import ExtendedBitIO
+
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.color_types import RGB
 from pyfdec.tags.DoABC import DoABC
 from pyfdec.tags.DoABC2 import DoABC2
 from pyfdec.tags.End import End
@@ -12,7 +11,6 @@ from pyfdec.tags.PlaceObject2 import PlaceObject2
 from pyfdec.tags.PlaceObject3 import PlaceObject3
 from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
-from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
 from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.StartSound import StartSound
 from pyfdec.tags.Tag import Tag, TagHeader
@@ -51,16 +49,16 @@ class DefineSprite(Tag):
                 case Tag.TagTypes.FrameLabel:
                     yield FrameLabel.from_buffer(tag_buffer)
                 case Tag.TagTypes.SoundStreamHead:
-                    raise NotImplementedError("DefineSprite SoundStreamHead")
+                    raise NotImplementedError('DefineSprite SoundStreamHead')
                 case Tag.TagTypes.SoundStreamHead2:
-                    raise NotImplementedError("DefineSprite SoundStreamHead2")
+                    raise NotImplementedError('DefineSprite SoundStreamHead2')
                 case Tag.TagTypes.SoundStreamBlock:
-                    raise NotImplementedError("DefineSprite SoundStreamBlock")
+                    raise NotImplementedError('DefineSprite SoundStreamBlock')
                 # Action Tags
                 case Tag.TagTypes.DoAction:
-                    raise NotImplementedError("DefineSprite DoAction")
+                    raise NotImplementedError('DefineSprite DoAction')
                 case Tag.TagTypes.DoInitAction:
-                    raise NotImplementedError("DefineSprite DoInitAction")
+                    raise NotImplementedError('DefineSprite DoInitAction')
                 case Tag.TagTypes.DoABC:
                     yield DoABC.from_buffer(tag_buffer)
                 case Tag.TagTypes.DoABC2:
@@ -69,9 +67,7 @@ class DefineSprite(Tag):
                     yield End.from_buffer(tag_buffer)
                     break
                 case _:
-                    raise ValueError(
-                        f"DefineSprite Unsupported Tag: {tag_header.tag_type}"
-                    )
+                    raise ValueError(f'DefineSprite Unsupported Tag: {tag_header.tag_type}')
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):

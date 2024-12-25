@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import ClassVar
-from pyfdec.extended_buffer import ExtendedBuffer
+
 from pyfdec.extended_bit_io import ExtendedBitIO
+from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.color_types import RGBA
 from pyfdec.record_types.geometric_types import Rect
 from pyfdec.tags.Tag import Tag
+
 
 @dataclass
 class DefineEditText(Tag):
@@ -17,7 +19,7 @@ class DefineEditText(Tag):
     Multiline: bool
     Password: bool
     ReadOnly: bool
-    HasTextColor: bool 
+    HasTextColor: bool
     HasMaxLength: bool
     HasFont: bool
     HasFontClass: bool
@@ -32,7 +34,7 @@ class DefineEditText(Tag):
     FontClass: str | None
     FontHeight: int | None
     TextColor: RGBA | None
-    MaxLength: int| None
+    MaxLength: int | None
     Align: int | None
     LeftMargin: int | None
     RightMargin: int | None
@@ -49,8 +51,8 @@ class DefineEditText(Tag):
             HasText = bits.read_bool()
             WordWrap = bits.read_bool()
             Multiline = bits.read_bool()
-            Password = bits.read_bool() 
-            ReadOnly = bits.read_bool() 
+            Password = bits.read_bool()
+            ReadOnly = bits.read_bool()
             HasTextColor = bits.read_bool()
             HasMaxLength = bits.read_bool()
             HasFont = bits.read_bool()
@@ -62,7 +64,7 @@ class DefineEditText(Tag):
             WasStatic = bits.read_bool()
             Html = bits.read_bool()
             UseOutlines = bits.read_bool()
-        
+
         FontID = buffer.read_ui16() if HasFont else None
         FontClass = buffer.read_string() if HasFontClass else None
         FontHeight = buffer.read_ui16() if HasFont else None
@@ -75,36 +77,9 @@ class DefineEditText(Tag):
         VariableName = buffer.read_string()
         InitialText = buffer.read_string() if HasText else None
         return cls(
-            CharacterID,
-            Bounds,
-            HasText,
-            WordWrap,
-            Multiline,
-            Password,
-            ReadOnly,
-            HasTextColor,
-            HasMaxLength,
-            HasFont,
-            HasFontClass,
-            AutoSize,
-            HasLayout,
-            NoSelect,
-            Border,
-            WasStatic,  
-            Html,
-            UseOutlines,
-            FontID,
-            FontClass,
-            FontHeight,
-            TextColor,
-            MaxLength,
-            Align,
-            LeftMargin,
-            RightMargin,
-            Indent,
-            Leading,
-            VariableName,
-            InitialText
+            CharacterID, Bounds, HasText, WordWrap, Multiline, Password, ReadOnly, HasTextColor, HasMaxLength, HasFont,
+            HasFontClass, AutoSize, HasLayout, NoSelect, Border, WasStatic, Html, UseOutlines, FontID, FontClass,
+            FontHeight, TextColor, MaxLength, Align, LeftMargin, RightMargin, Indent, Leading, VariableName, InitialText
         )
 
 

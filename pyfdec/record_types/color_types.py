@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.extended_buffer import ExtendedBuffer
 
@@ -14,9 +15,7 @@ class RGB:
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        return cls(
-            red=buffer.read_ui8(), green=buffer.read_ui8(), blue=buffer.read_ui8()
-        )
+        return cls(red=buffer.read_ui8(), green=buffer.read_ui8(), blue=buffer.read_ui8())
 
 
 @dataclass

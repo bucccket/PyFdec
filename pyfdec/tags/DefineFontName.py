@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.extended_bit_io import ExtendedBitIO
 from pyfdec.tags.Tag import Tag
 
 
@@ -19,11 +19,7 @@ class DefineFontName(Tag):
         FontName = buffer.read_string()
         FontCopyright = buffer.read_string()
 
-        return cls(
-            FontID,
-            FontName,
-            FontCopyright
-        )
+        return cls(FontID, FontName, FontCopyright)
 
 
 Tag.register(DefineFontName)

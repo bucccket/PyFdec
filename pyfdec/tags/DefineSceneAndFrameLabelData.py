@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
-from pyfdec.extended_bit_io import ExtendedBitIO
+
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.record_types.color_types import RGB
 from pyfdec.tags.Tag import Tag
 
 
@@ -40,9 +39,7 @@ class DefineSceneAndFrameLabelData(Tag):
         sceneCount = buffer.read_encoded_u32()
         scenes = [cls.SceneRecord.from_buffer(buffer) for _ in range(sceneCount)]
         frameLabelCount = buffer.read_encoded_u32()
-        frameLabels = [
-            cls.FrameLabelRecord.from_buffer(buffer) for _ in range(frameLabelCount)
-        ]
+        frameLabels = [cls.FrameLabelRecord.from_buffer(buffer) for _ in range(frameLabelCount)]
         return cls(scenes, frameLabels)
 
 

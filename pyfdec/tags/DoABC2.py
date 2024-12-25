@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
+from pyfdec.abc.ABCFile import ABCFile
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
-from pyfdec.abc.ABCFile import ABCFile
 
 
 @dataclass

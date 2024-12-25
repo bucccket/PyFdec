@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import ClassVar
-from pyfdec.extended_buffer import ExtendedBuffer
+
 from pyfdec.extended_bit_io import ExtendedBitIO
+from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.tags.Tag import Tag
 
 
@@ -24,19 +25,13 @@ class CSMTextSettings(Tag):
             GridFit = bits.read_unsigned(3)
             Reserved = bits.read_unsigned(3)
             assert Reserved == 0
-        
+
         Thickness = buffer.read_f32()
         Sharpness = buffer.read_f32()
         Reserved = buffer.read_ui8()
         assert Reserved == 0
 
-        return cls(
-            TextID,
-            UseFlashType,
-            GridFit,
-            Thickness,
-            Sharpness
-        )
+        return cls(TextID, UseFlashType, GridFit, Thickness, Sharpness)
 
 
 Tag.register(CSMTextSettings)

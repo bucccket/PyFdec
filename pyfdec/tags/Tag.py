@@ -7,7 +7,14 @@ from pyfdec.extended_buffer import ExtendedBuffer
 
 
 class Tag(ABC):
+    """
+    The baseclass for all SWF tags.
+    """
+
     class TagTypes(Enum):
+        """
+        Enumeration of SWF tag types
+        """
         End = 0
         ShowFrame = 1
         DefineShape = 2
@@ -75,24 +82,42 @@ class Tag(ABC):
         DefineFont4 = 91
         Unknown = 255
 
-    # NOTE: This is a class variable of the type ClassVar, so it is shared 
-    # between all instances of this class this variable is ingored by the 
+    # NOTE: This is a class variable of the type ClassVar, so it is shared
+    # between all instances of this class this variable is ingored by the
     # dataclass module
     tag_type: ClassVar[TagTypes]
 
     @classmethod
     @abstractmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
-        pass
+        """
+        Parses this class from the provided buffer.
+
+        Args:
+            buffer (ExtendedBuffer): The first number.
+        """
 
 
 @dataclass
 class TagHeader:
+    """
+    Header of each tag containing tag type and tag size
+
+    Attributes:
+        tag_type (TagTypes): Type (id) of tag.
+        tag_length (int): The length of a tag in bytes (all tags are byte aligned).
+    """
     tag_type: Tag.TagTypes
     tag_length: int
 
     @classmethod
     def from_buffer(cls, buffer: ExtendedBuffer):
+        """
+        Parses this class from the provided buffer.
+
+        Args:
+            buffer (ExtendedBuffer): The first number.
+        """
         tag_type_and_length = buffer.read_ui16()
         tag_type = Tag.TagTypes(tag_type_and_length >> 6)
         tag_length = tag_type_and_length & 0x3F
