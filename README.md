@@ -26,4 +26,4 @@ nix develop
 
 ## BitIO
 
-I am very grateful there already exists a wrapper class for BytesIO that enables reading bits. However the way the library is written and the fact it doesn't seem well maintained has me worried. I want to reduce or alltogether remove any outside deps to ensure that this project can last on its own.
+I am grateful that there is already a wrapper class for BytesIO that allows for reading bits. However, the way the library is written, along with the fact that it doesn't seem well-maintained, raises concerns. I want to minimize, or ideally eliminate, any external dependencies to ensure the long-term sustainability of this project.
