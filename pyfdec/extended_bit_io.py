@@ -31,7 +31,7 @@ class ExtendedBitIO(BitIO):
 
     def padding(self, length: int) -> None:
         if length == 0:
-            return 0
+            return
         self.read(length)
 
     def align(self) -> None:

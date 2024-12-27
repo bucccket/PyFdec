@@ -122,7 +122,7 @@ class ActionRecord:
     action_length: int | None = None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionRecord':
         action_code = Action.ActionCodes(buffer.read_ui8())
         if action_code.value >= 0x80:
             action_length = buffer.read_ui16()

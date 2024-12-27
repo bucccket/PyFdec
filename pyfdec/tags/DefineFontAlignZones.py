@@ -16,7 +16,7 @@ class DefineFontAlignZones(Tag):
     ZoneTable: list[ZoneRecord]
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineFontAlignZones':
         FontID = buffer.read_ui16()
         with ExtendedBitIO(buffer) as bits:
             CSMTableHint = bits.read_unsigned(2)

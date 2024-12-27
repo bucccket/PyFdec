@@ -13,7 +13,7 @@ class ScriptLimits(Tag):
     script_timeout_seconds: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ScriptLimits':
         max_recursion_depth = buffer.read_ui16()
         script_timeout_seconds = buffer.read_ui16()
         return cls(max_recursion_depth, script_timeout_seconds)

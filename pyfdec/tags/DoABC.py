@@ -13,7 +13,7 @@ class DoABC(Tag):
     ABCData: ABCFile
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DoABC':
         ABCData = ABCFile.from_buffer(buffer.subbuffer(buffer.bytes_left()))
         return cls(ABCData)
 

@@ -17,7 +17,7 @@ class DefineShape2(DefineShape):
         class FillStyleArray(DefineShape.ShapeWithStyle.FillStyleArray):
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape2.ShapeWithStyle.FillStyleArray':
                 fillStyleCount = buffer.read_ui8()
 
                 # Read extended count
@@ -31,7 +31,7 @@ class DefineShape2(DefineShape):
         class LineStyleArray(DefineShape.ShapeWithStyle.LineStyleArray):
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape2.ShapeWithStyle.LineStyleArray':
                 lineStyleCount = buffer.read_ui8()
 
                 # Read extended count

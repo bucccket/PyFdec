@@ -12,11 +12,11 @@ class SymbolClass(Tag):
     symbols: list[tuple[int, str]]  # [tag id, class name]
 
     @property
-    def num_symbols(self):
+    def num_symbols(self) -> int:
         return len(self.symbols)
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'SymbolClass':
         num_symbols = buffer.read_ui16()
         symbols = [(buffer.read_ui16(), buffer.read_string()) for _ in range(num_symbols)]
         return cls(symbols=symbols)

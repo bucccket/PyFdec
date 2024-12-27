@@ -15,7 +15,7 @@ class DefineSceneAndFrameLabelData(Tag):
         name: str
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineSceneAndFrameLabelData.SceneRecord':
             offset = buffer.read_ui32()
             name = buffer.read_string()
             return cls(offset, name)
@@ -26,7 +26,7 @@ class DefineSceneAndFrameLabelData(Tag):
         frameLabel: str
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineSceneAndFrameLabelData.FrameLabelRecord':
             frameNum = buffer.read_ui32()
             frameLabel = buffer.read_string()
             return cls(frameNum, frameLabel)
@@ -35,7 +35,7 @@ class DefineSceneAndFrameLabelData(Tag):
     frameLabels: list[FrameLabelRecord]
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineSceneAndFrameLabelData':
         sceneCount = buffer.read_encoded_u32()
         scenes = [cls.SceneRecord.from_buffer(buffer) for _ in range(sceneCount)]
         frameLabelCount = buffer.read_encoded_u32()

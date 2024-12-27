@@ -13,7 +13,7 @@ class RemoveObject(Tag):
     depth: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'RemoveObject':
         characterId = buffer.read_ui16()
         depth = buffer.read_ui16()
         return cls(characterId=characterId, depth=depth)

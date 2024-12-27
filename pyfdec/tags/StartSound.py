@@ -20,7 +20,7 @@ class StartSound(Tag):
             rightLevel: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'StartSound.SoundInfo.SoundEnvelope':
                 pos44 = buffer.read_ui32()
                 leftLevel = buffer.read_ui16()
                 rightLevel = buffer.read_ui16()
@@ -39,7 +39,7 @@ class StartSound(Tag):
         envelopeRecords: list[SoundEnvelope]
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'StartSound.SoundInfo':
             with ExtendedBitIO(buffer) as bits:
                 # Read reserved
                 bits.read_unsigned(2)
@@ -86,7 +86,7 @@ class StartSound(Tag):
     soundInfo: SoundInfo
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'StartSound':
         soundId = buffer.read_ui16()
         soundInfo = cls.SoundInfo.from_buffer(buffer)
         return cls(soundId=soundId, soundInfo=soundInfo)

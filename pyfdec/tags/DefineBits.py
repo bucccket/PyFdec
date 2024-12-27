@@ -19,7 +19,7 @@ class DefineBits(Tag):
         GIF89a = b'GIF89a'
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineBits':
         characterID = buffer.read_ui16()
         imageData = ExtendedBuffer(buffer.read())
         return cls(characterID, imageData)

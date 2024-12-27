@@ -61,8 +61,8 @@ class ActionGoToLabel(Action):
     label: str
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-        label = buffer.readString()
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionGoToLabel':
+        label = buffer.read_string()
         return cls(label)
 
 
@@ -77,9 +77,9 @@ class ActionGetURL(Action):
     targetString: str
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-        urlString = buffer.readString()
-        targetString = buffer.readString()
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionGetURL':
+        urlString = buffer.read_string()
+        targetString = buffer.read_string()
         return cls(urlString, targetString)
 
 
@@ -93,7 +93,7 @@ class ActionGotoFrame(Action):
     frame: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionGotoFrame':
         frame = buffer.read_ui16()
         return cls(frame)
 
@@ -113,9 +113,9 @@ class ActionGotoFrame2(Action):
     sceneBias: int | None = None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionGotoFrame2':
         hasSceneBias = buffer.read_bool()
-        frame = buffer.read_ui16()
+        frame = ActionGotoFrame2.PlayFlag(buffer.read_ui16())
         if hasSceneBias:
             sceneBias = buffer.read_ui16()
             return cls(frame, sceneBias)
@@ -132,8 +132,8 @@ class ActionSetTarget(Action):
     targetName: str
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-        targetName = buffer.readString()
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionSetTarget':
+        targetName = buffer.read_string()
         return cls(targetName)
 
 

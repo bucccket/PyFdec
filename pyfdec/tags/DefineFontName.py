@@ -14,7 +14,7 @@ class DefineFontName(Tag):
     FontCopyright: str
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineFontName':
         FontID = buffer.read_ui16()
         FontName = buffer.read_string()
         FontCopyright = buffer.read_string()

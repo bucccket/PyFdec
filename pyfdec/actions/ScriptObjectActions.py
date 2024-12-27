@@ -29,7 +29,7 @@ class ActionConstantPool(Action):
     constantPool: list[str]
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionConstantPool':
         count = buffer.read_ui16()
         constantPool = [buffer.read_string() for _ in range(count)]
         return cls(constantPool)
@@ -47,7 +47,7 @@ class ActionDefineFunction(Action):
     code: ExtendedBuffer
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionDefineFunction':
         function_name = buffer.read_string()
         param_count = buffer.read_ui16()
         params = [buffer.read_string() for _ in range(param_count)]
@@ -177,7 +177,7 @@ class ActionWith(Action):
     size: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionWith':
         size = buffer.read_ui16()
         return cls(size)
 
@@ -195,7 +195,7 @@ class ActionDefineFunction2(Action):
         param_name: str
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionDefineFunction2.RegisterParam':
             register = buffer.read_ui8()
             param_name = buffer.read_string()
             return cls(register, param_name)
@@ -215,7 +215,7 @@ class ActionDefineFunction2(Action):
     code: ExtendedBuffer
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionDefineFunction2':
         function_name = buffer.read_string()
         param_count = buffer.read_ui16()
         register_count = buffer.read_ui8()
@@ -289,7 +289,7 @@ class ActionTry(Action):
     finallyBody: ExtendedBuffer | None = None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionTry':
         with ExtendedBitIO(buffer) as bits:
             bits.padding(5)  #
             catchInRegister = bits.read_bool()

@@ -89,7 +89,7 @@ class Tag(ABC):
 
     @classmethod
     @abstractmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Tag':
         """
         Parses this class from the provided buffer.
 
@@ -111,7 +111,7 @@ class TagHeader:
     tag_length: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'TagHeader':
         """
         Parses this class from the provided buffer.
 

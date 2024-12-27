@@ -29,7 +29,7 @@ class BaseTrait(ABC):
 
     @classmethod
     @abstractmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'BaseTrait':
         pass
 
 
@@ -43,11 +43,11 @@ class SlotTrait(BaseTrait):
     v_kind: ConstantKind | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'SlotTrait':
         slot_id = buffer.read_encoded_u30()
         typename = buffer.read_encoded_u30()
         v_index = buffer.read_encoded_u30()
-        v_kind = buffer.read_ui8() if v_index > 0 else None
+        v_kind = ConstantKind(buffer.read_ui8()) if v_index > 0 else None
         return cls(slot_id, typename, v_index, v_kind)
 
 
@@ -62,7 +62,7 @@ class ClassTrait(BaseTrait):
     class_index: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ClassTrait':
         class_id = buffer.read_encoded_u30()
         class_index = buffer.read_encoded_u30()
         return cls(class_id, class_index)
@@ -79,7 +79,7 @@ class MethodTrait(BaseTrait):
     method_index: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'MethodTrait':
         method_id = buffer.read_encoded_u30()
         method_index = buffer.read_encoded_u30()
         return cls(method_id, method_index)
@@ -96,7 +96,7 @@ class FunctionTrait(BaseTrait):
     function_index: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'FunctionTrait':
         function_id = buffer.read_encoded_u30()
         function_index = buffer.read_encoded_u30()
         return cls(function_id, function_index)
@@ -114,11 +114,12 @@ class TraitInfo:
     metadata: list[int] | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'TraitInfo':
         name = buffer.read_encoded_u30()
         kind_attributes = buffer.read_ui8()
         kind = TraitType(kind_attributes & 0x0F)
         attributes = TraitAttributes(kind_attributes >> 4)
+        trait: BaseTrait
 
         match kind:
             case TraitType.Slot | TraitType.Const:

@@ -14,7 +14,7 @@ class StartSound2(Tag):
     soundInfo: StartSound.SoundInfo
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'StartSound2':
         soundClassName = buffer.read_string()
         soundInfo = StartSound.SoundInfo.from_buffer(buffer)
         return cls(soundClassName=soundClassName, soundInfo=soundInfo)

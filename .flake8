@@ -1,5 +1,5 @@
 [flake8]
-ignore = A005,C101,D403,F403,F405,I100,I201,W503,W504
+ignore = A005,C101,D403,E115,F403,F405,I100,I201,W503,W504
 exclude =
     .git,
     __pycache__,
@@ -9,7 +9,7 @@ accept-encodings = utf-8
 inline-quotes = single
 max-complexity = 14
 max-linenumber = 500
-max-line-length = 120
+max-line-length = 150
 multiline-quotes = double
 per-file-ignores =
   pyfdec/util/export/svg_exporter.py:E226

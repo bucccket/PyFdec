@@ -13,7 +13,7 @@ class SetBackgroundColor(Tag):
     backgroundColor: RGB
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'SetBackgroundColor':
         backgroundColor = RGB.from_buffer(buffer)
         return cls(backgroundColor)
 

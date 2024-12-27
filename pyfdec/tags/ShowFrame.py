@@ -10,7 +10,7 @@ class ShowFrame(Tag):
     tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.ShowFrame
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ShowFrame':
         return cls()
 
 

@@ -26,8 +26,9 @@ class ActionPush(Action):
     value: str | float | int | bool | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionPush':
         pushType = cls.PushTypes(buffer.read_ui8())
+        value: str | float | int | bool | None
         match pushType:
             case cls.PushTypes.StringLiteral:
                 value = buffer.read_string()
@@ -94,7 +95,7 @@ class ActionStoreRegister(Action):
     register_number: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionStoreRegister':
         register_number = buffer.read_ui8()
         return cls(register_number)
 

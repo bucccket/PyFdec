@@ -15,7 +15,7 @@ class DefineBitsJPEG3(DefineBitsJPEG2):
     bitmapAlphaData: ExtendedBuffer | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineBitsJPEG3':
         characterID = buffer.read_ui16()
         imageData = buffer.subbuffer(buffer.read_ui32())
         jpegHeaderBytes = imageData.read(2)

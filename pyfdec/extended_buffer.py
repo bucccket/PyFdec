@@ -4,7 +4,7 @@ import struct
 
 class ExtendedBuffer(io.BytesIO):
 
-    def subbuffer(self, size: int):
+    def subbuffer(self, size: int) -> 'ExtendedBuffer':
         return ExtendedBuffer(self.read(size))
 
     def bytes_left(self) -> int:

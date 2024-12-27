@@ -13,7 +13,7 @@ class FrameLabel(Tag):
     anchor: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'FrameLabel':
         name = buffer.read_string()
         anchor = buffer.read_ui8()
         return cls(name, anchor)

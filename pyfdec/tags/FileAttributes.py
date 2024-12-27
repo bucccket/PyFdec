@@ -19,7 +19,7 @@ class FileAttributes(Tag):
     useNetwork: bool
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'FileAttributes':
         with ExtendedBitIO(buffer) as bits:
             bits.padding(1)
             useDirectBlit = bits.read_bool()

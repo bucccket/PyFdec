@@ -16,7 +16,7 @@ class DefineBitsJPEG4(Tag):
     bitmapAlphaData: ExtendedBuffer | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineBitsJPEG4':
         characterID = buffer.read_ui16()
         alphaDataOffset = buffer.read_ui32()
         deblockParam = buffer.read_fixed8()

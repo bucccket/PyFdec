@@ -10,7 +10,7 @@ class Unknown(Tag):
     tag_type: ClassVar[Tag.TagTypes] = Tag.TagTypes.Unknown
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Unknown':
         return cls()
 
 

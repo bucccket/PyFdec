@@ -12,7 +12,7 @@ class Metadata(Tag):
     metadata: str
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Metadata':
         metadata = buffer.read_string()
         return cls(metadata)
 

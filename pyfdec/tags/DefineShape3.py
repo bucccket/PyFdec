@@ -31,7 +31,9 @@ class DefineShape3(DefineShape2):
                         color: RGBA
 
                         @classmethod
-                        def from_buffer(cls, buffer: ExtendedBuffer):
+                        def from_buffer(
+                            cls, buffer: ExtendedBuffer
+                        ) -> 'DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle.Gradient.GradientRecord':
                             return cls(ratio=buffer.read_ui8(), color=RGBA.from_buffer(buffer))
 
                 # TODO: find better solution than re-implementing the class to apply overrides from Gradient
@@ -40,13 +42,11 @@ class DefineShape3(DefineShape2):
                     focalPoint: float
 
                     @classmethod
-                    def from_buffer(cls, buffer: ExtendedBuffer):
+                    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle.FocalGradient':
                         with ExtendedBitIO(buffer) as bits:
                             spreadMode = cls.SpreadMode(bits.read_unsigned(2))
                             interpolationMode = cls.InterpolationMode(bits.read_unsigned(2))
-                            gradientRecords = [
-                                cls.GradientRecord.from_buffer(buffer) for _ in range(bits.read_unsigned(4))
-                            ]
+                            gradientRecords = [cls.GradientRecord.from_buffer(buffer) for _ in range(bits.read_unsigned(4))]
                         focalPoint = buffer.read_fixed8()
                         return cls(spreadMode, interpolationMode, gradientRecords, focalPoint)
 
@@ -56,7 +56,7 @@ class DefineShape3(DefineShape2):
                 bitmapMatrix: tuple[int, Matrix] | None = None
 
                 @classmethod
-                def from_buffer(cls, buffer: ExtendedBuffer):
+                def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle':
                     fillStyleType = cls.FillStyleType(buffer.read_ui8())
                     match (fillStyleType):
                         case fillStyleType if fillStyleType in [cls.FillStyleType.SolidFill]:
@@ -68,10 +68,7 @@ class DefineShape3(DefineShape2):
                             cls.FillStyleType.FocalGradientFill,
                         ]:
                             matrix = Matrix.from_buffer(buffer)
-                            if (
-                                fillStyleType == cls.FillStyleType.LinearGradientFill or
-                                fillStyleType == cls.FillStyleType.RadialGradientFill
-                            ):
+                            if (fillStyleType == cls.FillStyleType.LinearGradientFill or fillStyleType == cls.FillStyleType.RadialGradientFill):
                                 gradient = cls.Gradient.from_buffer(buffer)
                             else:
                                 gradient = cls.FocalGradient.from_buffer(buffer)
@@ -87,6 +84,8 @@ class DefineShape3(DefineShape2):
                             matrix = Matrix.from_buffer(buffer)
                             bitmapMatrix = (bitmapId, matrix)
                             return cls(fillStyleType, None, None, bitmapMatrix)
+                        case _:
+                            raise ValueError(f'FillStyleType {fillStyleType} not recognized')
 
         @dataclass
         class LineStyleArray(DefineShape2.ShapeWithStyle.LineStyleArray):
@@ -97,7 +96,7 @@ class DefineShape3(DefineShape2):
                 color: RGBA
 
                 @classmethod
-                def from_buffer(cls, buffer: ExtendedBuffer):
+                def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape3.ShapeWithStyle.LineStyleArray.LineStyle':
                     return cls(width=buffer.read_ui16(), color=RGBA.from_buffer(buffer))
 
 

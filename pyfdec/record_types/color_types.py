@@ -14,7 +14,7 @@ class RGB:
         return '#%02x%02x%02x' % (self.red, self.green, self.blue)
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'RGB':
         return cls(red=buffer.read_ui8(), green=buffer.read_ui8(), blue=buffer.read_ui8())
 
 
@@ -26,7 +26,7 @@ class RGBA(RGB):
         return '#%02x%02x%02x' % (self.red, self.green, self.blue)
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'RGBA':
         return cls(
             red=buffer.read_ui8(),
             green=buffer.read_ui8(),
@@ -46,7 +46,7 @@ class ARGB:
         return '#%02x%02x%02x' % (self.red, self.green, self.blue)
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ARGB':
         return cls(
             alpha=buffer.read_ui8(),
             red=buffer.read_ui8(),
@@ -65,7 +65,7 @@ class CxForm:
     BlueAddTerm: int = 1
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'CxForm':
         with ExtendedBitIO(buffer) as bits:
             has_add_terms = bits.read_bool()
             has_mult_terms = bits.read_bool()
@@ -106,7 +106,7 @@ class CxFormWithAlpha:
     AlphaAddTerm: int = 1
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'CxFormWithAlpha':
         with ExtendedBitIO(buffer) as bits:
             has_add_terms = bits.read_bool()
             has_mult_terms = bits.read_bool()

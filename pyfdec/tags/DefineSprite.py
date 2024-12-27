@@ -25,7 +25,7 @@ class DefineSprite(Tag):
     tags: Generator[Tag, Any, None]
 
     @staticmethod
-    def get_tag_list(buffer: ExtendedBuffer):
+    def get_tag_list(buffer: ExtendedBuffer) -> Generator[Tag, Any, None]:
         while True:
             tag_header = TagHeader.from_buffer(buffer)
 
@@ -70,7 +70,7 @@ class DefineSprite(Tag):
                     raise ValueError(f'DefineSprite Unsupported Tag: {tag_header.tag_type}')
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineSprite':
         spriteID = buffer.read_ui16()
         frameCount = buffer.read_ui16()
         tags: Generator[Tag, Any, None] = cls.get_tag_list(buffer)

@@ -25,7 +25,7 @@ class BaseMultiname(ABC):
 
     @classmethod
     @abstractmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'BaseMultiname':
         pass
 
 
@@ -37,7 +37,7 @@ class QName(BaseMultiname):
     name: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'QName':
         return cls(namespace=buffer.read_encoded_u30(), name=buffer.read_encoded_u30())
 
 
@@ -51,7 +51,7 @@ class RTQName(BaseMultiname):
     name: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'RTQName':
         return cls(name=buffer.read_encoded_u30())
 
 
@@ -63,7 +63,7 @@ class RTQNameL(BaseMultiname):
     multiname_kind: ClassVar[BaseMultiname.MultinameKind] = BaseMultiname.MultinameKind.RTQNameL
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'RTQNameL':
         return cls()
 
 
@@ -78,7 +78,7 @@ class Multiname(BaseMultiname):
     namespace_set: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Multiname':
         return cls(name=buffer.read_encoded_u30(), namespace_set=buffer.read_encoded_u30())
 
 
@@ -92,7 +92,7 @@ class MultinameL(BaseMultiname):
     namespace_set: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'MultinameL':
         return cls(namespace_set=buffer.read_encoded_u30())
 
 
@@ -107,7 +107,7 @@ class TypeName(BaseMultiname):
     params: list[int]
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'TypeName':
         name = buffer.read_encoded_u30()
         param_count = buffer.read_encoded_u30()
         params = [buffer.read_encoded_u30() for _ in range(param_count)]

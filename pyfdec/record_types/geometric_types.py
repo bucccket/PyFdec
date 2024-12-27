@@ -13,7 +13,7 @@ class Rect:
     ymax: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Rect':
         with ExtendedBitIO(buffer) as bits:
             nbits = bits.read_unsigned(5)
             return cls(
@@ -35,7 +35,7 @@ class Matrix:
     rotate_skew1: float = 1.0
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Matrix':
         with ExtendedBitIO(buffer) as bits:
             has_scale = bits.read_unsigned(1)
             scale_x = 1.0

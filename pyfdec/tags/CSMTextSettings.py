@@ -17,7 +17,7 @@ class CSMTextSettings(Tag):
     Sharpness: float
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'CSMTextSettings':
         TextID = buffer.read_ui16()
         with ExtendedBitIO(buffer) as bits:
             UseFlashType = bits.read_unsigned(2)

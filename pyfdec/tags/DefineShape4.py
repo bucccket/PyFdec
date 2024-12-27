@@ -47,7 +47,7 @@ class DefineShape4(DefineShape3):
                 fillType: DefineShape3.ShapeWithStyle.FillStyleArray.FillStyle | None
 
                 @classmethod
-                def from_buffer(cls, buffer: ExtendedBuffer):
+                def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape4.ShapeWithStyle.LineStyleArray.LineStyle2':
                     width = buffer.read_ui16()
                     with ExtendedBitIO(buffer) as bits:
                         startCapStyle = cls.CapStyle(bits.read_unsigned(2))
@@ -93,7 +93,7 @@ class DefineShape4(DefineShape3):
             lineStyles: list[LineStyle2]
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape4.ShapeWithStyle.LineStyleArray':
                 lineStyleCount = buffer.read_ui8()
 
                 # Read extended count
@@ -112,7 +112,7 @@ class DefineShape4(DefineShape3):
     shapes: DefineShape3.ShapeWithStyle
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape4':
         shapeID = buffer.read_ui16()
         shapeBounds = Rect.from_buffer(buffer)
         edgeBounds = Rect.from_buffer(buffer)

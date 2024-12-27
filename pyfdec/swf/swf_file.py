@@ -3,7 +3,7 @@ import struct
 import zlib
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Generator, Self
+from typing import Any, Generator
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
@@ -59,7 +59,7 @@ class SwfHeader:
     frameCount: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer) -> tuple[Self, ExtendedBuffer]:
+    def from_buffer(cls, buffer: ExtendedBuffer) -> tuple['SwfHeader', ExtendedBuffer]:
         compression = cls.CompressionLevel(buffer.read(3))
         version = buffer.read_ui8()
         fileLength = buffer.read_ui32()

@@ -15,7 +15,7 @@ class DoABC2(Tag):
     ABCData: ABCFile
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DoABC2':
         flags = buffer.read_ui32()
         name = buffer.read_string()
         ABCData = ABCFile.from_buffer(buffer.subbuffer(buffer.bytes_left()))

@@ -38,7 +38,7 @@ class PlaceObject2(PlaceObject):
             clipEventKeyPress: bool
             clipEventDragOut: bool
 
-            def getEventCount(self):
+            def getEventCount(self) -> int:
                 return sum([
                     self.clipEventKeyUp,
                     self.clipEventKeyDown,
@@ -62,7 +62,7 @@ class PlaceObject2(PlaceObject):
                 ])
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject2.ClipActions.ClipEventFlags':
                 with ExtendedBitIO(buffer) as bits:
                     clipEventKeyUp = bits.read_bool()
                     clipEventKeyDown = bits.read_bool()
@@ -118,7 +118,7 @@ class PlaceObject2(PlaceObject):
         clipActionRecords: list[ClipActionRecord]
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject2.ClipActions':
             clipEventFlags = cls.ClipEventFlags.from_buffer(buffer)
             clipActionRecords = []
             for _ in range(clipEventFlags.getEventCount()):
@@ -138,7 +138,7 @@ class PlaceObject2(PlaceObject):
     clipActions: ClipActions | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject2':
         with ExtendedBitIO(buffer) as bits:
             hasClipActions = bits.read_bool()
             hasClipDepth = bits.read_bool()

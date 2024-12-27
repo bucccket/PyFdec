@@ -12,7 +12,7 @@ class ActionJump(Action):
     branchOffset: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionJump':
         branchOffset = buffer.read_si16()
         return cls(branchOffset)
 
@@ -27,7 +27,7 @@ class ActionIf(Action):
     branchOffset: int
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionIf':
         branchOffset = buffer.read_si16()
         return cls(branchOffset)
 

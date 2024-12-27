@@ -32,7 +32,7 @@ class ZoneRecord:
         with ExtendedBitIO(buffer) as bits:
             Reserved = bits.read_unsigned(6)
             assert Reserved == 0
-            ZoneMaskY = bits.read_unsigned(1)  # yes, Y gets read first
-            ZoneMaskX = bits.read_unsigned(1)
+            ZoneMaskY = bits.read_bool()  # yes, Y gets read first
+            ZoneMaskX = bits.read_bool()
 
         return cls(ZoneDataList, ZoneMaskY, ZoneMaskX)

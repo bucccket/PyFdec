@@ -15,7 +15,7 @@ class SvgExporter:
             return round(self._x, 2)
 
         @x.setter
-        def x(self, value: float):
+        def x(self, value: float) -> None:
             self._x = round(value, 2)
 
         @property
@@ -23,18 +23,18 @@ class SvgExporter:
             return round(self._y, 2)
 
         @y.setter
-        def y(self, value: float):
+        def y(self, value: float) -> None:
             self._y = round(value, 2)
 
-        def moveTwips(self, dx: float, dy: float):
+        def moveTwips(self, dx: float, dy: float) -> None:
             self.x += dx / 20
             self.y += dy / 20
 
-        def placeTwips(self, x: float, y: float):
+        def placeTwips(self, x: float, y: float) -> None:
             self.x = x / 20
             self.y = y / 20
 
-    def populateSvgHeader(self):
+    def populateSvgHeader(self) -> None:
         self.svg.attrib['version'] = '1.1'
         self.svg.attrib['xmlns'] = 'http://www.w3.org/2000/svg'
 
@@ -59,8 +59,7 @@ class SvgExporter:
         g = ET.SubElement(self.svg, 'g')
         g.attrib['transform'] = (f'matrix(1.0, 0.0, 0.0, 1.0, {-viewport.xmin/20}, {-viewport.ymin/20})')
 
-        fillstyles: list[DefineShape.ShapeWithStyle.FillStyleArray.FillStyle
-                         ] = (defineShapeTag.shapes.fillStyleArray.fillStyles)
+        fillstyles: list[DefineShape.ShapeWithStyle.FillStyleArray.FillStyle] = (defineShapeTag.shapes.fillStyleArray.fillStyles)
         linestyles: list[DefineShape.ShapeWithStyle.LineStyleArray.LineStyle  # noqa: F841
                          ] = (defineShapeTag.shapes.lineStyleArray.lineStyles)
 

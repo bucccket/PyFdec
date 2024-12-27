@@ -26,14 +26,14 @@ class Instruction:
         Unknown = 16
 
     opcode: int
-    arguments: list[tuple[ArgType, any]]
+    arguments: list[tuple[ArgType, int | list[int] | None]]
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'Instruction':
         opcode = buffer.read_ui8()
         _, arg_types = cls.get_info(opcode)
 
-        arguments: list[tuple[cls.ArgType, any]] = []
+        arguments: list[tuple['Instruction.ArgType', int | list[int] | None]] = []
         for arg_type in arg_types:
             value = None
             match arg_type:
@@ -81,7 +81,7 @@ class Instruction:
         return cls(opcode, arguments)
 
     @classmethod
-    def get_info(cls, opcode) -> tuple[str, list[ArgType]]:
+    def get_info(cls, opcode: int) -> tuple[str, list[ArgType]]:
         match opcode:
             case 0x00:
                 return ('db', [cls.ArgType.UByteLiteral])
@@ -562,10 +562,7 @@ class Instruction:
             case 0xEE:
                 return ('0xEE', [cls.ArgType.Unknown])
             case 0xEF:
-                return (
-                    'debug',
-                    [cls.ArgType.UByteLiteral, cls.ArgType.String, cls.ArgType.UByteLiteral, cls.ArgType.UintLiteral]
-                )
+                return ('debug', [cls.ArgType.UByteLiteral, cls.ArgType.String, cls.ArgType.UByteLiteral, cls.ArgType.UintLiteral])
             case 0xF0:
                 return ('debugline', [cls.ArgType.UintLiteral])
             case 0xF1:

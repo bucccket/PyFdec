@@ -44,7 +44,7 @@ class DefineEditText(Tag):
     InitialText: str | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineEditText':
         CharacterID = buffer.read_ui16()
         Bounds = Rect.from_buffer(buffer)
         with ExtendedBitIO(buffer) as bits:
@@ -77,9 +77,9 @@ class DefineEditText(Tag):
         VariableName = buffer.read_string()
         InitialText = buffer.read_string() if HasText else None
         return cls(
-            CharacterID, Bounds, HasText, WordWrap, Multiline, Password, ReadOnly, HasTextColor, HasMaxLength, HasFont,
-            HasFontClass, AutoSize, HasLayout, NoSelect, Border, WasStatic, Html, UseOutlines, FontID, FontClass,
-            FontHeight, TextColor, MaxLength, Align, LeftMargin, RightMargin, Indent, Leading, VariableName, InitialText
+            CharacterID, Bounds, HasText, WordWrap, Multiline, Password, ReadOnly, HasTextColor, HasMaxLength, HasFont, HasFontClass, AutoSize,
+            HasLayout, NoSelect, Border, WasStatic, Html, UseOutlines, FontID, FontClass, FontHeight, TextColor, MaxLength, Align, LeftMargin,
+            RightMargin, Indent, Leading, VariableName, InitialText
         )
 
 

@@ -28,7 +28,7 @@ class ActionNot(Action):
     result: bool
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'ActionNot':
         result = buffer.read_bool()
         return cls(result)
 

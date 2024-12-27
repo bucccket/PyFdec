@@ -12,8 +12,8 @@ class JPEGTables(Tag):
     jpegData: ExtendedBuffer
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
-        jpegData = buffer.read()
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'JPEGTables':
+        jpegData = ExtendedBuffer(buffer.read())
         return cls(jpegData)
 
 

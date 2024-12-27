@@ -32,7 +32,7 @@ class PlaceObject3(PlaceObject2):
             matrix: list[float]
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.ColorMatrixFilter':
                 matrix = [buffer.read_f32() for _ in range(20)]
                 return cls(matrix)
 
@@ -49,7 +49,7 @@ class PlaceObject3(PlaceObject2):
             preserveAlpha: bool
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.ConvolutionFilter':
                 matrixX = buffer.read_ui8()
                 matrixY = buffer.read_ui8()
                 divisor = buffer.read_f32()
@@ -78,7 +78,7 @@ class PlaceObject3(PlaceObject2):
             passes: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.BlurFilter':
                 blurX = buffer.read_fixed()
                 blurY = buffer.read_fixed()
                 passes = buffer.read_ui8() >> 3
@@ -98,7 +98,7 @@ class PlaceObject3(PlaceObject2):
             passes: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.DropShadowFilter':
                 dropShadowColor = RGBA.from_buffer(buffer)
                 blurX = buffer.read_fixed()
                 blurY = buffer.read_fixed()
@@ -135,7 +135,7 @@ class PlaceObject3(PlaceObject2):
             passes: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.GlowFilter':
                 glowColor = RGBA.from_buffer(buffer)
                 blurX = buffer.read_fixed()
                 blurY = buffer.read_fixed()
@@ -172,7 +172,7 @@ class PlaceObject3(PlaceObject2):
             passes: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.BevelFilter':
                 shadowColor = RGBA.from_buffer(buffer)
                 highlightColor = RGBA.from_buffer(buffer)
                 blurX = buffer.read_fixed()
@@ -218,7 +218,7 @@ class PlaceObject3(PlaceObject2):
             passes: int
 
             @classmethod
-            def from_buffer(cls, buffer: ExtendedBuffer):
+            def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter.GradientGlowFilter':
                 numColors = buffer.read_ui8()
                 gradientColors = [RGBA.from_buffer(buffer) for _ in range(numColors)]
                 gradientRatio = [buffer.read_ui8() for _ in range(numColors)]
@@ -250,13 +250,10 @@ class PlaceObject3(PlaceObject2):
                 )
 
         filterType: FilterTypes
-        filters: (
-            ColorMatrixFilter | ConvolutionFilter | BlurFilter | DropShadowFilter | GlowFilter | BevelFilter |
-            GradientGlowFilter
-        )
+        filters: (ColorMatrixFilter | ConvolutionFilter | BlurFilter | DropShadowFilter | GlowFilter | BevelFilter | GradientGlowFilter)
 
         @classmethod
-        def from_buffer(cls, buffer: ExtendedBuffer):
+        def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter':
             filterType = cls.FilterTypes(buffer.read_ui8())
             match filterType:
                 case cls.FilterTypes.ColorMatrixFilter:
@@ -300,7 +297,7 @@ class PlaceObject3(PlaceObject2):
     backgroundColor: RGBA | None
 
     @classmethod
-    def from_buffer(cls, buffer: ExtendedBuffer):
+    def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3':
         with ExtendedBitIO(buffer) as bits:
             hasClipActions = bits.read_bool()
             hasClipDepth = bits.read_bool()
@@ -327,8 +324,7 @@ class PlaceObject3(PlaceObject2):
             name = buffer.read_string() if hasName else None
             clipDepth = buffer.read_ui16() if hasClipDepth else None
 
-            surfaceFilterList = ([cls.Filter.from_buffer(buffer) for _ in range(buffer.read_ui8())]
-                                 if hasFilterList else None)
+            surfaceFilterList = ([cls.Filter.from_buffer(buffer) for _ in range(buffer.read_ui8())] if hasFilterList else None)
             blendMode = cls.BlendModes(buffer.read_ui8()) if hasBlendMode else None
             bitmapCache = buffer.read_unsigned(8) > 0 if hasCacheAsBitmap else None
             visible = bits.read_unsigned(8) > 0 if hasVisible else None
