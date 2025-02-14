@@ -11,7 +11,7 @@ class ActionNextFrame(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionNextFrame
 
 
-Action.register(ActionNextFrame)
+# Action.register(ActionNextFrame)
 
 
 @dataclass
@@ -19,7 +19,7 @@ class ActionPrevFrame(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPrevFrame
 
 
-Action.register(ActionPrevFrame)
+# Action.register(ActionPrevFrame)
 
 
 @dataclass
@@ -27,7 +27,7 @@ class ActionPlay(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPlay
 
 
-Action.register(ActionPlay)
+# Action.register(ActionPlay)
 
 
 @dataclass
@@ -35,15 +35,15 @@ class ActionStop(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionStop
 
 
-Action.register(ActionStop)
+# Action.register(ActionStop)
 
 
 @dataclass
-class ActionToggleQualty(Action):
-    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionToggleQualty
+class ActionToggleQuality(Action):
+    action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionToggleQuality
 
 
-Action.register(ActionToggleQualty)
+# Action.register(ActionToggleQuality)
 
 
 @dataclass
@@ -51,7 +51,7 @@ class ActionStopSounds(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionStopSounds
 
 
-Action.register(ActionStopSounds)
+# Action.register(ActionStopSounds)
 
 
 @dataclass
@@ -66,7 +66,7 @@ class ActionGoToLabel(Action):
         return cls(label)
 
 
-Action.register(ActionGoToLabel)
+# Action.register(ActionGoToLabel)
 
 
 @dataclass
@@ -83,7 +83,7 @@ class ActionGetURL(Action):
         return cls(urlString, targetString)
 
 
-Action.register(ActionGetURL)
+# Action.register(ActionGetURL)
 
 
 @dataclass
@@ -98,7 +98,7 @@ class ActionGotoFrame(Action):
         return cls(frame)
 
 
-Action.register(ActionGotoFrame)
+# Action.register(ActionGotoFrame)
 
 
 @dataclass
@@ -122,7 +122,7 @@ class ActionGotoFrame2(Action):
         return cls(frame)
 
 
-Action.register(ActionGotoFrame2)
+# Action.register(ActionGotoFrame2)
 
 
 @dataclass
@@ -137,7 +137,7 @@ class ActionSetTarget(Action):
         return cls(targetName)
 
 
-Action.register(ActionSetTarget)
+# Action.register(ActionSetTarget)
 
 
 @dataclass
@@ -145,7 +145,7 @@ class ActionSetTarget2(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionSetTarget2
 
 
-Action.register(ActionSetTarget2)
+# Action.register(ActionSetTarget2)
 
 
 @dataclass
@@ -153,7 +153,7 @@ class ActionGetProperty(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionGetProperty
 
 
-Action.register(ActionGetProperty)
+# Action.register(ActionGetProperty)
 
 
 @dataclass
@@ -161,4 +161,4 @@ class ActionSetProperty(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionSetProperty
 
 
-Action.register(ActionSetProperty)
+# Action.register(ActionSetProperty)

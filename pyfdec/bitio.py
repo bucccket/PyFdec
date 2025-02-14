@@ -34,17 +34,17 @@ from typing import Sequence
 from bitarray import bitarray
 
 
-class BitIO:
+class BitIO(io.IOBase):
     r"""Wraps an io stream and allows bitarray read and write to that stream.
 However, it can only read or write. A new one must be created to do the
 other function."""
     __slots__ = ['_readable', '_writable', '_stream', '_buffer']
 
-    def __init__(self, stream: io.RawIOBase):
-        self._stream = stream
-        self._buffer = bitarray()
-        self._readable = None
-        self._writable = None
+    def __init__(self, stream: io.BufferedIOBase):
+        self._stream: io.BufferedIOBase = stream
+        self._buffer: bitarray = bitarray()
+        self._readable: bool | None = None
+        self._writable: bool | None = None
 
     def readable(self) -> bool:
         """Returns True if this stream is readable (will always be False if a write has occured on it)"""

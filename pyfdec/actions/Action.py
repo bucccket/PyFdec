@@ -12,7 +12,7 @@ class Action(ABC):
         ActionGotoFrame = 0x81
         ActionGetURL = 0x83
         ActionNextFrame = 0x04
-        ActionPreviousFrame = 0x05
+        ActionPrevFrame = 0x05
         ActionPlay = 0x06
         ActionStop = 0x07
         ActionToggleQuality = 0x08
@@ -102,6 +102,7 @@ class Action(ABC):
         ActionStrictEquals = 0x66
         ActionGreater = 0x67
         ActionStringGreater = 0x68
+        ActionDefineFunction2 = 0x8E
         ActionExtends = 0x69
         ActionCastOp = 0x2B
         ActionImplementsOp = 0x2C

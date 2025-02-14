@@ -17,7 +17,7 @@ class ActionJump(Action):
         return cls(branchOffset)
 
 
-Action.register(ActionJump)
+# Action.register(ActionJump)
 
 
 @dataclass
@@ -32,7 +32,7 @@ class ActionIf(Action):
         return cls(branchOffset)
 
 
-Action.register(ActionIf)
+# Action.register(ActionIf)
 
 
 @dataclass
@@ -40,4 +40,4 @@ class ActionCall(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionCall
 
 
-Action.register(ActionCall)
+# Action.register(ActionCall)

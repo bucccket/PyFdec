@@ -9,7 +9,7 @@ class ActionTrace(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionTrace
 
 
-Action.register(ActionTrace)
+# Action.register(ActionTrace)
 
 
 @dataclass
@@ -17,7 +17,7 @@ class ActionGetTime(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionGetTime
 
 
-Action.register(ActionGetTime)
+# Action.register(ActionGetTime)
 
 
 @dataclass
@@ -25,4 +25,4 @@ class ActionRandomNumber(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionRandomNumber
 
 
-Action.register(ActionRandomNumber)
+# Action.register(ActionRandomNumber)

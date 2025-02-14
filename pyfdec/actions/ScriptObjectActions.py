@@ -11,7 +11,7 @@ class ActionCallFunction(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionCallFunction
 
 
-Action.register(ActionCallFunction)
+# Action.register(ActionCallFunction)
 
 
 @dataclass
@@ -19,7 +19,7 @@ class ActionCallMethod(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionCallMethod
 
 
-Action.register(ActionCallMethod)
+# Action.register(ActionCallMethod)
 
 
 @dataclass
@@ -35,7 +35,7 @@ class ActionConstantPool(Action):
         return cls(constantPool)
 
 
-Action.register(ActionConstantPool)
+# Action.register(ActionConstantPool)
 
 
 @dataclass
@@ -55,7 +55,7 @@ class ActionDefineFunction(Action):
         return cls(function_name, params, code)
 
 
-Action.register(ActionDefineFunction)
+# Action.register(ActionDefineFunction)
 
 
 @dataclass
@@ -63,7 +63,7 @@ class ActionDefineLocal(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionDefineLocal
 
 
-Action.register(ActionDefineLocal)
+# Action.register(ActionDefineLocal)
 
 
 @dataclass
@@ -71,7 +71,7 @@ class ActionDefineLocal2(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionDefineLocal2
 
 
-Action.register(ActionDefineLocal2)
+# Action.register(ActionDefineLocal2)
 
 
 @dataclass
@@ -79,7 +79,7 @@ class ActionDelete(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionDelete
 
 
-Action.register(ActionDelete)
+# Action.register(ActionDelete)
 
 
 @dataclass
@@ -87,7 +87,7 @@ class ActionDelete2(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionDelete2
 
 
-Action.register(ActionDelete2)
+# Action.register(ActionDelete2)
 
 
 @dataclass
@@ -95,7 +95,7 @@ class ActionEnumerate(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionEnumerate
 
 
-Action.register(ActionEnumerate)
+# Action.register(ActionEnumerate)
 
 
 @dataclass
@@ -103,7 +103,7 @@ class ActionEnumerate2(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionEnumerate2
 
 
-Action.register(ActionEnumerate2)
+# Action.register(ActionEnumerate2)
 
 
 @dataclass
@@ -111,7 +111,7 @@ class ActionEquals2(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionEquals2
 
 
-Action.register(ActionEquals2)
+# Action.register(ActionEquals2)
 
 
 @dataclass
@@ -119,7 +119,7 @@ class ActionGetMember(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionGetMember
 
 
-Action.register(ActionGetMember)
+# Action.register(ActionGetMember)
 
 
 @dataclass
@@ -127,7 +127,7 @@ class ActionInitArray(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionInitArray
 
 
-Action.register(ActionInitArray)
+# Action.register(ActionInitArray)
 
 
 @dataclass
@@ -135,7 +135,7 @@ class ActionInitObject(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionInitObject
 
 
-Action.register(ActionInitObject)
+# Action.register(ActionInitObject)
 
 
 @dataclass
@@ -143,7 +143,7 @@ class ActionNewMethod(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionNewMethod
 
 
-Action.register(ActionNewMethod)
+# Action.register(ActionNewMethod)
 
 
 @dataclass
@@ -151,7 +151,7 @@ class ActionNewObject(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionNewObject
 
 
-Action.register(ActionNewObject)
+# Action.register(ActionNewObject)
 
 
 @dataclass
@@ -159,7 +159,7 @@ class ActionSetMember(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionSetMember
 
 
-Action.register(ActionSetMember)
+# Action.register(ActionSetMember)
 
 
 @dataclass
@@ -167,7 +167,7 @@ class ActionTargetPath(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionTargetPath
 
 
-Action.register(ActionTargetPath)
+# Action.register(ActionTargetPath)
 
 
 @dataclass
@@ -182,7 +182,7 @@ class ActionWith(Action):
         return cls(size)
 
 
-Action.register(ActionWith)
+# Action.register(ActionWith)
 
 
 @dataclass
@@ -250,7 +250,7 @@ class ActionDefineFunction2(Action):
         )
 
 
-Action.register(ActionDefineFunction2)
+# Action.register(ActionDefineFunction2)
 
 
 @dataclass
@@ -258,7 +258,7 @@ class ActionExtends(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionExtends
 
 
-Action.register(ActionExtends)
+# Action.register(ActionExtends)
 
 
 @dataclass
@@ -266,7 +266,7 @@ class ActionCastOp(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionCastOp
 
 
-Action.register(ActionCastOp)
+# Action.register(ActionCastOp)
 
 
 @dataclass
@@ -274,7 +274,7 @@ class ActionImplementsOp(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionImplementsOp
 
 
-Action.register(ActionImplementsOp)
+# Action.register(ActionImplementsOp)
 
 
 @dataclass
@@ -312,7 +312,7 @@ class ActionTry(Action):
         )
 
 
-Action.register(ActionTry)
+# Action.register(ActionTry)
 
 
 @dataclass
@@ -320,4 +320,4 @@ class ActionThrow(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionThrow
 
 
-Action.register(ActionThrow)
+# Action.register(ActionThrow)

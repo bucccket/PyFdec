@@ -10,7 +10,7 @@ class ActionAnd(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionAnd
 
 
-Action.register(ActionAnd)
+# Action.register(ActionAnd)
 
 
 @dataclass
@@ -18,7 +18,7 @@ class ActionOr(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionOr
 
 
-Action.register(ActionOr)
+# Action.register(ActionOr)
 
 
 @dataclass
@@ -33,4 +33,4 @@ class ActionNot(Action):
         return cls(result)
 
 
-Action.register(ActionNot)
+# Action.register(ActionNot)

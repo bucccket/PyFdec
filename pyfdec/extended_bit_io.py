@@ -3,6 +3,9 @@ from pyfdec.bitio import BitIO
 
 class ExtendedBitIO(BitIO):
 
+    def write(self, bits):
+        return super().write(bits)
+
     def read_unsigned(self, length: int) -> int:
         if length == 0:
             return 0

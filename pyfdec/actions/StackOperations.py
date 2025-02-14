@@ -53,7 +53,7 @@ class ActionPush(Action):
         return cls(pushType, value)
 
 
-Action.register(ActionPush)
+# Action.register(ActionPush)
 
 
 @dataclass
@@ -61,7 +61,7 @@ class ActionPop(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPop
 
 
-Action.register(ActionPop)
+# Action.register(ActionPop)
 
 
 @dataclass
@@ -69,7 +69,7 @@ class ActionPushDuplicate(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionPushDuplicate
 
 
-Action.register(ActionPushDuplicate)
+# Action.register(ActionPushDuplicate)
 
 
 @dataclass
@@ -77,7 +77,7 @@ class ActionReturn(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionReturn
 
 
-Action.register(ActionReturn)
+# Action.register(ActionReturn)
 
 
 @dataclass
@@ -85,7 +85,7 @@ class ActionStackSwap(Action):
     action_code: ClassVar[Action.ActionCodes] = Action.ActionCodes.ActionStackSwap
 
 
-Action.register(ActionStackSwap)
+# Action.register(ActionStackSwap)
 
 
 @dataclass
@@ -100,4 +100,4 @@ class ActionStoreRegister(Action):
         return cls(register_number)
 
 
-Action.register(ActionStoreRegister)
+# Action.register(ActionStoreRegister)
