@@ -2,6 +2,7 @@ import io
 import struct
 
 
+# FIXME: Missing RawIOBase impl
 class ExtendedBuffer(io.BytesIO):
 
     def subbuffer(self, size: int) -> 'ExtendedBuffer':
