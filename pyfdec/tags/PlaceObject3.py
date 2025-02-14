@@ -44,7 +44,6 @@ class PlaceObject3(PlaceObject2):
             bias: float
             matrix: list[float]
             defaultColor: RGBA
-            reserved: int
             clamp: bool
             preserveAlpha: bool
 
@@ -234,23 +233,11 @@ class PlaceObject3(PlaceObject2):
                     onTop = bits.read_bool()
                     passes = bits.read_unsigned(4)
                 return cls(
-                    numColors,
-                    gradientColors,
-                    gradientRatio,
-                    blurX,
-                    blurY,
-                    angle,
-                    distance,
-                    strength,
-                    innerShadow,
-                    knockout,
-                    compositeSource,
-                    onTop,
-                    passes,
+                    gradientColors, gradientRatio, blurX, blurY, angle, distance, strength, innerShadow, knockout, compositeSource, onTop, passes
                 )
 
         filterType: FilterTypes
-        filters: (ColorMatrixFilter | ConvolutionFilter | BlurFilter | DropShadowFilter | GlowFilter | BevelFilter | GradientGlowFilter)
+        filters: ColorMatrixFilter | ConvolutionFilter | BlurFilter | DropShadowFilter | GlowFilter | BevelFilter | GradientGlowFilter
 
         @classmethod
         def from_buffer(cls, buffer: ExtendedBuffer) -> 'PlaceObject3.Filter':
@@ -326,7 +313,7 @@ class PlaceObject3(PlaceObject2):
 
             surfaceFilterList = ([cls.Filter.from_buffer(buffer) for _ in range(buffer.read_ui8())] if hasFilterList else None)
             blendMode = cls.BlendModes(buffer.read_ui8()) if hasBlendMode else None
-            bitmapCache = buffer.read_unsigned(8) > 0 if hasCacheAsBitmap else None
+            bitmapCache = buffer.read_ui8() > 0 if hasCacheAsBitmap else None
             visible = bits.read_unsigned(8) > 0 if hasVisible else None
             backgroundColor = RGBA.from_buffer(buffer) if hasOpaqueBackground else None
             clipActions = (cls.ClipActions.from_buffer(buffer) if hasClipActions else None)
