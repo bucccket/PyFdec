@@ -23,18 +23,24 @@ from pyfdec.tags.DefineShape4 import DefineShape4
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.DoABC import DoABC
 from pyfdec.tags.DoABC2 import DoABC2
+from pyfdec.tags.EnableDebugger import EnableDebugger
+from pyfdec.tags.EnableDebugger2 import EnableDebugger2
 from pyfdec.tags.End import End
+from pyfdec.tags.ExportAssets import ExportAssets
 from pyfdec.tags.FileAttributes import FileAttributes
 from pyfdec.tags.FrameLabel import FrameLabel
+from pyfdec.tags.ImportAssets import ImportAssets
 from pyfdec.tags.JPEGTables import JPEGTables
 from pyfdec.tags.Metadata import Metadata
 from pyfdec.tags.PlaceObject import PlaceObject
 from pyfdec.tags.PlaceObject2 import PlaceObject2
 from pyfdec.tags.PlaceObject3 import PlaceObject3
+from pyfdec.tags.Protect import Protect
 from pyfdec.tags.RemoveObject import RemoveObject
 from pyfdec.tags.RemoveObject2 import RemoveObject2
 from pyfdec.tags.ScriptLimits import ScriptLimits
 from pyfdec.tags.SetBackgroundColor import SetBackgroundColor
+from pyfdec.tags.SetTabIndex import SetTabIndex
 from pyfdec.tags.ShowFrame import ShowFrame
 from pyfdec.tags.StartSound import StartSound
 from pyfdec.tags.StartSound2 import StartSound2
@@ -111,58 +117,8 @@ class Swf:
 
             tag_buffer = buffer.subbuffer(tag_header.tag_length)
             match tag_header.tag_type:
-                case Tag.TagTypes.FileAttributes:
-                    yield FileAttributes.from_buffer(tag_buffer)
-                case Tag.TagTypes.SetBackgroundColor:
-                    yield SetBackgroundColor.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineSceneAndFrameLabelData:
-                    yield DefineSceneAndFrameLabelData.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineEditText:
-                    yield DefineEditText.from_buffer(tag_buffer)
                 case Tag.TagTypes.CSMTextSettings:
                     yield CSMTextSettings.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineFontAlignZones:
-                    yield DefineFontAlignZones.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineFontName:
-                    yield DefineFontName.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineShape:
-                    yield DefineShape.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineShape2:
-                    yield DefineShape2.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineShape3:
-                    yield DefineShape3.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineShape4:
-                    yield DefineShape4.from_buffer(tag_buffer)
-                case Tag.TagTypes.RemoveObject:
-                    yield RemoveObject.from_buffer(tag_buffer)
-                case Tag.TagTypes.RemoveObject2:
-                    yield RemoveObject2.from_buffer(tag_buffer)
-                case Tag.TagTypes.StartSound:
-                    yield StartSound.from_buffer(tag_buffer)
-                case Tag.TagTypes.StartSound2:
-                    yield StartSound2.from_buffer(tag_buffer)
-                case Tag.TagTypes.ShowFrame:
-                    yield ShowFrame.from_buffer(tag_buffer)
-                case Tag.TagTypes.FrameLabel:
-                    yield FrameLabel.from_buffer(tag_buffer)
-                case Tag.TagTypes.DefineSprite:
-                    yield DefineSprite.from_buffer(tag_buffer)
-                case Tag.TagTypes.PlaceObject:
-                    yield PlaceObject.from_buffer(tag_buffer)
-                case Tag.TagTypes.PlaceObject2:
-                    yield PlaceObject2.from_buffer(tag_buffer)
-                case Tag.TagTypes.PlaceObject3:
-                    yield PlaceObject3.from_buffer(tag_buffer)
-                case Tag.TagTypes.Metadata:
-                    yield Metadata.from_buffer(tag_buffer)
-                case Tag.TagTypes.ScriptLimits:
-                    yield ScriptLimits.from_buffer(tag_buffer)
-                case Tag.TagTypes.SymbolClass:
-                    yield SymbolClass.from_buffer(tag_buffer)
-                case Tag.TagTypes.DoABC:
-                    yield DoABC.from_buffer(tag_buffer)
-                case Tag.TagTypes.DoABC2:
-                    yield DoABC2.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineBits:
                     yield DefineBits.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineBitsJPEG2:
@@ -171,8 +127,70 @@ class Swf:
                     yield DefineBitsJPEG3.from_buffer(tag_buffer)
                 case Tag.TagTypes.DefineBitsJPEG4:
                     yield DefineBitsJPEG4.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineEditText:
+                    yield DefineEditText.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineFontAlignZones:
+                    yield DefineFontAlignZones.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineFontName:
+                    yield DefineFontName.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineSceneAndFrameLabelData:
+                    yield DefineSceneAndFrameLabelData.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineShape:
+                    yield DefineShape.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineShape2:
+                    yield DefineShape2.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineShape3:
+                    yield DefineShape3.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineShape4:
+                    yield DefineShape4.from_buffer(tag_buffer)
+                case Tag.TagTypes.DefineSprite:
+                    yield DefineSprite.from_buffer(tag_buffer)
+                case Tag.TagTypes.DoABC:
+                    yield DoABC.from_buffer(tag_buffer)
+                case Tag.TagTypes.DoABC2:
+                    yield DoABC2.from_buffer(tag_buffer)
+                case Tag.TagTypes.EnableDebugger:
+                    yield EnableDebugger.from_buffer(tag_buffer)
+                case Tag.TagTypes.EnableDebugger2:
+                    yield EnableDebugger2.from_buffer(tag_buffer)
+                case Tag.TagTypes.ExportAssets:
+                    yield ExportAssets.from_buffer(tag_buffer)
+                case Tag.TagTypes.FileAttributes:
+                    yield FileAttributes.from_buffer(tag_buffer)
+                case Tag.TagTypes.FrameLabel:
+                    yield FrameLabel.from_buffer(tag_buffer)
+                case Tag.TagTypes.ImportAssets:
+                    yield ImportAssets.from_buffer(tag_buffer)
                 case Tag.TagTypes.JPEGTables:
                     yield JPEGTables.from_buffer(tag_buffer)
+                case Tag.TagTypes.Metadata:
+                    yield Metadata.from_buffer(tag_buffer)
+                case Tag.TagTypes.PlaceObject:
+                    yield PlaceObject.from_buffer(tag_buffer)
+                case Tag.TagTypes.PlaceObject2:
+                    yield PlaceObject2.from_buffer(tag_buffer)
+                case Tag.TagTypes.PlaceObject3:
+                    yield PlaceObject3.from_buffer(tag_buffer)
+                case Tag.TagTypes.Protect:
+                    yield Protect.from_buffer(tag_buffer)
+                case Tag.TagTypes.RemoveObject:
+                    yield RemoveObject.from_buffer(tag_buffer)
+                case Tag.TagTypes.RemoveObject2:
+                    yield RemoveObject2.from_buffer(tag_buffer)
+                case Tag.TagTypes.ScriptLimits:
+                    yield ScriptLimits.from_buffer(tag_buffer)
+                case Tag.TagTypes.SetBackgroundColor:
+                    yield SetBackgroundColor.from_buffer(tag_buffer)
+                case Tag.TagTypes.SetTabIndex:
+                    yield SetTabIndex.from_buffer(tag_buffer)
+                case Tag.TagTypes.ShowFrame:
+                    yield ShowFrame.from_buffer(tag_buffer)
+                case Tag.TagTypes.StartSound:
+                    yield StartSound.from_buffer(tag_buffer)
+                case Tag.TagTypes.StartSound2:
+                    yield StartSound2.from_buffer(tag_buffer)
+                case Tag.TagTypes.SymbolClass:
+                    yield SymbolClass.from_buffer(tag_buffer)
                 case Tag.TagTypes.Unknown:
                     yield Unknown.from_buffer(tag_buffer)
                 case Tag.TagTypes.End:
