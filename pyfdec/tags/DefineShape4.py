@@ -90,7 +90,7 @@ class DefineShape4(DefineShape3):
                         fillType=fillType,
                     )
 
-            lineStyles: list[LineStyle2]
+            lineStyles: list[LineStyle2]  # type: ignore
 
             @classmethod
             def from_buffer(cls, buffer: ExtendedBuffer) -> 'DefineShape4.ShapeWithStyle.LineStyleArray':
@@ -133,7 +133,7 @@ class DefineShape4(DefineShape3):
             usesFillWinding=usesFillWinding,
             usesNonScalingStrokes=usesNonScalingStrokes,
             usesScalingStrokes=usesScalingStrokes,
-            shapes=shapes,
+            shapes=shapes,  # type: ignore
         )
 
 

@@ -157,10 +157,10 @@ class PlaceObject2(PlaceObject):
             clipDepth = buffer.read_ui16() if hasClipDepth else None
             clipActions = (cls.ClipActions.from_buffer(buffer) if hasClipActions else None)
         return cls(
-            characterID=characterID,
+            characterID=characterID,  # type: ignore
             depth=depth,
-            matrix=matrix,
-            colorTransform=colorTransform,
+            matrix=matrix,  # type: ignore
+            colorTransform=colorTransform,  # type: ignore
             placeFlagMove=placeFlagMove,
             ratio=ratio,
             name=name,

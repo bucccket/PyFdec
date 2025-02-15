@@ -47,19 +47,19 @@ class ABCFile:
         def from_buffer(cls, buffer: ExtendedBuffer) -> 'ABCFile.CPoolInfo':
             int_count = buffer.read_encoded_u30()
             ints: list[int] = []
-            [ints.append(buffer.read_encoded_si32()) for _ in range(int_count - 1)]
+            [ints.append(buffer.read_encoded_si32()) for _ in range(int_count - 1)]  # type: ignore
             uint_count = buffer.read_encoded_u30()
             uints: list[int] = []
-            [uints.append(buffer.read_encoded_u32()) for _ in range(uint_count - 1)]
+            [uints.append(buffer.read_encoded_u32()) for _ in range(uint_count - 1)]  # type: ignore
             double_count = buffer.read_encoded_u30()
             doubles: list[float] = []
-            [doubles.append(buffer.read_f64()) for _ in range(double_count - 1)]
+            [doubles.append(buffer.read_f64()) for _ in range(double_count - 1)]  # type: ignore
             string_count = buffer.read_encoded_u30()
             strings: list[str] = []
-            [strings.append(cls.read_abc_string(buffer)) for _ in range(string_count - 1)]
+            [strings.append(cls.read_abc_string(buffer)) for _ in range(string_count - 1)]  # type: ignore
             namespace_count = buffer.read_encoded_u30()
             namespaces: list['ABCFile.CPoolInfo.NamespaceInfo'] = []
-            [namespaces.append(cls.NamespaceInfo.from_buffer(buffer)) for _ in range(namespace_count - 1)]
+            [namespaces.append(cls.NamespaceInfo.from_buffer(buffer)) for _ in range(namespace_count - 1)]  # type: ignore
             namespace_set_count = buffer.read_encoded_u30()
             namespace_sets: list[list[int]] = []
             for _ in range(namespace_set_count - 1):
@@ -68,7 +68,7 @@ class ABCFile:
 
             multiname_count = buffer.read_encoded_u30()
             multinames: list[BaseMultiname] = []
-            [multinames.append(cls.read_multiname(buffer)) for _ in range(multiname_count - 1)]
+            [multinames.append(cls.read_multiname(buffer)) for _ in range(multiname_count - 1)]  # type: ignore
 
             return cls(ints, uints, doubles, strings, namespaces, namespace_sets, multinames)
 
@@ -133,8 +133,8 @@ class ABCFile:
         return_type: int
         param_types: list[int]
         name: int
-        flags: list[MethodFlags]
-        option_info: list[OptionInfo] | None
+        flags: MethodFlags
+        option_info: OptionInfo | None
         param_names: list[int] | None
 
         @classmethod

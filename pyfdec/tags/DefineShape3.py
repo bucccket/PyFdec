@@ -48,7 +48,7 @@ class DefineShape3(DefineShape2):
                             interpolationMode = cls.InterpolationMode(bits.read_unsigned(2))
                             gradientRecords = [cls.GradientRecord.from_buffer(buffer) for _ in range(bits.read_unsigned(4))]
                         focalPoint = buffer.read_fixed8()
-                        return cls(spreadMode, interpolationMode, gradientRecords, focalPoint)
+                        return cls(spreadMode, interpolationMode, gradientRecords, focalPoint)  # type: ignore
 
                 fillStyleType: (DefineShape2.ShapeWithStyle.FillStyleArray.FillStyle.FillStyleType)
                 color: RGBA | None = None
@@ -73,7 +73,7 @@ class DefineShape3(DefineShape2):
                             else:
                                 gradient = cls.FocalGradient.from_buffer(buffer)
                             gradientMatrix = (matrix, gradient)
-                            return cls(fillStyleType, None, gradientMatrix, None)
+                            return cls(fillStyleType, None, gradientMatrix, None)  # type: ignore
                         case fillStyleType if fillStyleType in [
                             cls.FillStyleType.RepeatingBitmapFill,
                             cls.FillStyleType.ClippedBitmapFill,

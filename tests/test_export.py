@@ -2,7 +2,7 @@ import xml.etree.cElementTree as ET
 from unittest import TestCase
 
 from pyfdec.extended_buffer import ExtendedBuffer
-from pyfdec.swf.swf_file import SwfFile
+from pyfdec.swf import Swf
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.util.export.svg_exporter import SvgExporter
 
@@ -12,7 +12,7 @@ class TestExportDefineShape(TestCase):
     def test_exporting_to_svg(self):
         with open('tests/swf/test_Export.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
-            swf = SwfFile.from_buffer(buffer)
+            swf = Swf.from_buffer(buffer)
 
             for tag in swf.tags:
                 if isinstance(tag, DefineShape):

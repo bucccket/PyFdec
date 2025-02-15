@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from pyfdec.extended_buffer import ExtendedBuffer
 from pyfdec.record_types.geometric_types import Rect
-from pyfdec.swf.swf_file import SwfFile, SwfHeader
+from pyfdec.swf import Swf, SwfHeader
 from pyfdec.tags.DefineShape import DefineShape
 from pyfdec.tags.DefineSprite import DefineSprite
 from pyfdec.tags.DoABC import DoABC
@@ -28,7 +28,7 @@ class TestSwfFile(TestCase):
     def test_reading_swf_file(self):
         with open('tests/swf/Gfx_Ahsoka_Sword.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
-            swf = SwfFile.from_buffer(buffer)
+            swf = Swf.from_buffer(buffer)
             self.assertFalse(swf.fileAttributes.useDirectBlit)
             self.assertFalse(swf.fileAttributes.useGPU)
             self.assertFalse(swf.fileAttributes.hasMetadata)
@@ -49,19 +49,19 @@ class TestSwfFile(TestCase):
         # brawlhalla air version: 8.12
         with open('tests/swf/BrawlhallaAir.swf', 'rb') as file:
             buffer = ExtendedBuffer(file.read())
-            swf = SwfFile.from_buffer(buffer)
+            swf = Swf.from_buffer(buffer)
             self.assertEqual(swf.header.compression, SwfHeader.CompressionLevel.ZLIB)
-            abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]
+            abc_tag: DoABC = [tag for tag in swf.tags if tag.tag_type == tag.TagTypes.DoABC][0]  # type: ignore
             # FIXME: due to new updates, this test will break if the wrong version of BhAir is used
-            self.assertEqual(len(abc_tag.ABCData.cpool.ints), 865)
-            self.assertEqual(len(abc_tag.ABCData.cpool.uints), 219)
-            self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 652)
-            self.assertEqual(len(abc_tag.ABCData.cpool.strings), 33623)
+            self.assertEqual(len(abc_tag.ABCData.cpool.ints), 873)
+            self.assertEqual(len(abc_tag.ABCData.cpool.uints), 217)
+            self.assertEqual(len(abc_tag.ABCData.cpool.doubles), 655)
+            self.assertEqual(len(abc_tag.ABCData.cpool.strings), 34948)
             self.assertEqual(len(abc_tag.ABCData.cpool.namespaces), 36)
-            self.assertEqual(len(abc_tag.ABCData.cpool.namespace_sets), 3)
-            self.assertEqual(len(abc_tag.ABCData.cpool.multinames), 24257)
-            self.assertEqual(len(abc_tag.ABCData.methods), 12269)
+            self.assertEqual(len(abc_tag.ABCData.cpool.namespace_sets), 2)
+            self.assertEqual(len(abc_tag.ABCData.cpool.multinames), 25194)
+            self.assertEqual(len(abc_tag.ABCData.methods), 12937)
             self.assertEqual(len(abc_tag.ABCData.metadata), 0)
-            self.assertEqual(len(abc_tag.ABCData.classes), 650)
-            self.assertEqual(len(abc_tag.ABCData.scripts), 650)
-            self.assertEqual(len(abc_tag.ABCData.method_bodies), 12220)
+            self.assertEqual(len(abc_tag.ABCData.classes), 691)
+            self.assertEqual(len(abc_tag.ABCData.scripts), 691)
+            self.assertEqual(len(abc_tag.ABCData.method_bodies), 12885)

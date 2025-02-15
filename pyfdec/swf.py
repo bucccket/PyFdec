@@ -98,7 +98,7 @@ class SwfHeader:
 
 
 @dataclass
-class SwfFile:
+class Swf:
 
     header: SwfHeader
     fileAttributes: FileAttributes

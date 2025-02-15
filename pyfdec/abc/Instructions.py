@@ -35,7 +35,7 @@ class Instruction:
 
         arguments: list[tuple['Instruction.ArgType', int | list[int] | None]] = []
         for arg_type in arg_types:
-            value = None
+            value: int | list[int] | None = None
             match arg_type:
                 case cls.ArgType.ByteLiteral:
                     value = buffer.read_si8()

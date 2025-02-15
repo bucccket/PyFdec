@@ -246,17 +246,17 @@ class PlaceObject3(PlaceObject2):
                 case cls.FilterTypes.ColorMatrixFilter:
                     filters = cls.ColorMatrixFilter.from_buffer(buffer)
                 case cls.FilterTypes.ConvolutionFilter:
-                    filters = cls.ConvolutionFilter.from_buffer(buffer)
+                    filters = cls.ConvolutionFilter.from_buffer(buffer)  # type: ignore
                 case cls.FilterTypes.BlurFilter:
-                    filters = cls.BlurFilter.from_buffer(buffer)
+                    filters = cls.BlurFilter.from_buffer(buffer)  # type: ignore
                 case cls.FilterTypes.DropShadowFilter:
-                    filters = cls.DropShadowFilter.from_buffer(buffer)
+                    filters = cls.DropShadowFilter.from_buffer(buffer)  # type: ignore
                 case cls.FilterTypes.GlowFilter:
-                    filters = cls.GlowFilter.from_buffer(buffer)
+                    filters = cls.GlowFilter.from_buffer(buffer)  # type: ignore
                 case cls.FilterTypes.BevelFilter:
-                    filters = cls.BevelFilter.from_buffer(buffer)
+                    filters = cls.BevelFilter.from_buffer(buffer)  # type: ignore
                 case cls.FilterTypes.GradientGlowFilter:
-                    filters = cls.GradientGlowFilter.from_buffer(buffer)
+                    filters = cls.GradientGlowFilter.from_buffer(buffer)  # type: ignore
             return cls(filterType, filters)
 
     class BlendModes(Enum):
@@ -319,10 +319,10 @@ class PlaceObject3(PlaceObject2):
             clipActions = (cls.ClipActions.from_buffer(buffer) if hasClipActions else None)
 
         return cls(
-            characterID=characterID,
+            characterID=characterID,  # type: ignore
             depth=depth,
-            matrix=matrix,
-            colorTransform=colorTransform,
+            matrix=matrix,  # type: ignore
+            colorTransform=colorTransform,  # type: ignore
             placeFlagMove=placeFlagMove,
             ratio=ratio,
             name=name,
